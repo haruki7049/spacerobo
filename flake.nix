@@ -43,7 +43,8 @@
 
               mkdir -p $out/share/spacerobo
 
-              godot4 --headless --export-debug "${pkgs.stdenv.system}" $out/share/spacerobo/out
+              # The godot exporting for macOS creates universal binary
+              godot4 --headless --export-debug "${if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system}" $out/share/spacerobo/out
 
               runHook postBuild
             '';
