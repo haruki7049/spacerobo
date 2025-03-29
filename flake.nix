@@ -20,34 +20,30 @@
           lib,
           ...
         }:
-        {
-          packages.default = pkgs.stdenv.mkDerivation rec {
-            pname = "test-godot3-with-nix";
-            version = "0.0.0-dev";
+        let
+          spacerobo = pkgs.stdenv.mkDerivation {
+            pname = "spacerobo";
+            version = "0.1.0-dev";
             src = lib.cleanSource ./.;
 
             nativeBuildInputs = [
-              pkgs.godot3-headless
-              #pkgs.autoPatchelfHook
-            ];
-
-            buildInputs = [
+              pkgs.godot_4
             ];
 
             buildPhase = ''
               runHook preBuild
 
-              # Cannot create file '/homeless-shelter/.config/godot/projects/...'
+              # Cannot create directories '/homeless-shelter/.config/godot/projects/...' and '/homeless-shelter/.local/share/godot/export_templates/...'
               export HOME=$TMPDIR
 
               # Link the export-templates to the expected location. The --export commands
-              # expects the template-file at .../templates/{godot-version}.stable/linux_x11_64_release
-              mkdir -p $HOME/.local/share/godot
-              ln -s ${pkgs.godot3-export-templates}/share/godot/templates $HOME/.local/share/godot
+              # expects the template-file at .../export_templates/{godot-version}.stable/linux_x11_64_release
+              mkdir -p $HOME/.local/share/godot/export_templates/
+              ln -s ${pkgs.godot_4-export-templates} $HOME/.local/share/godot/export_templates/4.4.1.stable
 
-              mkdir -p $out/share/test-godot3-with-nix
+              mkdir -p $out/share/spacerobo
 
-              godot3-headless --export "Linux/X11" $out/share/test-godot3-with-nix/out
+              godot4 --headless --export-debug "${pkgs.stdenv.system}" $out/share/spacerobo/out
 
               runHook postBuild
             '';
@@ -56,25 +52,29 @@
               runHook preInstall
 
               mkdir -p $out/bin
-              ln -s $out/share/test-godot3-with-nix/out $out/bin/test-godot3-with-nix
-
-              # Patch binaries.
-              interpreter=$(cat $NIX_CC/nix-support/dynamic-linker)
-              #patchelf \
-              #  --set-interpreter $interpreter \
-              #  --set-rpath ${lib.makeLibraryPath buildInputs} \
-              #  $out/share/test-godot3-with-nix/out
+              ln -s $out/share/spacerobo/out $out/bin/spacerobo
 
               runHook postInstall
             '';
 
             meta = {
-              platforms = lib.platforms.unix;
+              platforms = [
+                "x86_64-linux"
+                "aarch64-linux"
+                "aarch64-darwin"
+              ];
             };
+          };
+        in
+        {
+          packages = {
+            inherit spacerobo;
+            default = spacerobo;
           };
 
           devShells.default = pkgs.mkShell {
             packages = [
+              pkgs.nil
               pkgs.godot_4
             ];
           };
