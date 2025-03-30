@@ -7,12 +7,20 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
+
+      imports = [
+        inputs.treefmt-nix.flakeModule
+      ];
 
       perSystem =
         {
@@ -62,7 +70,9 @@
               mkdir -p $out/share/spacerobo
 
               # The godot exporting for macOS creates universal binary
-              godot4 --headless --export-debug "${if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system}" $out/share/spacerobo/out
+              godot4 --headless --export-debug "${
+                if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system
+              }" $out/share/spacerobo/out
 
               # Add LD_LIBRARY_PATH in runtime environment
               wrapProgram $out/share/spacerobo/out \
@@ -90,6 +100,13 @@
           };
         in
         {
+          treefmt = {
+            programs.nixfmt.enable = true;
+            programs.gdformat.enable = true;
+            programs.actionlint.enable = true;
+            programs.mdformat.enable = true;
+          };
+
           packages = {
             inherit spacerobo;
             default = spacerobo;
