@@ -21,13 +21,31 @@
           ...
         }:
         let
-          spacerobo = pkgs.stdenv.mkDerivation {
+          spacerobo = pkgs.stdenv.mkDerivation rec {
             pname = "spacerobo";
             version = "0.1.0-dev";
             src = lib.cleanSource ./.;
 
             nativeBuildInputs = [
               pkgs.godot_4
+              pkgs.autoPatchelfHook
+              pkgs.makeWrapper
+            ];
+
+            buildInputs = lib.optionals pkgs.stdenv.isLinux [
+              pkgs.xorg.libX11
+              pkgs.xorg.libXcursor
+              pkgs.xorg.libXext
+              pkgs.xorg.libXinerama
+              pkgs.xorg.libXrandr
+              pkgs.xorg.libXi
+              pkgs.libGL
+              pkgs.systemd
+              pkgs.libxkbcommon
+              pkgs.alsa-lib
+              pkgs.libpulseaudio
+              pkgs.dbus
+              pkgs.fontconfig.lib
             ];
 
             buildPhase = ''
@@ -45,6 +63,10 @@
 
               # The godot exporting for macOS creates universal binary
               godot4 --headless --export-debug "${if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system}" $out/share/spacerobo/out
+
+              # Add LD_LIBRARY_PATH in runtime environment
+              wrapProgram $out/share/spacerobo/out \
+                --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath buildInputs}
 
               runHook postBuild
             '';
