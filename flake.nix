@@ -41,6 +41,8 @@
             pkgs.xorg.libXrandr
             pkgs.libxkbcommon
             pkgs.wayland
+          ] ++ [
+            pkgs.llvmPackages.libclang.lib
           ];
           spacerobo = pkgs.rustPlatform.buildRustPackage {
             pname = "spacerobo";
@@ -55,6 +57,9 @@
             ];
 
             cargoLock.lockFile = ./Cargo.lock;
+
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
             postInstall = ''
               wrapProgram $out/bin/spacerobo \
@@ -105,6 +110,7 @@
               pkgs.nil
             ];
 
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
             shellHook = ''
