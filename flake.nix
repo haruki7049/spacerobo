@@ -30,7 +30,7 @@
           ...
         }:
         let
-          buildInputs = [
+          buildInputs = lib.optionals pkgs.stdenv.isLinux [
             pkgs.pkg-config
             pkgs.udev
             pkgs.alsa-lib
