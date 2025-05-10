@@ -1,7 +1,8 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    systems.url = "github:nix-systems/default-linux";
+    nixpkgs.url = "github:nixos/nixpkgs";
+    systems.url = "github:nix-systems/default";
+    crane.url = "github:ipetkov/crane";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -9,6 +10,10 @@
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -26,97 +31,116 @@
         {
           pkgs,
           lib,
+          system,
           ...
         }:
         let
-          spacerobo = pkgs.stdenv.mkDerivation rec {
-            pname = "spacerobo";
-            version = "0.1.0-dev";
-            src = lib.cleanSource ./.;
-
+          rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+          craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
+          overlays = [ inputs.rust-overlay.overlays.default ];
+          buildInputs = [
+            pkgs.pkg-config
+            pkgs.udev
+            pkgs.alsa-lib
+            pkgs.vulkan-loader
+            pkgs.xorg.libX11
+            pkgs.xorg.libXcursor
+            pkgs.xorg.libXi
+            pkgs.xorg.libXrandr
+            pkgs.libxkbcommon
+            pkgs.wayland
+          ];
+          src = lib.cleanSource ./.;
+          cargoArtifacts = craneLib.buildDepsOnly {
+            inherit src buildInputs;
+          };
+          spacerobo = craneLib.buildPackage {
+            inherit src cargoArtifacts buildInputs;
+            strictDeps = true;
+            doCheck = true;
             nativeBuildInputs = [
-              pkgs.godot_4
-              pkgs.autoPatchelfHook
               pkgs.makeWrapper
             ];
 
-            buildInputs = lib.optionals pkgs.stdenv.isLinux [
-              pkgs.xorg.libX11
-              pkgs.xorg.libXcursor
-              pkgs.xorg.libXext
-              pkgs.xorg.libXinerama
-              pkgs.xorg.libXrandr
-              pkgs.xorg.libXi
-              pkgs.libGL
-              pkgs.systemd
-              pkgs.libxkbcommon
-              pkgs.alsa-lib
-              pkgs.libpulseaudio
-              pkgs.dbus
-              pkgs.fontconfig.lib
-            ];
+            installPhaseCommand = ''
+              # Install commands from:
+              # https://github.com/ipetkov/crane/blob/dfd9a8dfd09db9aad544c4d3b6c47b12562544a5/lib/buildPackage.nix
 
-            buildPhase = ''
-              runHook preBuild
+              echo "actually installing contents of $postBuildInstallFromCargoBuildLogOut to $out"
+              mkdir -p $out
+              find "$postBuildInstallFromCargoBuildLogOut" -mindepth 1 -maxdepth 1 | xargs -r mv -t $out
 
-              # Cannot create directories '/homeless-shelter/.config/godot/projects/...' and '/homeless-shelter/.local/share/godot/export_templates/...'
-              export HOME=$TMPDIR
-
-              # Link the export-templates to the expected location. The --export commands
-              # expects the template-file at .../export_templates/{godot-version}.stable/linux_x11_64_release
-              mkdir -p $HOME/.local/share/godot/export_templates/
-              ln -s ${pkgs.godot_4-export-templates} $HOME/.local/share/godot/export_templates/4.4.1.stable
-
-              mkdir -p $out/share/spacerobo
-
-              # The godot exporting for macOS creates universal binary
-              godot4 --headless --export-debug "${
-                if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system
-              }" $out/share/spacerobo/out
-
-              # Add LD_LIBRARY_PATH in runtime environment
-              wrapProgram $out/share/spacerobo/out \
-                --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath buildInputs}
-
-              runHook postBuild
+              # wrapProgram
+              wrapProgram $out/bin/spacerobo \
+                --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
-
-            installPhase = ''
-              runHook preInstall
-
-              mkdir -p $out/bin
-              ln -s $out/share/spacerobo/out $out/bin/spacerobo
-
-              runHook postInstall
-            '';
-
-            meta = {
-              platforms = [
-                "x86_64-linux"
-                "aarch64-linux"
-                "aarch64-darwin"
-              ];
-            };
+          };
+          cargo-clippy = craneLib.cargoClippy {
+            inherit src cargoArtifacts buildInputs;
+            cargoClippyExtraArgs = "--verbose -- --deny warning";
+          };
+          cargo-doc = craneLib.cargoDoc {
+            inherit src cargoArtifacts buildInputs;
           };
         in
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system overlays;
+          };
+
           treefmt = {
+            projectRootFile = "flake.nix";
+
+            # Nix
             programs.nixfmt.enable = true;
-            programs.gdformat.enable = true;
+
+            # Rust
+            programs.rustfmt.enable = true;
+
+            # TOML
+            programs.taplo.enable = true;
+
+            # GitHub Actions
             programs.actionlint.enable = true;
+
+            # Markdown
             programs.mdformat.enable = true;
+
+            # ShellScript
+            programs.shellcheck.enable = true;
+            programs.shfmt.enable = true;
           };
 
           packages = {
             inherit spacerobo;
             default = spacerobo;
+            doc = cargo-doc;
+          };
+
+          checks = {
+            inherit
+              spacerobo
+              cargo-clippy
+              cargo-doc
+              ;
           };
 
           devShells.default = pkgs.mkShell {
-            packages = [
+            inherit buildInputs;
+
+            nativeBuildInputs = [
+              # Rust
+              rust
+
+              # Nix
               pkgs.nil
-              pkgs.godot_4
             ];
+
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+
+            shellHook = ''
+              export PS1="\n[nix-shell:\w]$ "
+            '';
           };
         };
     };
