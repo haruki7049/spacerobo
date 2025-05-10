@@ -30,20 +30,22 @@
           ...
         }:
         let
-          buildInputs = lib.optionals pkgs.stdenv.isLinux [
-            pkgs.pkg-config
-            pkgs.udev
-            pkgs.alsa-lib
-            pkgs.vulkan-loader
-            pkgs.xorg.libX11
-            pkgs.xorg.libXcursor
-            pkgs.xorg.libXi
-            pkgs.xorg.libXrandr
-            pkgs.libxkbcommon
-            pkgs.wayland
-          ] ++ [
-            pkgs.llvmPackages.libclang.lib
-          ];
+          buildInputs =
+            lib.optionals pkgs.stdenv.isLinux [
+              pkgs.pkg-config
+              pkgs.udev
+              pkgs.alsa-lib
+              pkgs.vulkan-loader
+              pkgs.xorg.libX11
+              pkgs.xorg.libXcursor
+              pkgs.xorg.libXi
+              pkgs.xorg.libXrandr
+              pkgs.libxkbcommon
+              pkgs.wayland
+            ]
+            ++ [
+              pkgs.llvmPackages.libclang.lib
+            ];
           spacerobo = pkgs.rustPlatform.buildRustPackage {
             pname = "spacerobo";
             version = "dev";
