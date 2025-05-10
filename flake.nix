@@ -1,7 +1,7 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    systems.url = "github:nix-systems/default-linux";
+    nixpkgs.url = "github:nixos/nixpkgs";
+    systems.url = "github:nix-systems/default";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -26,85 +26,71 @@
         {
           pkgs,
           lib,
+          system,
           ...
         }:
         let
-          spacerobo = pkgs.stdenv.mkDerivation rec {
+          buildInputs =
+            lib.optionals pkgs.stdenv.isLinux [
+              pkgs.pkg-config
+              pkgs.udev
+              pkgs.alsa-lib
+              pkgs.vulkan-loader
+              pkgs.xorg.libX11
+              pkgs.xorg.libXcursor
+              pkgs.xorg.libXi
+              pkgs.xorg.libXrandr
+              pkgs.libxkbcommon
+              pkgs.wayland
+            ]
+            ++ [
+              pkgs.llvmPackages.libclang.lib
+            ];
+          spacerobo = pkgs.rustPlatform.buildRustPackage {
             pname = "spacerobo";
-            version = "0.1.0-dev";
+            version = "dev";
             src = lib.cleanSource ./.;
 
+            inherit buildInputs;
+
             nativeBuildInputs = [
-              pkgs.godot_4
-              pkgs.autoPatchelfHook
+              pkgs.pkg-config
               pkgs.makeWrapper
             ];
 
-            buildInputs = lib.optionals pkgs.stdenv.isLinux [
-              pkgs.xorg.libX11
-              pkgs.xorg.libXcursor
-              pkgs.xorg.libXext
-              pkgs.xorg.libXinerama
-              pkgs.xorg.libXrandr
-              pkgs.xorg.libXi
-              pkgs.libGL
-              pkgs.systemd
-              pkgs.libxkbcommon
-              pkgs.alsa-lib
-              pkgs.libpulseaudio
-              pkgs.dbus
-              pkgs.fontconfig.lib
-            ];
+            cargoLock.lockFile = ./Cargo.lock;
 
-            buildPhase = ''
-              runHook preBuild
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
-              # Cannot create directories '/homeless-shelter/.config/godot/projects/...' and '/homeless-shelter/.local/share/godot/export_templates/...'
-              export HOME=$TMPDIR
-
-              # Link the export-templates to the expected location. The --export commands
-              # expects the template-file at .../export_templates/{godot-version}.stable/linux_x11_64_release
-              mkdir -p $HOME/.local/share/godot/export_templates/
-              ln -s ${pkgs.godot_4-export-templates} $HOME/.local/share/godot/export_templates/4.4.1.stable
-
-              mkdir -p $out/share/spacerobo
-
-              # The godot exporting for macOS creates universal binary
-              godot4 --headless --export-debug "${
-                if pkgs.stdenv.isDarwin then "macos" else pkgs.stdenv.system
-              }" $out/share/spacerobo/out
-
-              # Add LD_LIBRARY_PATH in runtime environment
-              wrapProgram $out/share/spacerobo/out \
-                --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath buildInputs}
-
-              runHook postBuild
+            postInstall = ''
+              wrapProgram $out/bin/spacerobo \
+                --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
-
-            installPhase = ''
-              runHook preInstall
-
-              mkdir -p $out/bin
-              ln -s $out/share/spacerobo/out $out/bin/spacerobo
-
-              runHook postInstall
-            '';
-
-            meta = {
-              platforms = [
-                "x86_64-linux"
-                "aarch64-linux"
-                "aarch64-darwin"
-              ];
-            };
           };
         in
         {
           treefmt = {
+            projectRootFile = "flake.nix";
+
+            # Nix
             programs.nixfmt.enable = true;
-            programs.gdformat.enable = true;
+
+            # Rust
+            programs.rustfmt.enable = true;
+
+            # TOML
+            programs.taplo.enable = true;
+
+            # GitHub Actions
             programs.actionlint.enable = true;
+
+            # Markdown
             programs.mdformat.enable = true;
+
+            # ShellScript
+            programs.shellcheck.enable = true;
+            programs.shfmt.enable = true;
           };
 
           packages = {
@@ -113,10 +99,25 @@
           };
 
           devShells.default = pkgs.mkShell {
-            packages = [
+            inherit buildInputs;
+
+            nativeBuildInputs = [
+              # Rust
+              pkgs.rustc
+              pkgs.cargo
+              pkgs.rustfmt
+              pkgs.rust-analyzer
+
+              # Nix
               pkgs.nil
-              pkgs.godot_4
             ];
+
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+
+            shellHook = ''
+              export PS1="\n[nix-shell:\w]$ "
+            '';
           };
         };
     };
