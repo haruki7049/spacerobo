@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
+    crane.url = "github:ipetkov/crane";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -9,6 +10,10 @@
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -30,6 +35,10 @@
           ...
         }:
         let
+          rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+          craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
+          overlays = [ inputs.rust-overlay.overlays.default ];
+          src = lib.cleanSource ./.;
           buildInputs =
             lib.optionals pkgs.stdenv.isLinux [
               pkgs.pkg-config
@@ -64,25 +73,57 @@
             pkgs.llvmPackages.clang
             pkgs.llvmPackages.lld
           ];
-          spacerobo = pkgs.rustPlatform.buildRustPackage {
-            pname = "spacerobo";
-            version = "dev";
-            src = lib.cleanSource ./.;
+          cargoArtifacts = craneLib.buildDepsOnly {
+            inherit src buildInputs nativeBuildInputs;
 
-            inherit buildInputs nativeBuildInputs;
-
-            cargoLock.lockFile = ./Cargo.lock;
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+          };
+          spacerobo = craneLib.buildPackage {
+            inherit
+              src
+              cargoArtifacts
+              buildInputs
+              nativeBuildInputs
+              ;
+            strictDeps = true;
+            doCheck = true;
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
-            postInstall = ''
+            installPhaseCommand = ''
+              echo "actually installing contents of $postBuildInstallFromCargoBuildLogOut to $out"
+              mkdir -p $out
+              find "$postBuildInstallFromCargoBuildLogOut" -mindepth 1 -maxdepth 1 | xargs -r mv -t $out
+
               wrapProgram $out/bin/spacerobo \
                 --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
           };
+          cargo-clippy = craneLib.cargoClippy {
+            inherit
+              src
+              cargoArtifacts
+              buildInputs
+              nativeBuildInputs
+              ;
+            cargoClippyExtraArgs = "--verbose -- --deny warning";
+          };
+          cargo-doc = craneLib.cargoDoc {
+            inherit
+              src
+              cargoArtifacts
+              buildInputs
+              nativeBuildInputs
+              ;
+          };
         in
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system overlays;
+          };
+
           treefmt = {
             projectRootFile = "flake.nix";
 
@@ -109,6 +150,11 @@
           packages = {
             inherit spacerobo;
             default = spacerobo;
+            doc = cargo-doc;
+          };
+
+          checks = {
+            inherit cargo-clippy;
           };
 
           devShells.default = pkgs.mkShell {
