@@ -46,17 +46,30 @@
             ++ [
               pkgs.llvmPackages.libclang.lib
             ];
+          nativeBuildInputs = [
+            # Build tools
+            pkgs.pkg-config
+            pkgs.makeWrapper
+
+            # Rust
+            pkgs.rustc
+            pkgs.cargo
+            pkgs.rustfmt
+            pkgs.rust-analyzer
+
+            # Nix
+            pkgs.nil
+
+            # Linker
+            pkgs.llvmPackages.clang
+            pkgs.llvmPackages.lld
+          ];
           spacerobo = pkgs.rustPlatform.buildRustPackage {
             pname = "spacerobo";
             version = "dev";
             src = lib.cleanSource ./.;
 
-            inherit buildInputs;
-
-            nativeBuildInputs = [
-              pkgs.pkg-config
-              pkgs.makeWrapper
-            ];
+            inherit buildInputs nativeBuildInputs;
 
             cargoLock.lockFile = ./Cargo.lock;
 
@@ -99,18 +112,7 @@
           };
 
           devShells.default = pkgs.mkShell {
-            inherit buildInputs;
-
-            nativeBuildInputs = [
-              # Rust
-              pkgs.rustc
-              pkgs.cargo
-              pkgs.rustfmt
-              pkgs.rust-analyzer
-
-              # Nix
-              pkgs.nil
-            ];
+            inherit buildInputs nativeBuildInputs;
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
