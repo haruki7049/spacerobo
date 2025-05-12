@@ -106,6 +106,9 @@
               nativeBuildInputs
               ;
             cargoClippyExtraArgs = "--verbose -- --deny warning";
+
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
           };
           cargo-doc = craneLib.cargoDoc {
             inherit
@@ -114,6 +117,9 @@
               buildInputs
               nativeBuildInputs
               ;
+
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
           };
         in
         {
