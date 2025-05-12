@@ -61,10 +61,7 @@
             pkgs.makeWrapper
 
             # Rust
-            pkgs.rustc
-            pkgs.cargo
-            pkgs.rustfmt
-            pkgs.rust-analyzer
+            rust
 
             # Nix
             pkgs.nil
