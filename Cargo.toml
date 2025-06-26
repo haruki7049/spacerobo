@@ -10,5 +10,5 @@ repository = "https://github.com/haruki7049/spacerobo"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.16.0"
-clap = { version = "4.5.37", features = ["derive"] }
+bevy = "0.16.1"
+#clap = { version = "4.5.37", features = ["derive"] }
