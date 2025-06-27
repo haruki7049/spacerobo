@@ -20,7 +20,7 @@ pub fn setup(mut commands: Commands) {
 pub fn keyboard_mouse_system(
     mut angular_query: Query<&mut AngularVelocity, With<Player>>,
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
-    key_input: Res<ButtonInput<KeyCode>>,
+    keyboard: Res<ButtonInput<KeyCode>>,
 ) {
     if accumulated_mouse_motion.delta != Vec2::ZERO {
         let delta = accumulated_mouse_motion.delta;
@@ -35,7 +35,7 @@ pub fn keyboard_mouse_system(
     }
 
     // Hovering
-    if key_input.just_pressed(KeyCode::KeyH) {
+    if keyboard.just_pressed(KeyCode::KeyH) {
         for mut angular_velocity in &mut angular_query {
             angular_velocity.z = 0.;
             angular_velocity.y = 0.;
