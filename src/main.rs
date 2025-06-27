@@ -1,88 +1,82 @@
+use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::BLACK,
     color::palettes::basic::SILVER,
     prelude::*,
 };
 
-
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins((
+            DefaultPlugins,
+            PhysicsPlugins::default(),
+        ))
+        .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .add_systems(Startup, setup)
-        .add_systems(Update, window_controls)
-        .add_systems(Update, rotate_light)
+        .add_systems(Update, accelerate_angular)
         .run();
 }
 
 #[derive(Component)]
-struct Shape;
+struct Cube;
 
 fn setup(
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
 ) {
-    let extrusions = [
-        meshes.add(Extrusion::new(Triangle2d::default(), 1.)),
-    ];
+    // Spawn ground and generate a collider for the mesh using ColliderConstructor
+    commands.spawn((
+        Mesh3d(meshes.add(Plane3d::default().mesh().size(8.0, 8.0))),
+        MeshMaterial3d(materials.add(Color::from(SILVER))),
+        ColliderConstructor::TrimeshFromMesh,
+        RigidBody::Static,
+    ));
 
-    for shape in extrusions.into_iter() {
-        commands.spawn((
-            Mesh3d(shape),
-            MeshMaterial3d(materials.add(Color::from(BLACK))),
-            Transform::from_xyz(0.0, 2.0, 0.0),
-            Shape,
-        ));
-    }
+    commands.spawn((
+        Mesh3d(meshes.add(Cuboid::default())),
+        MeshMaterial3d(materials.add(Color::from(BLACK))),
+        Transform::from_xyz(0.0, 2.0, 0.0),
+
+        // RigidBody
+        RigidBody::Dynamic,
+        GravityScale(0.2),
+
+        // Collider
+        Collider::cuboid(1.0, 1.0, 1.0),
+
+        // Velocity
+        AngularVelocity(Vec3::ZERO),
+
+        Cube,
+    ));
 
     // Light
     commands.spawn((
         PointLight {
+            intensity: 1_000_000.0,
             shadows_enabled: true,
-            intensity: 10_000_000.,
-            range: 100.0,
-            shadow_depth_bias: 0.2,
             ..default()
         },
-        Transform::from_xyz(8.0, 16.0, 8.0),
-    ));
-
-    // Ground plane
-    commands.spawn((
-        Mesh3d(meshes.add(Plane3d::default().mesh().size(50.0, 50.0).subdivisions(10))),
-        MeshMaterial3d(materials.add(Color::from(SILVER))),
+        Transform::from_xyz(2.0, 8.0, 2.0),
     ));
 
     // Camera
     commands.spawn((
         Camera3d::default(),
-        Transform::from_xyz(0.0, 7., 14.0).looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
+        Transform::from_xyz(-5.0, 3.5, 5.5).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 }
 
-fn window_controls(
-    mut commands: Commands,
-    focused_windows: Query<(Entity, &Window)>,
-    input: Res<ButtonInput<KeyCode>>,
+fn accelerate_angular(
+    mut query: Query<&mut AngularVelocity, With<Cube>>,
+    keyboard: Res<ButtonInput<KeyCode>>,
 ) {
-    for (window, focus) in focused_windows.iter() {
-        if !focus.focused {
-            continue;
+    if keyboard.just_pressed(KeyCode::Space) {
+        for mut angular_velocity in &mut query {
+            angular_velocity.x += 0.5;
+            angular_velocity.y += 0.5;
+            angular_velocity.z += 0.5;
         }
-
-        if input.just_pressed(KeyCode::Escape) {
-            commands.entity(window).despawn();
-        }
-    }
-}
-
-fn rotate_light(
-    mut query: Query<&mut Transform, With<Shape>>,
-    time: Res<Time>,
-) {
-    for mut transform in &mut query {
-        transform.rotate_x(time.delta_secs());
-        transform.rotate_y(time.delta_secs());
-        transform.rotate_z(time.delta_secs());
     }
 }
