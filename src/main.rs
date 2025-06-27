@@ -1,16 +1,9 @@
 use avian3d::prelude::*;
-use bevy::{
-    color::palettes::basic::BLACK,
-    color::palettes::basic::SILVER,
-    prelude::*,
-};
+use bevy::{color::palettes::basic::BLACK, color::palettes::basic::SILVER, prelude::*};
 
 fn main() {
     App::new()
-        .add_plugins((
-            DefaultPlugins,
-            PhysicsPlugins::default(),
-        ))
+        .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .add_systems(Startup, setup)
         .add_systems(Update, accelerate_angular)
@@ -37,17 +30,13 @@ fn setup(
         Mesh3d(meshes.add(Cuboid::default())),
         MeshMaterial3d(materials.add(Color::from(BLACK))),
         Transform::from_xyz(0.0, 2.0, 0.0),
-
         // RigidBody
         RigidBody::Dynamic,
         GravityScale(0.2),
-
         // Collider
         Collider::cuboid(1.0, 1.0, 1.0),
-
         // Velocity
         AngularVelocity(Vec3::ZERO),
-
         Cube,
     ));
 
