@@ -105,7 +105,7 @@
               buildInputs
               nativeBuildInputs
               ;
-            cargoClippyExtraArgs = "--verbose -- --deny warning";
+            cargoClippyExtraArgs = "--verbose -- --deny warnings";
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
