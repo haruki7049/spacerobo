@@ -31,10 +31,10 @@ pub fn controller_system(
         info!("{} left_stick: {}", entity, left_stick);
 
         for mut angular_velocity in &mut angular_query {
-            let velocity_x = right_stick.x / 3.;
-            let velocity_y = right_stick.y / 3.;
+            let velocity_z = (right_stick.x * -1.0) / 3.;
+            let velocity_y = (right_stick.y * -1.0) / 3.;
 
-            angular_velocity.x += velocity_x;
+            angular_velocity.z += velocity_z;
             angular_velocity.y += velocity_y;
         }
     }
