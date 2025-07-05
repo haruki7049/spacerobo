@@ -1,7 +1,10 @@
 #![allow(clippy::type_complexity)]
 
 use avian3d::prelude::*;
-use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
+use bevy::{
+    prelude::*,
+    input::mouse::AccumulatedMouseMotion,
+};
 
 #[derive(Component)]
 pub struct Player;
@@ -12,7 +15,9 @@ pub struct HeadingIndicator;
 #[derive(Component)]
 pub struct CoordinatesIndicator;
 
-pub fn setup(mut commands: Commands) {
+pub fn setup(
+    mut commands: Commands,
+) {
     // Camera
     commands.spawn((
         Camera3d::default(),
@@ -213,7 +218,7 @@ pub fn ui_system(
 }
 
 pub fn controller_system(
-    mut angular_query: Query<&mut AngularVelocity, With<Player>>,
+    mut query: Query<(&mut Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
     gamepads: Query<(Entity, &Gamepad)>,
 ) {
     for (entity, gamepad) in &gamepads {
@@ -223,12 +228,43 @@ pub fn controller_system(
         debug!("{} right_stick: {}", entity, right_stick);
         debug!("{} left_stick: {}", entity, left_stick);
 
-        for mut angular_velocity in &mut angular_query {
-            let velocity_z = (right_stick.x * -1.0) / 3.;
-            let velocity_y = (right_stick.y * -1.0) / 3.;
+        for (transform, mut angular, mut _linear) in &mut query {
+            let rotation: Quat = transform.rotation;
 
-            angular_velocity.z += velocity_z;
-            angular_velocity.y += velocity_y;
+            let mut velocity: Vec3 = Vec3::ZERO;
+
+            // RightStick X
+            {
+                let direction: Vec3 = rotation * Vec3::Y;
+
+                // [X, 0, 0] * [0, Y, 0] => Z
+                let x_result: f32 = right_stick.x * direction.x;
+                let y_result: f32 = right_stick.x * direction.y;
+                let z_result: f32 = right_stick.x * direction.z;
+
+                velocity.x += x_result;
+                velocity.y += y_result;
+                velocity.z += z_result;
+            }
+
+            // RightStick Y
+            {
+                let direction: Vec3 = rotation * Vec3::X;
+
+                // [X, 0, 0] * [0, Y, 0] => Z
+                let x_result: f32 = right_stick.y * direction.x;
+                let y_result: f32 = right_stick.y * direction.y;
+                let z_result: f32 = right_stick.y * direction.z;
+
+                velocity.x += x_result;
+                velocity.y += y_result;
+                velocity.z += z_result;
+            }
+
+            angular.x += velocity.x;
+            angular.y += velocity.y;
+            angular.z += velocity.z;
+
         }
     }
 }

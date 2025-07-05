@@ -1,7 +1,7 @@
 use avian3d::prelude::*;
 use bevy::{
-    color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
     prelude::*,
+    color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
     render::{
         render_asset::RenderAssetUsages,
         render_resource::{Extent3d, TextureDimension, TextureFormat},
@@ -15,7 +15,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Startup, spacerobo::player::setup)
         .add_systems(Update, spacerobo::player::ui_system)
-        .add_systems(Update, spacerobo::player::keyboard_mouse_system)
+        .add_systems(Update, (spacerobo::player::keyboard_mouse_system, spacerobo::player::controller_system))
         .run();
 }
 
@@ -25,20 +25,15 @@ fn setup(
     mut images: ResMut<Assets<Image>>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
-    let debug_material = materials.add(StandardMaterial {
-        base_color_texture: Some(images.add(uv_debug_texture())),
-        ..default()
-    });
-
-    // 簡易スカイボックス（大きな球体を裏返して使用）
-    commands.spawn((
-        Mesh3d(meshes.add(Sphere::default().mesh().ico(5).unwrap())),
-        MeshMaterial3d(debug_material.clone()),
-        Transform::default().with_scale(Vec3::splat(-1000.0)),
-    ));
-
     // Light
     commands.spawn((
+        EnvironmentMapLight {
+            diffuse_map: images.add(uv_debug_texture()),
+            specular_map: images.add(uv_debug_texture()),
+            intensity: 5.0,
+            rotation: Quat::NAN,
+            affects_lightmapped_mesh_diffuse: false,
+        },
         PointLight {
             intensity: 1_000_000.0,
             shadows_enabled: true,
