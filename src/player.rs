@@ -1,10 +1,7 @@
 #![allow(clippy::type_complexity)]
 
 use avian3d::prelude::*;
-use bevy::{
-    prelude::*,
-    input::mouse::AccumulatedMouseMotion,
-};
+use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 #[derive(Component)]
 pub struct Player;
@@ -15,9 +12,7 @@ pub struct HeadingIndicator;
 #[derive(Component)]
 pub struct CoordinatesIndicator;
 
-pub fn setup(
-    mut commands: Commands,
-) {
+pub fn setup(mut commands: Commands) {
     // Camera
     commands.spawn((
         Camera3d::default(),
@@ -75,7 +70,6 @@ pub fn keyboard_mouse_system(
                 let direction: Vec3 = rotation * Vec3::Y;
                 // dbg!(direction);
 
-                // [X, 0, 0] * [0, Y, 0] => Z
                 let x_result: f32 = mouse.x * direction.x;
                 let y_result: f32 = mouse.x * direction.y;
                 let z_result: f32 = mouse.x * direction.z;
@@ -92,7 +86,6 @@ pub fn keyboard_mouse_system(
                 let direction: Vec3 = rotation * Vec3::X;
                 // dbg!(direction);
 
-                // [X, 0, 0] * [0, Y, 0] => Z
                 let x_result: f32 = mouse.y * direction.x;
                 let y_result: f32 = mouse.y * direction.y;
                 let z_result: f32 = mouse.y * direction.z;
@@ -228,19 +221,60 @@ pub fn controller_system(
         debug!("{} right_stick: {}", entity, right_stick);
         debug!("{} left_stick: {}", entity, left_stick);
 
+        // Hovering
+        if gamepad.just_pressed(GamepadButton::DPadDown) {
+            for (_transform, mut angular, mut linear) in &mut query {
+                angular.0 = Vec3::ZERO;
+                linear.0 = Vec3::ZERO;
+            }
+        }
+
+        // Moving
+        for (transform, _angular, mut linear) in &mut query {
+            let rotation: Quat = transform.rotation;
+            let mut velocity: Vec3 = Vec3::ZERO;
+
+            // LeftStick X
+            if left_stick.x.abs() > 0.1 {
+                let direction: Vec3 = rotation * Vec3::X;
+
+                let x_result: f32 = left_stick.x * direction.x;
+                let y_result: f32 = left_stick.x * direction.y;
+                let z_result: f32 = left_stick.x * direction.z;
+
+                velocity.x += x_result;
+                velocity.y += y_result;
+                velocity.z += z_result;
+            }
+
+            // LeftStick Y
+            if left_stick.y.abs() > 0.1 {
+                let direction: Vec3 = rotation * Vec3::NEG_Z;
+
+                let x_result: f32 = left_stick.y * direction.x;
+                let y_result: f32 = left_stick.y * direction.y;
+                let z_result: f32 = left_stick.y * direction.z;
+
+                velocity.x += x_result;
+                velocity.y += y_result;
+                velocity.z += z_result;
+            }
+
+            linear.0 += velocity;
+        }
+
         for (transform, mut angular, mut _linear) in &mut query {
             let rotation: Quat = transform.rotation;
 
             let mut velocity: Vec3 = Vec3::ZERO;
 
             // RightStick X
-            {
+            if right_stick.x.abs() > 0.1 {
                 let direction: Vec3 = rotation * Vec3::Y;
 
-                // [X, 0, 0] * [0, Y, 0] => Z
-                let x_result: f32 = right_stick.x * direction.x;
-                let y_result: f32 = right_stick.x * direction.y;
-                let z_result: f32 = right_stick.x * direction.z;
+                let x_result: f32 = -right_stick.x * direction.x;
+                let y_result: f32 = -right_stick.x * direction.y;
+                let z_result: f32 = -right_stick.x * direction.z;
 
                 velocity.x += x_result;
                 velocity.y += y_result;
@@ -248,10 +282,9 @@ pub fn controller_system(
             }
 
             // RightStick Y
-            {
+            if right_stick.y.abs() > 0.1 {
                 let direction: Vec3 = rotation * Vec3::X;
 
-                // [X, 0, 0] * [0, Y, 0] => Z
                 let x_result: f32 = right_stick.y * direction.x;
                 let y_result: f32 = right_stick.y * direction.y;
                 let z_result: f32 = right_stick.y * direction.z;
@@ -264,7 +297,6 @@ pub fn controller_system(
             angular.x += velocity.x;
             angular.y += velocity.y;
             angular.z += velocity.z;
-
         }
     }
 }
