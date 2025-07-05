@@ -1,6 +1,6 @@
 use avian3d::prelude::*;
 use bevy::{
-    color::palettes::basic::SILVER,
+    color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
     prelude::*,
     render::{
         render_asset::RenderAssetUsages,
@@ -29,14 +29,6 @@ fn setup(
         ..default()
     });
 
-    // Spawn ground and generate a collider for the mesh using ColliderConstructor
-    commands.spawn((
-        Mesh3d(meshes.add(Plane3d::default().mesh().size(8.0, 8.0))),
-        MeshMaterial3d(materials.add(Color::from(SILVER))),
-        ColliderConstructor::TrimeshFromMesh,
-        RigidBody::Static,
-    ));
-
     // 簡易スカイボックス（大きな球体を裏返して使用）
     commands.spawn((
         Mesh3d(meshes.add(Sphere::default().mesh().ico(5).unwrap())),
@@ -52,6 +44,61 @@ fn setup(
             ..default()
         },
         Transform::from_xyz(2.0, 8.0, 2.0),
+    ));
+
+    // stones to distinguish directories
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: RED.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(1.0, 0.0, 0.0),
+    ));
+
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: BLUE.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(0.0, 1.0, 0.0),
+    ));
+
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: GREEN.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(-1.0, 0.0, 0.0),
+    ));
+
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: YELLOW.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(0.0, -1.0, 0.0),
+    ));
+
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: SILVER.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(0.0, 0.0, 1.0),
+    ));
+
+    commands.spawn((
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: BLACK.into(),
+            ..Default::default()
+        })),
+        Transform::from_xyz(0.0, 0.0, -1.0),
     ));
 }
 
