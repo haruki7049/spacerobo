@@ -39,51 +39,36 @@ pub fn keyboard_mouse_system(
 
             // Mouse X
             {
-                let a: Vec3 = rotation * Vec3::X;
-                let b: Vec3 = rotation * Vec3::Z;
+                let direction: Vec3 = rotation * Vec3::Y;
+                dbg!(direction);
 
-                let y_result: f32 = mouse.x * a.cross(b).y;
+                // [X, 0, 0] * [0, Y, 0] => Z
+                let x_result: f32 = mouse.x * direction.x;
+                let y_result: f32 = mouse.x * direction.y;
+                let z_result: f32 = mouse.x * direction.z;
 
+                velocity.x += x_result;
                 velocity.y += y_result;
-            }
+                velocity.z += z_result;
 
-            {
-                let a: Vec3 = rotation * Vec3::Y;
-                let b: Vec3 = rotation * Vec3::Z;
-
-                let y_result: f32 = mouse.x * a.cross(b).y;
-
-                velocity.y += y_result;
+                dbg!(velocity);
             }
 
             // Mouse Y
-            // {
-            //     let a: Vec3 = rotation * Vec3::X;
-            //     let b: Vec3 = rotation * Vec3::Z;
-
-            //     let x_result: f32 = mouse.y * a.cross(b).x;
-
-            //     velocity.x += x_result;
-            // }
-
             {
-                let a: Vec3 = rotation * Vec3::Y;
-                let b: Vec3 = rotation * Vec3::Z;
+                let direction: Vec3 = rotation * Vec3::X;
+                dbg!(direction);
 
-                let x_result: f32 = mouse.y * a.cross(b).x;
-                info!("x_result: {}", &x_result);
+                // [X, 0, 0] * [0, Y, 0] => Z
+                let x_result: f32 = mouse.y * direction.x;
+                let y_result: f32 = mouse.y * direction.y;
+                let z_result: f32 = mouse.y * direction.z;
 
                 velocity.x += x_result;
-            }
+                velocity.y += y_result;
+                velocity.z += z_result;
 
-            {
-                let a: Vec3 = rotation * Vec3::X;
-                let b: Vec3 = rotation * Vec3::Y;
-
-                let x_result: f32 = mouse.y * a.cross(b).x;
-                info!("x_result: {}", &x_result);
-
-                velocity.x += x_result;
+                dbg!(velocity);
             }
 
             angular.x += velocity.x;
