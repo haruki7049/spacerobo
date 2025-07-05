@@ -1,3 +1,5 @@
+#![allow(clippy::type_complexity)]
+
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
