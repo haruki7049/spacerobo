@@ -1,7 +1,7 @@
 use avian3d::prelude::*;
 use bevy::{
-    prelude::*,
     color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
+    prelude::*,
     render::{
         render_asset::RenderAssetUsages,
         render_resource::{Extent3d, TextureDimension, TextureFormat},
@@ -15,7 +15,13 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Startup, spacerobo::player::setup)
         .add_systems(Update, spacerobo::player::ui_system)
-        .add_systems(Update, (spacerobo::player::keyboard_mouse_system, spacerobo::player::controller_system))
+        .add_systems(
+            Update,
+            (
+                spacerobo::player::keyboard_mouse_system,
+                spacerobo::player::controller_system,
+            ),
+        )
         .run();
 }
 
