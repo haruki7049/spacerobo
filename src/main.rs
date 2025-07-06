@@ -8,18 +8,32 @@ use bevy::{
     },
 };
 use clap::Parser;
+use serde::{Deserialize, Serialize};
 use spacerobo::player;
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[clap(version, author, about)]
-struct CLIArgs {}
+struct CLIArgs {
+    config: Option<PathBuf>,
+}
+
+#[derive(Resource, Serialize, Deserialize, Default)]
+pub struct GameSettings {}
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let _args: CLIArgs = CLIArgs::parse();
+    let args: CLIArgs = CLIArgs::parse();
+
+    let settings_path: PathBuf = args.config.unwrap_or_else(|| {
+        confy::get_configuration_file_path("spacerobo", "config")
+            .expect("Failed to get path for spacerobo")
+    });
+    let settings: GameSettings = confy::load_path(&settings_path)?;
 
     App::new()
         .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
+        .insert_resource(settings)
         .add_systems(Startup, setup)
         .add_systems(Startup, player::setup)
         .add_systems(
