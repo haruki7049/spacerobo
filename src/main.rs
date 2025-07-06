@@ -8,6 +8,7 @@ use bevy::{
     },
 };
 use clap::Parser;
+use spacerobo::player;
 
 #[derive(Parser)]
 #[clap(version, author, about)]
@@ -20,13 +21,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .add_systems(Startup, setup)
-        .add_systems(Startup, spacerobo::player::setup)
-        .add_systems(Update, spacerobo::player::ui_system)
+        .add_systems(Startup, player::setup)
         .add_systems(
             Update,
             (
-                spacerobo::player::keyboard_mouse_system,
-                spacerobo::player::controller_system,
+                player::keyboard_mouse_system,
+                player::controller_system,
+                player::ui_system,
             ),
         )
         .run();
