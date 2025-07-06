@@ -219,6 +219,12 @@ pub fn ui_system(
     }
 }
 
+pub fn exit_system(mut exit: EventWriter<AppExit>, keyboard: Res<ButtonInput<KeyCode>>) {
+    if keyboard.just_pressed(KeyCode::Escape) {
+        exit.write(AppExit::Success);
+    }
+}
+
 pub fn controller_system(
     mut query: Query<(&mut Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
     gamepads: Query<(Entity, &Gamepad)>,

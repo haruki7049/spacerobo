@@ -6,6 +6,7 @@ use bevy::{
         render_asset::RenderAssetUsages,
         render_resource::{Extent3d, TextureDimension, TextureFormat},
     },
+    window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -31,7 +32,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let settings: GameSettings = confy::load_path(&settings_path)?;
 
     App::new()
-        .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
+        .add_plugins((
+            DefaultPlugins.set(WindowPlugin {
+                primary_window: Some(Window {
+                    cursor_options: CursorOptions {
+                        visible: false,
+                        grab_mode: if cfg!(target_os = "macos") {
+                            CursorGrabMode::Locked
+                        } else {
+                            CursorGrabMode::Confined
+                        },
+                        ..default()
+                    },
+                    title: format!("spacerobo {}", env!("CARGO_PKG_VERSION")),
+                    ..default()
+                }),
+                ..default()
+            }),
+            PhysicsPlugins::default(),
+        ))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(settings)
         .add_systems(Startup, setup)
@@ -42,6 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::keyboard_mouse_system,
                 player::controller_system,
                 player::ui_system,
+                player::exit_system,
             ),
         )
         .run();
