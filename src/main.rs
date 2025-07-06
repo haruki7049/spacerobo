@@ -7,8 +7,15 @@ use bevy::{
         render_resource::{Extent3d, TextureDimension, TextureFormat},
     },
 };
+use clap::Parser;
 
-fn main() {
+#[derive(Parser)]
+#[clap(version, author, about)]
+struct CLIArgs {}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let _args: CLIArgs = CLIArgs::parse();
+
     App::new()
         .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
@@ -23,6 +30,8 @@ fn main() {
             ),
         )
         .run();
+
+    Ok(())
 }
 
 fn setup(
@@ -55,7 +64,7 @@ fn setup(
             base_color: RED.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(1.0, 0.0, 0.0),
+        Transform::from_xyz(10.0, 0.0, 0.0),
     ));
 
     commands.spawn((
@@ -64,7 +73,7 @@ fn setup(
             base_color: BLUE.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(0.0, 1.0, 0.0),
+        Transform::from_xyz(0.0, 10.0, 0.0),
     ));
 
     commands.spawn((
@@ -73,7 +82,7 @@ fn setup(
             base_color: GREEN.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(-1.0, 0.0, 0.0),
+        Transform::from_xyz(-10.0, 0.0, 0.0),
     ));
 
     commands.spawn((
@@ -82,7 +91,7 @@ fn setup(
             base_color: YELLOW.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(0.0, -1.0, 0.0),
+        Transform::from_xyz(0.0, -10.0, 0.0),
     ));
 
     commands.spawn((
@@ -91,7 +100,7 @@ fn setup(
             base_color: SILVER.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(0.0, 0.0, 1.0),
+        Transform::from_xyz(0.0, 0.0, 10.0),
     ));
 
     commands.spawn((
@@ -100,7 +109,7 @@ fn setup(
             base_color: BLACK.into(),
             ..Default::default()
         })),
-        Transform::from_xyz(0.0, 0.0, -1.0),
+        Transform::from_xyz(0.0, 0.0, -10.0),
     ));
 }
 

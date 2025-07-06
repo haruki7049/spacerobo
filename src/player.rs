@@ -7,25 +7,34 @@ use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 pub struct Player;
 
 #[derive(Component)]
+pub struct Gun;
+
+#[derive(Component)]
 pub struct HeadingIndicator;
 
 #[derive(Component)]
 pub struct CoordinatesIndicator;
 
-pub fn setup(mut commands: Commands) {
+pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // Camera
-    commands.spawn((
-        Camera3d::default(),
-        // Transform::from_xyz(0., 0., 0.),
-        // Transform::from_xyz(0., 0., 0.).looking_at(Vec3::Y, Dir3::Y),
-        // Transform::from_xyz(0., 0., 0.).looking_at(Vec3::Y, Dir3::X),
-        Transform::from_xyz(0., 0., 0.).looking_at(Vec3::Y, Dir3::NEG_X),
-        RigidBody::Dynamic,
-        GravityScale(0.2),
-        Collider::sphere(1.0),
-        AngularVelocity(Vec3::ZERO),
-        Player,
-    ));
+    commands
+        .spawn((
+            Camera3d::default(),
+            Transform::from_xyz(0., 0., 0.),
+            RigidBody::Dynamic,
+            GravityScale(0.2),
+            Collider::sphere(1.0),
+            AngularVelocity(Vec3::ZERO),
+            Player,
+        ))
+        .with_child((
+            Transform::from_xyz(1., -1., -3.).looking_to(Dir3::NEG_X, Dir3::Y),
+            SceneRoot(
+                asset_server
+                    .load(GltfAssetLabel::Scene(0).from_asset("models/hand-guns/default.glb")),
+            ),
+            Gun,
+        ));
 
     // Heading Indicator
     commands
