@@ -22,6 +22,9 @@ struct CLIArgs {
 #[derive(Resource, Serialize, Deserialize, Default)]
 pub struct GameSettings {}
 
+#[derive(Component)]
+pub struct Target;
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
 
@@ -62,6 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::controller_system,
                 player::ui_system,
                 player::exit_system,
+                player::gun_hit_detection_system,
             ),
         )
         .run();
@@ -92,7 +96,7 @@ fn setup(
         Transform::from_xyz(2.0, 8.0, 2.0),
     ));
 
-    // stones to distinguish directories
+    // Targets
     commands.spawn((
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
@@ -100,6 +104,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(10.0, 0.0, 0.0),
+        Target,
     ));
 
     commands.spawn((
@@ -109,6 +114,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 10.0, 0.0),
+        Target,
     ));
 
     commands.spawn((
@@ -118,6 +124,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(-10.0, 0.0, 0.0),
+        Target,
     ));
 
     commands.spawn((
@@ -127,6 +134,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, -10.0, 0.0),
+        Target,
     ));
 
     commands.spawn((
@@ -136,6 +144,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 0.0, 10.0),
+        Target,
     ));
 
     commands.spawn((
@@ -145,6 +154,7 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 0.0, -10.0),
+        Target,
     ));
 }
 

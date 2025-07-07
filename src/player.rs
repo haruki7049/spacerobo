@@ -1,7 +1,7 @@
 #![allow(clippy::type_complexity)]
 
 use avian3d::prelude::*;
-use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
+use bevy::{color::palettes::basic::NAVY, input::mouse::AccumulatedMouseMotion, prelude::*};
 
 #[derive(Component)]
 pub struct Player;
@@ -15,7 +15,12 @@ pub struct HeadingIndicator;
 #[derive(Component)]
 pub struct CoordinatesIndicator;
 
-pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     // Camera
     commands
         .spawn((
@@ -27,12 +32,11 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             AngularVelocity(Vec3::ZERO),
             Player,
         ))
+        // Gun
         .with_child((
-            Transform::from_xyz(1., -1., -3.).looking_to(Dir3::NEG_X, Dir3::Y),
-            SceneRoot(
-                asset_server
-                    .load(GltfAssetLabel::Scene(0).from_asset("models/hand-guns/default.glb")),
-            ),
+            Transform::from_xyz(1., -1., -3.).looking_to(Dir3::Z, Dir3::Y),
+            Mesh3d(meshes.add(Extrusion::new(Circle::new(0.25), 2.))),
+            MeshMaterial3d(materials.add(Color::BLACK)),
             Gun,
         ));
 
@@ -313,5 +317,29 @@ pub fn controller_system(
             angular.y += velocity.y;
             angular.z += velocity.z;
         }
+    }
+}
+
+pub fn gun_hit_detection_system(
+    mut commands: Commands,
+    mut ray_cast: MeshRayCast,
+    gun: Query<&Transform, With<Gun>>,
+    mouse: Res<ButtonInput<MouseButton>>,
+) {
+    if mouse.just_pressed(MouseButton::Left) {
+        info!("Mouse Left clicked");
+
+        let Ok(transform) = gun.single() else {
+            return;
+        };
+        let ray: Ray3d = Ray3d::new(transform.translation + Vec3::new(3.0, 0.0, 0.0), Dir3::X);
+        let Some((entity, _)) = ray_cast
+            .cast_ray(ray, &MeshRayCastSettings::default())
+            .first()
+        else {
+            return;
+        };
+
+        commands.entity(*entity).despawn();
     }
 }
