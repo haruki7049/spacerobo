@@ -335,14 +335,14 @@ pub fn gun_shoot_system(
     mouse: Res<ButtonInput<MouseButton>>,
 ) {
     if mouse.just_pressed(MouseButton::Left) {
-        info!("Mouse Left clicked");
+        debug!("Mouse Left clicked");
 
         let global_transform = muzzle.single().unwrap();
         let bullet_origin: Vec3 = global_transform.translation();
 
         let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
         let bullet_force: Vec3 = direction * 10000.0;
-        info!("bullet_force: {}", bullet_force);
+        debug!("bullet_force: {}", bullet_force);
 
         // ray_origin debugging by spawning a sphere
         commands.spawn((
@@ -367,25 +367,25 @@ pub fn gun_hit_detection_system(
     targets: Query<Entity, With<Target>>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
-        info!("Collision!!");
+        debug!("Collision!!");
 
         match targets.get(*entity1) {
             Ok(entity) => {
                 commands.entity(entity).despawn();
-                info!("Despawned the target");
+                debug!("Despawned the target");
             }
             Err(e) => {
-                info!("Error by collision: {}", e);
+                debug!("Error by collision: {}", e);
             }
         }
 
         match targets.get(*entity2) {
             Ok(entity) => {
                 commands.entity(entity).despawn();
-                info!("Despawned the target");
+                debug!("Despawned the target");
             }
             Err(e) => {
-                info!("Error by collision: {}", e);
+                debug!("Error by collision: {}", e);
             }
         }
     }
