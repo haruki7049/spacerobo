@@ -1,8 +1,5 @@
 use crate::{player::Player, target::Target};
-use bevy::{
-    prelude::*,
-    ecs::query::QuerySingleError,
-};
+use bevy::prelude::*;
 use std::time::Duration;
 
 #[derive(Component)]
