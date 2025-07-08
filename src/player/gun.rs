@@ -25,7 +25,7 @@ pub fn gun_shoot_system(
         let bullet_origin: Vec3 = global_transform.translation();
 
         let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-        let bullet_force: Vec3 = direction * 10000.0;
+        let bullet_force: Vec3 = direction * 200.0;
         debug!("bullet_force: {}", bullet_force);
 
         // ray_origin debugging by spawning a sphere
