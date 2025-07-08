@@ -16,6 +16,9 @@ pub struct Muzzle;
 pub struct Bullet;
 
 #[derive(Component)]
+pub struct Target;
+
+#[derive(Component)]
 pub struct HeadingIndicator;
 
 #[derive(Component)]
@@ -324,28 +327,26 @@ pub fn controller_system(
     }
 }
 
-pub fn gun_hit_detection_system(
+pub fn gun_shoot_system(
     mut commands: Commands,
-    // mut ray_cast: MeshRayCast,
-    muzzle: Query<&GlobalTransform, With<Muzzle>>,
-    mouse: Res<ButtonInput<MouseButton>>,
-
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    muzzle: Query<&GlobalTransform, With<Muzzle>>,
+    mouse: Res<ButtonInput<MouseButton>>,
 ) {
     if mouse.just_pressed(MouseButton::Left) {
         info!("Mouse Left clicked");
 
         let global_transform = muzzle.single().unwrap();
-        let ray_origin: Vec3 = global_transform.translation();
+        let bullet_origin: Vec3 = global_transform.translation();
 
-        // let direction: Vec3 = global_transform.rotation().normalize().xyz();
-        // let bullet_force: Vec3 = direction * 100.0;
-        // info!("bullet_force: {}", bullet_force);
+        let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+        let bullet_force: Vec3 = direction * 10000.0;
+        info!("bullet_force: {}", bullet_force);
 
         // ray_origin debugging by spawning a sphere
         commands.spawn((
-            Transform::from_translation(ray_origin),
+            Transform::from_translation(bullet_origin),
             Mesh3d(meshes.add(Sphere::new(0.125).mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::WHITE,
@@ -353,8 +354,39 @@ pub fn gun_hit_detection_system(
             })),
             RigidBody::Dynamic,
             Collider::sphere(0.125),
-            // LinearVelocity(bullet_force),
+            LinearVelocity(bullet_force),
+            CollisionEventsEnabled,
             Bullet,
         ));
+    }
+}
+
+pub fn gun_hit_detection_system(
+    mut commands: Commands,
+    mut collision_event_reader: EventReader<CollisionStarted>,
+    targets: Query<Entity, With<Target>>,
+) {
+    for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
+        info!("Collision!!");
+
+        match targets.get(*entity1) {
+            Ok(entity) => {
+                commands.entity(entity).despawn();
+                info!("Despawned the target");
+            }
+            Err(e) => {
+                info!("Error by collision: {}", e);
+            }
+        }
+
+        match targets.get(*entity2) {
+            Ok(entity) => {
+                commands.entity(entity).despawn();
+                info!("Despawned the target");
+            }
+            Err(e) => {
+                info!("Error by collision: {}", e);
+            }
+        }
     }
 }

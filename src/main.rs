@@ -7,6 +7,7 @@ use bevy::{
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use spacerobo::player;
+use spacerobo::player::Target;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -17,9 +18,6 @@ struct CLIArgs {
 
 #[derive(Resource, Serialize, Deserialize, Default)]
 pub struct GameSettings {}
-
-#[derive(Component)]
-pub struct Target;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -61,6 +59,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::controller_system,
                 player::ui_system,
                 player::exit_system,
+                player::gun_shoot_system,
                 player::gun_hit_detection_system,
             ),
         )
@@ -92,6 +91,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(10.0, 0.0, 0.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 
@@ -102,6 +104,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 10.0, 0.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 
@@ -112,6 +117,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(-10.0, 0.0, 0.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 
@@ -122,6 +130,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, -10.0, 0.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 
@@ -132,6 +143,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 0.0, 10.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 
@@ -142,6 +156,9 @@ fn setup(
             ..Default::default()
         })),
         Transform::from_xyz(0.0, 0.0, -10.0),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
         Target,
     ));
 }
