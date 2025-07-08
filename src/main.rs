@@ -7,7 +7,7 @@ use bevy::{
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use spacerobo::player;
-use spacerobo::player::Target;
+use spacerobo::target::Target;
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -57,10 +57,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             (
                 player::keyboard_mouse_system,
                 player::controller_system,
-                player::ui_system,
-                player::exit_system,
-                player::gun_shoot_system,
-                player::gun_hit_detection_system,
+                player::ui::ui_system,
+                player::ui::exit_system,
+                player::gun::gun_shoot_system,
+                player::gun::bullet_hit_detection_system,
             ),
         )
         .run();
