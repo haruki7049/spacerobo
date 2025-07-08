@@ -1,13 +1,19 @@
 #![allow(clippy::type_complexity)]
 
 use avian3d::prelude::*;
-use bevy::{color::palettes::basic::NAVY, input::mouse::AccumulatedMouseMotion, prelude::*};
+use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 #[derive(Component)]
 pub struct Player;
 
 #[derive(Component)]
 pub struct Gun;
+
+#[derive(Component)]
+pub struct Muzzle;
+
+#[derive(Component)]
+pub struct Bullet;
 
 #[derive(Component)]
 pub struct HeadingIndicator;
@@ -17,7 +23,6 @@ pub struct CoordinatesIndicator;
 
 pub fn setup(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
@@ -34,11 +39,13 @@ pub fn setup(
         ))
         // Gun
         .with_child((
-            Transform::from_xyz(1., -1., -3.).looking_to(Dir3::Z, Dir3::Y),
+            Transform::from_xyz(1., -1., -3.),
             Mesh3d(meshes.add(Extrusion::new(Circle::new(0.25), 2.))),
             MeshMaterial3d(materials.add(Color::BLACK)),
             Gun,
-        ));
+        ))
+        // Muzzle
+        .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
 
     // Heading Indicator
     commands
@@ -320,8 +327,7 @@ pub fn controller_system(
 pub fn gun_hit_detection_system(
     mut commands: Commands,
     // mut ray_cast: MeshRayCast,
-    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
-    gun: Query<&GlobalTransform, With<Gun>>,
+    muzzle: Query<&GlobalTransform, With<Muzzle>>,
     mouse: Res<ButtonInput<MouseButton>>,
 
     mut meshes: ResMut<Assets<Mesh>>,
@@ -330,21 +336,12 @@ pub fn gun_hit_detection_system(
     if mouse.just_pressed(MouseButton::Left) {
         info!("Mouse Left clicked");
 
-        // Create a ray from Gun's Transform
-        let ray_origin: Vec3 = {
-            // Get the Gun's Translation (Vec3) and Rotation (Quat)
-            let global_transform = gun.single().unwrap();
-            let global_translation: Vec3 = global_transform.translation();
-            let global_rotation: Quat = global_transform.rotation();
+        let global_transform = muzzle.single().unwrap();
+        let ray_origin: Vec3 = global_transform.translation();
 
-            // Calculate direction
-            let direction: Vec3 = global_rotation.xyz();
-            info!("direction: {}", &direction);
-
-            direction
-        };
-        info!("ray_origin: {}", ray_origin);
-        // let ray: Ray3d = Ray3d::new(ray_origin, Dir3::Z);
+        // let direction: Vec3 = global_transform.rotation().normalize().xyz();
+        // let bullet_force: Vec3 = direction * 100.0;
+        // info!("bullet_force: {}", bullet_force);
 
         // ray_origin debugging by spawning a sphere
         commands.spawn((
@@ -354,17 +351,10 @@ pub fn gun_hit_detection_system(
                 base_color: Color::WHITE,
                 ..Default::default()
             })),
+            RigidBody::Dynamic,
+            Collider::sphere(0.125),
+            // LinearVelocity(bullet_force),
+            Bullet,
         ));
-
-        // // Pick up the entity from the ray
-        // let Some((entity, _)) = ray_cast
-        //     .cast_ray(ray, &MeshRayCastSettings::default())
-        //     .first()
-        // else {
-        //     return;
-        // };
-
-        // // De-spawn the entity
-        // commands.entity(*entity).despawn();
     }
 }
