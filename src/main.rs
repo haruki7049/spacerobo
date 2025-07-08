@@ -50,6 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ))
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(settings)
+        .insert_resource(Time::<Virtual>::default())
         .add_systems(Startup, setup)
         .add_systems(Startup, player::setup)
         .add_systems(
@@ -59,6 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::controller_system,
                 player::ui::ui_system,
                 player::ui::exit_system,
+                player::ui::time_pause_system,
                 player::gun::gun_shoot_system,
                 player::gun::bullet_hit_detection_system,
             ),

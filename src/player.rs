@@ -1,14 +1,14 @@
 #![allow(clippy::type_complexity)]
 
-pub mod ui;
 pub mod gun;
+pub mod ui;
 
+use crate::player::{
+    gun::{Gun, Muzzle},
+    ui::{CoordinatesIndicator, HeadingIndicator, Timer},
+};
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
-use crate::player::{
-    ui::{HeadingIndicator, CoordinatesIndicator},
-    gun::{Gun, Muzzle},
-};
 
 #[derive(Component)]
 pub struct Player;
@@ -57,6 +57,14 @@ pub fn setup(
                 ..default()
             }),
             CoordinatesIndicator,
+        ))
+        .with_child((
+            TextSpan::default(),
+            TextFont {
+                font_size: 21.0,
+                ..Default::default()
+            },
+            Timer,
         ));
 }
 

@@ -1,5 +1,9 @@
-use bevy::prelude::*;
-use crate::player::Player;
+use crate::{player::Player, target::Target};
+use bevy::{
+    prelude::*,
+    ecs::query::QuerySingleError,
+};
+use std::time::Duration;
 
 #[derive(Component)]
 pub struct HeadingIndicator;
@@ -7,12 +11,17 @@ pub struct HeadingIndicator;
 #[derive(Component)]
 pub struct CoordinatesIndicator;
 
+#[derive(Component)]
+pub struct Timer;
+
 pub fn ui_system(
     mut spans: ParamSet<(
         Query<&mut TextSpan, With<HeadingIndicator>>,
         Query<&mut TextSpan, With<CoordinatesIndicator>>,
+        Query<&mut TextSpan, With<Timer>>,
     )>,
     player_query: Query<&mut Transform, With<Player>>,
+    time: Res<Time<Virtual>>,
 ) {
     for mut span in &mut spans.p0() {
         for transform in &player_query {
@@ -25,6 +34,23 @@ pub fn ui_system(
         for transform in &player_query {
             **span = format!("[{:.2}]\n", transform.translation);
         }
+    }
+
+    for mut span in &mut spans.p2() {
+        let time: Duration = time.elapsed();
+        **span = format!("<{}.{}>\n", time.as_secs(), time.subsec_millis());
+    }
+}
+
+pub fn time_pause_system(mut time: ResMut<Time<Virtual>>, targets_query: Query<&Target>) {
+    // If time was paused then do nothing
+    if time.is_paused() {
+        return;
+    }
+
+    // If you destroy all the targets, the Timer stop.
+    if targets_query.is_empty() {
+        time.pause();
     }
 }
 

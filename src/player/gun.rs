@@ -1,6 +1,6 @@
-use bevy::prelude::*;
-use avian3d::prelude::*;
 use crate::target::Target;
+use avian3d::prelude::*;
+use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct Gun;
