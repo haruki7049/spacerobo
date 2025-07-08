@@ -31,13 +31,13 @@ pub fn gun_shoot_system(
         // ray_origin debugging by spawning a sphere
         commands.spawn((
             Transform::from_translation(bullet_origin),
-            Mesh3d(meshes.add(Sphere::new(0.125).mesh())),
+            Mesh3d(meshes.add(Sphere::new(0.0625).mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::WHITE,
                 ..Default::default()
             })),
             RigidBody::Dynamic,
-            Collider::sphere(0.125),
+            Collider::sphere(0.0625),
             LinearVelocity(bullet_force),
             CollisionEventsEnabled,
             Bullet,
@@ -49,28 +49,28 @@ pub fn bullet_hit_detection_system(
     mut commands: Commands,
     mut collision_event_reader: EventReader<CollisionStarted>,
     targets: Query<Entity, With<Target>>,
+    bullets: Query<Entity, With<Bullet>>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
 
-        match targets.get(*entity1) {
-            Ok(entity) => {
-                commands.entity(entity).despawn();
-                debug!("Despawned the target");
-            }
-            Err(e) => {
-                debug!("Error by collision: {}", e);
-            }
+        if targets.contains(*entity1) && targets.contains(*entity2) {
+            return;
         }
 
-        match targets.get(*entity2) {
-            Ok(entity) => {
-                commands.entity(entity).despawn();
-                debug!("Despawned the target");
-            }
-            Err(e) => {
-                debug!("Error by collision: {}", e);
-            }
+        if bullets.contains(*entity1) && bullets.contains(*entity2) {
+            commands.entity(*entity1).despawn();
+            commands.entity(*entity2).despawn();
+        }
+
+        if targets.contains(*entity1) && bullets.contains(*entity2) {
+            commands.entity(*entity1).despawn();
+            commands.entity(*entity2).despawn();
+        }
+
+        if bullets.contains(*entity1) && targets.contains(*entity2) {
+            commands.entity(*entity1).despawn();
+            commands.entity(*entity2).despawn();
         }
     }
 }
