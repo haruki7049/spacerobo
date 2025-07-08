@@ -1,21 +1,23 @@
 #![allow(clippy::type_complexity)]
 
+pub mod gun;
+pub mod ui;
+
+use crate::player::{
+    gun::{Gun, Muzzle},
+    ui::{CoordinatesIndicator, HeadingIndicator, Timer},
+};
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 #[derive(Component)]
 pub struct Player;
 
-#[derive(Component)]
-pub struct Gun;
-
-#[derive(Component)]
-pub struct HeadingIndicator;
-
-#[derive(Component)]
-pub struct CoordinatesIndicator;
-
-pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     // Camera
     commands
         .spawn((
@@ -27,14 +29,15 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             AngularVelocity(Vec3::ZERO),
             Player,
         ))
+        // Gun
         .with_child((
-            Transform::from_xyz(1., -1., -3.).looking_to(Dir3::NEG_X, Dir3::Y),
-            SceneRoot(
-                asset_server
-                    .load(GltfAssetLabel::Scene(0).from_asset("models/hand-guns/default.glb")),
-            ),
+            Transform::from_xyz(1., -1., -3.),
+            Mesh3d(meshes.add(Extrusion::new(Circle::new(0.25), 2.))),
+            MeshMaterial3d(materials.add(Color::BLACK)),
             Gun,
-        ));
+        ))
+        // Muzzle
+        .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
 
     // Heading Indicator
     commands
@@ -54,6 +57,14 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             }),
             CoordinatesIndicator,
+        ))
+        .with_child((
+            TextSpan::default(),
+            TextFont {
+                font_size: 21.0,
+                ..Default::default()
+            },
+            Timer,
         ));
 }
 
@@ -62,6 +73,7 @@ pub fn keyboard_mouse_system(
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
     keyboard: Res<ButtonInput<KeyCode>>,
 ) {
+    // Mouse control
     if accumulated_mouse_motion.delta != Vec2::ZERO {
         let delta = accumulated_mouse_motion.delta;
 
@@ -86,8 +98,6 @@ pub fn keyboard_mouse_system(
                 velocity.x += x_result;
                 velocity.y += y_result;
                 velocity.z += z_result;
-
-                // dbg!(velocity);
             }
 
             // Mouse Y
@@ -102,8 +112,6 @@ pub fn keyboard_mouse_system(
                 velocity.x += x_result;
                 velocity.y += y_result;
                 velocity.z += z_result;
-
-                // dbg!(velocity);
             }
 
             angular.x += velocity.x;
@@ -195,33 +203,6 @@ pub fn keyboard_mouse_system(
 
             linear.0 += velocity;
         }
-    }
-}
-
-pub fn ui_system(
-    mut spans: ParamSet<(
-        Query<&mut TextSpan, With<HeadingIndicator>>,
-        Query<&mut TextSpan, With<CoordinatesIndicator>>,
-    )>,
-    player_query: Query<&mut Transform, With<Player>>,
-) {
-    for mut span in &mut spans.p0() {
-        for transform in &player_query {
-            let rot: Vec3 = transform.rotation.xyz();
-            **span = format!("({rot:.2})\n");
-        }
-    }
-
-    for mut span in &mut spans.p1() {
-        for transform in &player_query {
-            **span = format!("[{:.2}]\n", transform.translation);
-        }
-    }
-}
-
-pub fn exit_system(mut exit: EventWriter<AppExit>, keyboard: Res<ButtonInput<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::Escape) {
-        exit.write(AppExit::Success);
     }
 }
 
