@@ -66,6 +66,7 @@ pub fn keyboard_mouse_system(
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
     keyboard: Res<ButtonInput<KeyCode>>,
 ) {
+    // Mouse control
     if accumulated_mouse_motion.delta != Vec2::ZERO {
         let delta = accumulated_mouse_motion.delta;
 
@@ -90,8 +91,6 @@ pub fn keyboard_mouse_system(
                 velocity.x += x_result;
                 velocity.y += y_result;
                 velocity.z += z_result;
-
-                // dbg!(velocity);
             }
 
             // Mouse Y
@@ -106,8 +105,6 @@ pub fn keyboard_mouse_system(
                 velocity.x += x_result;
                 velocity.y += y_result;
                 velocity.z += z_result;
-
-                // dbg!(velocity);
             }
 
             angular.x += velocity.x;
@@ -322,24 +319,52 @@ pub fn controller_system(
 
 pub fn gun_hit_detection_system(
     mut commands: Commands,
-    mut ray_cast: MeshRayCast,
-    gun: Query<&Transform, With<Gun>>,
+    // mut ray_cast: MeshRayCast,
+    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
+    gun: Query<&GlobalTransform, With<Gun>>,
     mouse: Res<ButtonInput<MouseButton>>,
+
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     if mouse.just_pressed(MouseButton::Left) {
         info!("Mouse Left clicked");
 
-        let Ok(transform) = gun.single() else {
-            return;
-        };
-        let ray: Ray3d = Ray3d::new(transform.translation + Vec3::new(3.0, 0.0, 0.0), Dir3::X);
-        let Some((entity, _)) = ray_cast
-            .cast_ray(ray, &MeshRayCastSettings::default())
-            .first()
-        else {
-            return;
-        };
+        // Create a ray from Gun's Transform
+        let ray_origin: Vec3 = {
+            // Get the Gun's Translation (Vec3) and Rotation (Quat)
+            let global_transform = gun.single().unwrap();
+            let global_translation: Vec3 = global_transform.translation();
+            let global_rotation: Quat = global_transform.rotation();
 
-        commands.entity(*entity).despawn();
+            // Calculate direction
+            let direction: Vec3 = global_rotation.xyz();
+            info!("direction: {}", &direction);
+
+            direction
+        };
+        info!("ray_origin: {}", ray_origin);
+        // let ray: Ray3d = Ray3d::new(ray_origin, Dir3::Z);
+
+        // ray_origin debugging by spawning a sphere
+        commands.spawn((
+            Transform::from_translation(ray_origin),
+            Mesh3d(meshes.add(Sphere::new(0.125).mesh())),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::WHITE,
+                ..Default::default()
+            })),
+        ));
+
+        // // Pick up the entity from the ray
+        // let Some((entity, _)) = ray_cast
+        //     .cast_ray(ray, &MeshRayCastSettings::default())
+        //     .first()
+        // else {
+        //     return;
+        // };
+
+        // // De-spawn the entity
+        // commands.entity(*entity).despawn();
     }
 }
