@@ -31,13 +31,13 @@ pub fn gun_shoot_system(
         // ray_origin debugging by spawning a sphere
         commands.spawn((
             Transform::from_translation(bullet_origin),
-            Mesh3d(meshes.add(Sphere::new(0.0625).mesh())),
+            Mesh3d(meshes.add(Sphere::new(0.015625).mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::WHITE,
                 ..Default::default()
             })),
             RigidBody::Dynamic,
-            Collider::sphere(0.0625),
+            Collider::sphere(0.015625),
             LinearVelocity(bullet_force),
             CollisionEventsEnabled,
             Bullet,
