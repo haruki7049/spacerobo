@@ -69,6 +69,9 @@
             # Linker
             pkgs.llvmPackages.clang
             pkgs.llvmPackages.lld
+
+            # Documentation by Emacs Org-mode
+            pkgs.emacs-nox
           ];
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
