@@ -1,0 +1,3 @@
+#+title: Spacerobo
+#+author: haruki7049 <tontonkirikiri@gmail.com>
+#+language: English

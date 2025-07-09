@@ -72,6 +72,7 @@
 
             # Documentation by Emacs Org-mode
             pkgs.emacs-nox
+            pkgs.just
           ];
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
