@@ -62,62 +62,90 @@ pub fn gun_shoot_system(
     muzzle: Query<&GlobalTransform, With<Muzzle>>,
     gun: Query<&mut Gun>,
     mouse: Res<ButtonInput<MouseButton>>,
+    asset_server: Res<AssetServer>,
 ) {
     match gun.single().unwrap() {
         Gun {
             select_fire: SelectFire::Semi,
             ..
-        } => semi_auto(commands, meshes, materials, muzzle, mouse),
+        } => semi_auto(commands, meshes, materials, muzzle, mouse, asset_server),
         Gun {
             select_fire: SelectFire::Full,
             ..
-        } => full_auto(commands, meshes, materials, gun, muzzle, mouse),
+        } => full_auto(
+            commands,
+            meshes,
+            materials,
+            gun,
+            muzzle,
+            mouse,
+            asset_server,
+        ),
     }
+}
+
+fn shoot(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
+    muzzle: Query<&GlobalTransform, With<Muzzle>>,
+) {
+    let global_transform = muzzle.single().unwrap();
+    let bullet_origin: Vec3 = global_transform.translation();
+
+    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+    let bullet_force: Vec3 = direction * 200.0;
+    debug!("bullet_force: {}", bullet_force);
+
+    // ray_origin debugging by spawning a sphere
+    commands.spawn((
+        Transform::from_translation(bullet_origin),
+        Mesh3d(meshes.add(Sphere::new(0.015625).mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: Color::WHITE,
+            ..Default::default()
+        })),
+        RigidBody::Dynamic,
+        Collider::sphere(0.015625),
+        LinearVelocity(bullet_force),
+        CollisionEventsEnabled,
+        Bullet,
+    ));
+
+    commands.spawn((
+        Transform::from_translation(global_transform.translation()),
+        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
+        PlaybackSettings::ONCE.with_spatial(false),
+    ));
 }
 
 /// Semi auto
 fn semi_auto(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
     muzzle: Query<&GlobalTransform, With<Muzzle>>,
     mouse: Res<ButtonInput<MouseButton>>,
+    asset_server: Res<AssetServer>,
 ) {
     if mouse.just_pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
 
-        let global_transform = muzzle.single().unwrap();
-        let bullet_origin: Vec3 = global_transform.translation();
-
-        let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-        let bullet_force: Vec3 = direction * 200.0;
-        debug!("bullet_force: {}", bullet_force);
-
-        // ray_origin debugging by spawning a sphere
-        commands.spawn((
-            Transform::from_translation(bullet_origin),
-            Mesh3d(meshes.add(Sphere::new(0.015625).mesh())),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::WHITE,
-                ..Default::default()
-            })),
-            RigidBody::Dynamic,
-            Collider::sphere(0.015625),
-            LinearVelocity(bullet_force),
-            CollisionEventsEnabled,
-            Bullet,
-        ));
+        // Shoot!!
+        shoot(commands, meshes, materials, asset_server, muzzle);
     }
 }
 
 /// Full auto
 fn full_auto(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
     mut gun: Query<&mut Gun>,
     muzzle: Query<&GlobalTransform, With<Muzzle>>,
     mouse: Res<ButtonInput<MouseButton>>,
+    asset_server: Res<AssetServer>,
 ) {
     if mouse.pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
@@ -128,28 +156,10 @@ fn full_auto(
             return;
         }
 
-        let global_transform = muzzle.single().unwrap();
-        let bullet_origin: Vec3 = global_transform.translation();
+        // Shoot!!
+        shoot(commands, meshes, materials, asset_server, muzzle);
 
-        let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-        let bullet_force: Vec3 = direction * 200.0;
-        debug!("bullet_force: {}", bullet_force);
-
-        // ray_origin debugging by spawning a sphere
-        commands.spawn((
-            Transform::from_translation(bullet_origin),
-            Mesh3d(meshes.add(Sphere::new(0.015625).mesh())),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::WHITE,
-                ..Default::default()
-            })),
-            RigidBody::Dynamic,
-            Collider::sphere(0.015625),
-            LinearVelocity(bullet_force),
-            CollisionEventsEnabled,
-            Bullet,
-        ));
-
+        // Full auto interval
         gun.interval.rest = gun.interval.limit;
     }
 }
@@ -176,6 +186,7 @@ pub fn bullet_hit_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     targets: Query<Entity, With<Target>>,
     bullets: Query<Entity, With<Bullet>>,
+    asset_server: Res<AssetServer>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
@@ -190,11 +201,21 @@ pub fn bullet_hit_detection_system(
         }
 
         if targets.contains(*entity1) && bullets.contains(*entity2) {
+            commands.spawn((
+                AudioPlayer::new(asset_server.load("SE/kill.ogg")),
+                PlaybackSettings::ONCE.with_spatial(false),
+            ));
+
             commands.entity(*entity1).despawn();
             commands.entity(*entity2).despawn();
         }
 
         if bullets.contains(*entity1) && targets.contains(*entity2) {
+            commands.spawn((
+                AudioPlayer::new(asset_server.load("SE/kill.ogg")),
+                PlaybackSettings::ONCE.with_spatial(false),
+            ));
+
             commands.entity(*entity1).despawn();
             commands.entity(*entity2).despawn();
         }

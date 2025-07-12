@@ -15,6 +15,8 @@ pub fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    let gap = 4.0;
+
     // Camera
     commands
         .spawn((
@@ -24,6 +26,7 @@ pub fn setup(
             GravityScale(0.2),
             Collider::sphere(1.0),
             AngularVelocity(Vec3::ZERO),
+            SpatialListener::new(gap),
             Player,
         ))
         // Gun

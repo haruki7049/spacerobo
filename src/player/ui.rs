@@ -11,9 +11,7 @@ pub struct CoordinatesIndicator;
 #[derive(Component)]
 pub struct Timer;
 
-pub fn setup(
-    mut commands: Commands,
-) {
+pub fn setup(mut commands: Commands) {
     // Heading Indicator
     commands
         .spawn(Text::default())
