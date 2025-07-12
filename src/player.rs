@@ -41,7 +41,6 @@ pub fn setup(
                     rest: 0.0,
                     amount: 0.01,
                 },
-                ..default()
             }),
         ))
         // Muzzle
