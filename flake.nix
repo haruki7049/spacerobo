@@ -94,6 +94,9 @@
               mkdir -p $out
               find "$postBuildInstallFromCargoBuildLogOut" -mindepth 1 -maxdepth 1 | xargs -r mv -t $out
 
+              echo "Copy assets"
+              cp -r assets $out/bin
+
               wrapProgram $out/bin/spacerobo \
                 --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
