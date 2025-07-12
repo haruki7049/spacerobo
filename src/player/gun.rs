@@ -2,6 +2,8 @@ use crate::target::Target;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
+const BULLET_SIZE: f32 = 1. / 16.;
+
 /// Gun component
 #[derive(Component, Default)]
 pub struct Gun {
@@ -101,7 +103,7 @@ fn shoot(
     // ray_origin debugging by spawning a sphere
     commands.spawn((
         Transform::from_translation(bullet_origin),
-        Mesh3d(meshes.add(Sphere::new(0.015625).mesh())),
+        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::WHITE,
             ..Default::default()
