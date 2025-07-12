@@ -48,9 +48,11 @@ pub fn setup(
 }
 
 pub fn keyboard_mouse_system(
+    mut commands: Commands,
     mut query: Query<(&mut Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    asset_server: Res<AssetServer>,
 ) {
     // Mouse control
     if accumulated_mouse_motion.delta != Vec2::ZERO {
@@ -109,6 +111,11 @@ pub fn keyboard_mouse_system(
 
     // Moving
     if keyboard.just_pressed(KeyCode::KeyW) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
@@ -128,6 +135,11 @@ pub fn keyboard_mouse_system(
     }
 
     if keyboard.just_pressed(KeyCode::KeyA) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
@@ -147,6 +159,11 @@ pub fn keyboard_mouse_system(
     }
 
     if keyboard.just_pressed(KeyCode::KeyS) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
@@ -166,6 +183,11 @@ pub fn keyboard_mouse_system(
     }
 
     if keyboard.just_pressed(KeyCode::KeyD) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
