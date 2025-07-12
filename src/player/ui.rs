@@ -11,6 +11,38 @@ pub struct CoordinatesIndicator;
 #[derive(Component)]
 pub struct Timer;
 
+pub fn setup(
+    mut commands: Commands,
+) {
+    // Heading Indicator
+    commands
+        .spawn(Text::default())
+        .with_child((
+            TextSpan::default(),
+            (TextFont {
+                font_size: 21.0,
+                ..default()
+            }),
+            HeadingIndicator,
+        ))
+        .with_child((
+            TextSpan::default(),
+            (TextFont {
+                font_size: 21.0,
+                ..default()
+            }),
+            CoordinatesIndicator,
+        ))
+        .with_child((
+            TextSpan::default(),
+            TextFont {
+                font_size: 21.0,
+                ..Default::default()
+            },
+            Timer,
+        ));
+}
+
 pub fn ui_system(
     mut spans: ParamSet<(
         Query<&mut TextSpan, With<HeadingIndicator>>,

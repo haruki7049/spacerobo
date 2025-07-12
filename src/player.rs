@@ -3,10 +3,7 @@
 pub mod gun;
 pub mod ui;
 
-use crate::player::{
-    gun::{Gun, Muzzle},
-    ui::{CoordinatesIndicator, HeadingIndicator, Timer},
-};
+use crate::player::gun::{Gun, Interval, Muzzle, SelectFire};
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
@@ -32,40 +29,20 @@ pub fn setup(
         // Gun
         .with_child((
             Transform::from_xyz(1., -1., -3.),
-            Mesh3d(meshes.add(Extrusion::new(Circle::new(0.25), 2.))),
+            Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
             MeshMaterial3d(materials.add(Color::BLACK)),
-            Gun,
+            (Gun {
+                select_fire: SelectFire::Full,
+                interval: Interval {
+                    limit: 0.1,
+                    rest: 0.0,
+                    amount: 0.01,
+                },
+                ..default()
+            }),
         ))
         // Muzzle
         .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
-
-    // Heading Indicator
-    commands
-        .spawn(Text::default())
-        .with_child((
-            TextSpan::default(),
-            (TextFont {
-                font_size: 21.0,
-                ..default()
-            }),
-            HeadingIndicator,
-        ))
-        .with_child((
-            TextSpan::default(),
-            (TextFont {
-                font_size: 21.0,
-                ..default()
-            }),
-            CoordinatesIndicator,
-        ))
-        .with_child((
-            TextSpan::default(),
-            TextFont {
-                font_size: 21.0,
-                ..Default::default()
-            },
-            Timer,
-        ));
 }
 
 pub fn keyboard_mouse_system(

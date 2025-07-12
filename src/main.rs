@@ -34,11 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 primary_window: Some(Window {
                     cursor_options: CursorOptions {
                         visible: false,
-                        grab_mode: if cfg!(target_os = "macos") {
-                            CursorGrabMode::Locked
-                        } else {
-                            CursorGrabMode::Confined
-                        },
+                        grab_mode: CursorGrabMode::Locked,
                         ..default()
                     },
                     title: format!("spacerobo {}", env!("CARGO_PKG_VERSION")),
@@ -51,8 +47,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(settings)
         .insert_resource(Time::<Virtual>::default())
-        .add_systems(Startup, setup)
-        .add_systems(Startup, player::setup)
+        .add_systems(Startup, (setup, player::setup, player::ui::setup))
         .add_systems(
             Update,
             (
@@ -62,9 +57,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::ui::exit_system,
                 player::ui::time_pause_system,
                 player::gun::gun_shoot_system,
+                player::gun::toggle_select_fire_system,
                 player::gun::bullet_hit_detection_system,
             ),
         )
+        .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .run();
 
     Ok(())
