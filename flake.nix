@@ -100,6 +100,11 @@
               wrapProgram $out/bin/spacerobo \
                 --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
+
+            meta = {
+              licenses = [ lib.licenses.mit ];
+              mainProgram = "spacerobo";
+            };
           };
           cargo-clippy = craneLib.cargoClippy {
             inherit
