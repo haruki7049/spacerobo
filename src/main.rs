@@ -51,8 +51,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_systems(
             Update,
             (
-                player::keyboard_mouse_system,
-                player::controller_system,
+                player::movement::keyboard_mouse_system,
+                player::movement::controller_system,
                 player::ui::ui_system,
                 player::ui::exit_system,
                 player::ui::time_pause_system,
