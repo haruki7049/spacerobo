@@ -1,4 +1,4 @@
-use crate::target::Target;
+use crate::{player::Player, target::Target};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -59,13 +59,19 @@ pub struct Bullet;
 /// Gun shoot system
 pub fn gun_shoot_system(
     commands: Commands,
-    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
+    query: (
+        Query<&mut Gun>,
+        Query<&GlobalTransform, With<Muzzle>>,
+        Query<&LinearVelocity, With<Player>>,
+    ),
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    match query.p0().single().unwrap() {
+    let (gun, _muzzle, _player) = &query;
+
+    match gun.single().unwrap() {
         Gun {
             select_fire: SelectFire::Semi,
             ..
@@ -79,17 +85,23 @@ pub fn gun_shoot_system(
 
 fn shoot(
     mut commands: Commands,
-    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
+    query: (
+        Query<&mut Gun>,
+        Query<&GlobalTransform, With<Muzzle>>,
+        Query<&LinearVelocity, With<Player>>,
+    ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
-    let muzzle = query.p1();
+    let (_gun, muzzle, player) = query;
+
     let global_transform = muzzle.single().unwrap();
     let bullet_origin: Vec3 = global_transform.translation();
+    let player_linear: Vec3 = player.single().unwrap().0;
 
     let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-    let bullet_force: Vec3 = direction * 200.0;
+    let bullet_force: Vec3 = direction * 200.0 + player_linear;
     debug!("bullet_force: {}", bullet_force);
 
     // ray_origin debugging by spawning a sphere
@@ -117,7 +129,11 @@ fn shoot(
 /// Semi auto
 fn semi_auto(
     commands: Commands,
-    query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
+    query: (
+        Query<&mut Gun>,
+        Query<&GlobalTransform, With<Muzzle>>,
+        Query<&LinearVelocity, With<Player>>,
+    ),
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
@@ -134,7 +150,11 @@ fn semi_auto(
 /// Full auto
 fn full_auto(
     commands: Commands,
-    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
+    mut query: (
+        Query<&mut Gun>,
+        Query<&GlobalTransform, With<Muzzle>>,
+        Query<&LinearVelocity, With<Player>>,
+    ),
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
@@ -143,7 +163,7 @@ fn full_auto(
     if mouse.pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
 
-        let mut gun_query = query.p0();
+        let (ref mut gun_query, _muzzle_query, _player_query) = query;
         let mut gun = gun_query.single_mut().unwrap();
         if gun.interval.rest >= 0. {
             debug!("Full auto shoot aborted because of the gun's interval");
