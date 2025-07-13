@@ -59,40 +59,32 @@ pub struct Bullet;
 /// Gun shoot system
 pub fn gun_shoot_system(
     commands: Commands,
+    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
-    muzzle: Query<&GlobalTransform, With<Muzzle>>,
-    gun: Query<&mut Gun>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    match gun.single().unwrap() {
+    match query.p0().single().unwrap() {
         Gun {
             select_fire: SelectFire::Semi,
             ..
-        } => semi_auto(commands, meshes, materials, muzzle, mouse, asset_server),
+        } => semi_auto(commands, query, meshes, materials, mouse, asset_server),
         Gun {
             select_fire: SelectFire::Full,
             ..
-        } => full_auto(
-            commands,
-            meshes,
-            materials,
-            gun,
-            muzzle,
-            mouse,
-            asset_server,
-        ),
+        } => full_auto(commands, query, meshes, materials, mouse, asset_server),
     }
 }
 
 fn shoot(
     mut commands: Commands,
+    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
-    muzzle: Query<&GlobalTransform, With<Muzzle>>,
 ) {
+    let muzzle = query.p1();
     let global_transform = muzzle.single().unwrap();
     let bullet_origin: Vec3 = global_transform.translation();
 
@@ -125,9 +117,9 @@ fn shoot(
 /// Semi auto
 fn semi_auto(
     commands: Commands,
+    query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
-    muzzle: Query<&GlobalTransform, With<Muzzle>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
@@ -135,34 +127,34 @@ fn semi_auto(
         debug!("Mouse Left clicked");
 
         // Shoot!!
-        shoot(commands, meshes, materials, asset_server, muzzle);
+        shoot(commands, query, meshes, materials, asset_server);
     }
 }
 
 /// Full auto
 fn full_auto(
     commands: Commands,
+    mut query: ParamSet<(Query<&mut Gun>, Query<&GlobalTransform, With<Muzzle>>)>,
     meshes: ResMut<Assets<Mesh>>,
     materials: ResMut<Assets<StandardMaterial>>,
-    mut gun: Query<&mut Gun>,
-    muzzle: Query<&GlobalTransform, With<Muzzle>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
     if mouse.pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
 
-        let mut gun = gun.single_mut().unwrap();
+        let mut gun_query = query.p0();
+        let mut gun = gun_query.single_mut().unwrap();
         if gun.interval.rest >= 0. {
             debug!("Full auto shoot aborted because of the gun's interval");
             return;
         }
 
-        // Shoot!!
-        shoot(commands, meshes, materials, asset_server, muzzle);
-
         // Full auto interval
         gun.interval.rest = gun.interval.limit;
+
+        // Shoot!!
+        shoot(commands, query, meshes, materials, asset_server);
     }
 }
 
