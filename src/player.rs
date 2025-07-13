@@ -1,8 +1,8 @@
 #![allow(clippy::type_complexity)]
 
 pub mod gun;
-pub mod ui;
 pub mod movement;
+pub mod ui;
 
 use crate::player::gun::{Gun, Interval, Muzzle, SelectFire};
 use avian3d::prelude::*;
