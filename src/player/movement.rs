@@ -166,6 +166,44 @@ pub fn keyboard_mouse_system(
 
         linear.0 += velocity;
     }
+
+    if keyboard.just_pressed(player.config.keyboard.roll_left) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
+        const FORCE: f32 = 3.0;
+
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::NEG_Z;
+
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
+
+        angular.0 += result;
+    }
+
+    if keyboard.just_pressed(player.config.keyboard.roll_right) {
+        commands.spawn((
+            AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+            PlaybackSettings::ONCE.with_spatial(false),
+        ));
+
+        const FORCE: f32 = 3.0;
+
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::Z;
+
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
+
+        angular.0 += result;
+    }
 }
 
 pub fn controller_system(

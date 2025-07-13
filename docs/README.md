@@ -8,6 +8,8 @@ forward = "KeyW"
 back = "KeyS"
 left = "KeyA"
 right = "KeyD"
+roll_left = "KeyE"
+roll_right = "KeyQ"
 hover = "ControlLeft"
 toggle_firemode = "KeyT"
 
@@ -37,6 +39,14 @@ Moves left when you pressed the key.
 #### player.keyboard.right
 
 Moves right when you pressed the key.
+
+#### player.keyboard.roll_left
+
+TODO: Write a comment
+
+#### player.keyboard.roll_right
+
+TODO: Write a comment
 
 #### player.keyboard.hover
 
