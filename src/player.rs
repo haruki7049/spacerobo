@@ -1,15 +1,21 @@
 #![allow(clippy::type_complexity)]
 
+pub mod config;
 pub mod gun;
 pub mod movement;
 pub mod ui;
 
-use crate::player::gun::{Gun, Interval, Muzzle, SelectFire};
+use crate::player::{
+    config::{Config, ControllerConfig, KeyboardConfig, MouseConfig},
+    gun::{Gun, Interval, Muzzle, SelectFire},
+};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct Player;
+pub struct Player {
+    config: Config,
+}
 
 pub fn setup(
     mut commands: Commands,
@@ -28,7 +34,13 @@ pub fn setup(
             Collider::sphere(1.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            Player,
+            (Player {
+                config: Config {
+                    keyboard: KeyboardConfig::default(),
+                    mouse: MouseConfig::default(),
+                    controller: ControllerConfig::default(),
+                },
+            }),
         ))
         // Gun
         .with_child((

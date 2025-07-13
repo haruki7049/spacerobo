@@ -4,68 +4,74 @@ use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 pub fn keyboard_mouse_system(
     mut commands: Commands,
-    mut query: Query<(&mut Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
+    mut query: Query<
+        (
+            &mut Transform,
+            &mut AngularVelocity,
+            &mut LinearVelocity,
+            &Player,
+        ),
+        With<Player>,
+    >,
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
     keyboard: Res<ButtonInput<KeyCode>>,
     asset_server: Res<AssetServer>,
 ) {
+    let (transform, mut angular, mut linear, player) = query.single_mut().unwrap();
+
     // Mouse control
     if accumulated_mouse_motion.delta != Vec2::ZERO {
         let delta = accumulated_mouse_motion.delta;
 
-        for (transform, mut angular, mut _linear) in &mut query {
-            let x = delta.x * -1. / 100.;
-            let y = delta.y * -1. / 100.;
-            let mouse: Vec2 = Vec2::new(x, y);
+        let x = delta.x * -1. / 100.;
+        let y = delta.y * -1. / 100.;
+        let mouse: Vec2 = Vec2::new(x, y);
 
-            let rotation: Quat = transform.rotation;
+        let rotation: Quat = transform.rotation;
 
-            let mut velocity: Vec3 = Vec3::ZERO;
+        let mut velocity: Vec3 = Vec3::ZERO;
 
-            // Mouse X
-            {
-                let direction: Vec3 = rotation * Vec3::Y;
-                // dbg!(direction);
+        // Mouse X
+        {
+            let direction: Vec3 = rotation * Vec3::Y;
+            // dbg!(direction);
 
-                let x_result: f32 = mouse.x * direction.x;
-                let y_result: f32 = mouse.x * direction.y;
-                let z_result: f32 = mouse.x * direction.z;
+            let x_result: f32 = mouse.x * direction.x;
+            let y_result: f32 = mouse.x * direction.y;
+            let z_result: f32 = mouse.x * direction.z;
 
-                velocity.x += x_result;
-                velocity.y += y_result;
-                velocity.z += z_result;
-            }
-
-            // Mouse Y
-            {
-                let direction: Vec3 = rotation * Vec3::X;
-                // dbg!(direction);
-
-                let x_result: f32 = mouse.y * direction.x;
-                let y_result: f32 = mouse.y * direction.y;
-                let z_result: f32 = mouse.y * direction.z;
-
-                velocity.x += x_result;
-                velocity.y += y_result;
-                velocity.z += z_result;
-            }
-
-            angular.x += velocity.x;
-            angular.y += velocity.y;
-            angular.z += velocity.z;
+            velocity.x += x_result;
+            velocity.y += y_result;
+            velocity.z += z_result;
         }
+
+        // Mouse Y
+        {
+            let direction: Vec3 = rotation * Vec3::X;
+            // dbg!(direction);
+
+            let x_result: f32 = mouse.y * direction.x;
+            let y_result: f32 = mouse.y * direction.y;
+            let z_result: f32 = mouse.y * direction.z;
+
+            velocity.x += x_result;
+            velocity.y += y_result;
+            velocity.z += z_result;
+        }
+
+        angular.x += velocity.x;
+        angular.y += velocity.y;
+        angular.z += velocity.z;
     }
 
     // Hovering
-    if keyboard.just_pressed(KeyCode::ControlLeft) {
-        for (mut _transform, mut angular, mut linear) in &mut query {
-            angular.0 = Vec3::ZERO;
-            linear.0 = Vec3::ZERO;
-        }
+    if keyboard.just_pressed(player.config.keyboard.hover) {
+        angular.0 = Vec3::ZERO;
+        linear.0 = Vec3::ZERO;
     }
 
     // Moving
-    if keyboard.just_pressed(KeyCode::KeyW) {
+    if keyboard.just_pressed(player.config.keyboard.forward) {
         commands.spawn((
             AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
             PlaybackSettings::ONCE.with_spatial(false),
@@ -74,22 +80,20 @@ pub fn keyboard_mouse_system(
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
-        for (transform, mut _angular, mut linear) in &mut query {
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::NEG_Z;
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+        velocity += result;
 
-            linear.0 += velocity;
-        }
+        linear.0 += velocity;
     }
 
-    if keyboard.just_pressed(KeyCode::KeyA) {
+    if keyboard.just_pressed(player.config.keyboard.left) {
         commands.spawn((
             AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
             PlaybackSettings::ONCE.with_spatial(false),
@@ -98,22 +102,20 @@ pub fn keyboard_mouse_system(
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
-        for (transform, mut _angular, mut linear) in &mut query {
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::NEG_X;
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::NEG_X;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+        velocity += result;
 
-            linear.0 += velocity;
-        }
+        linear.0 += velocity;
     }
 
-    if keyboard.just_pressed(KeyCode::KeyS) {
+    if keyboard.just_pressed(player.config.keyboard.back) {
         commands.spawn((
             AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
             PlaybackSettings::ONCE.with_spatial(false),
@@ -122,22 +124,20 @@ pub fn keyboard_mouse_system(
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
-        for (transform, mut _angular, mut linear) in &mut query {
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::Z;
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+        velocity += result;
 
-            linear.0 += velocity;
-        }
+        linear.0 += velocity;
     }
 
-    if keyboard.just_pressed(KeyCode::KeyD) {
+    if keyboard.just_pressed(player.config.keyboard.right) {
         commands.spawn((
             AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
             PlaybackSettings::ONCE.with_spatial(false),
@@ -146,19 +146,17 @@ pub fn keyboard_mouse_system(
         let mut velocity: Vec3 = Vec3::ZERO;
         const FORCE: f32 = 10.0;
 
-        for (transform, mut _angular, mut linear) in &mut query {
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::X;
+        let rotation: Quat = transform.rotation;
+        let direction: Vec3 = rotation * Vec3::X;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+        let x: f32 = FORCE * direction.x;
+        let y: f32 = FORCE * direction.y;
+        let z: f32 = FORCE * direction.z;
+        let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+        velocity += result;
 
-            linear.0 += velocity;
-        }
+        linear.0 += velocity;
     }
 }
 
