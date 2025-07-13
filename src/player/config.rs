@@ -1,11 +1,14 @@
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Config {
     pub keyboard: KeyboardConfig,
     pub mouse: MouseConfig,
     pub controller: ControllerConfig,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct KeyboardConfig {
     // Movements
     pub forward: KeyCode,
@@ -35,14 +38,22 @@ impl std::default::Default for KeyboardConfig {
     }
 }
 
-pub struct MouseConfig {}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MouseConfig {
+    pub x_reverse: bool,
+    pub y_reverse: bool,
+}
 
 impl std::default::Default for MouseConfig {
     fn default() -> Self {
-        Self {}
+        Self {
+            x_reverse: false,
+            y_reverse: false,
+        }
     }
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ControllerConfig {}
 
 impl std::default::Default for ControllerConfig {

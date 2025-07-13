@@ -33,7 +33,11 @@ pub fn keyboard_mouse_system(
 
         // Mouse X
         {
-            let direction: Vec3 = rotation * Vec3::Y;
+            let direction: Vec3 = if player.config.mouse.x_reverse {
+                rotation * Vec3::NEG_Y
+            } else {
+                rotation * Vec3::Y
+            };
             // dbg!(direction);
 
             let x_result: f32 = mouse.x * direction.x;
@@ -47,7 +51,11 @@ pub fn keyboard_mouse_system(
 
         // Mouse Y
         {
-            let direction: Vec3 = rotation * Vec3::X;
+            let direction: Vec3 = if player.config.mouse.y_reverse {
+                rotation * Vec3::NEG_X
+            } else {
+                rotation * Vec3::X
+            };
             // dbg!(direction);
 
             let x_result: f32 = mouse.y * direction.x;

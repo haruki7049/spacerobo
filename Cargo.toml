@@ -11,7 +11,7 @@ repository = "https://github.com/haruki7049/spacerobo"
 
 [dependencies]
 avian3d = "0.3.1"
-bevy = { version = "0.16.1", features = ["wayland"] }
+bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
 clap = { version = "4.5.40", features = ["derive"] }
 confy = "1.0.0"
 serde = { version = "1.0.219", features = ["derive"] }

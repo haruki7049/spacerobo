@@ -5,12 +5,16 @@ pub mod gun;
 pub mod movement;
 pub mod ui;
 
-use crate::player::{
-    config::{Config, ControllerConfig, KeyboardConfig, MouseConfig},
-    gun::{Gun, Interval, Muzzle, SelectFire},
+use crate::{
+    CLIArgs, GameConfigs,
+    player::{
+        config::Config,
+        gun::{Gun, Interval, Muzzle, SelectFire},
+    },
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use std::path::PathBuf;
 
 #[derive(Component)]
 pub struct Player {
@@ -21,7 +25,14 @@ pub fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    cli_args: Res<CLIArgs>,
 ) {
+    let configs_path: PathBuf = cli_args.config.clone().unwrap_or_else(|| {
+        confy::get_configuration_file_path("spacerobo", "config")
+            .expect("Failed to get path for spacerobo")
+    });
+    let configs: GameConfigs = confy::load_path(&configs_path).unwrap();
+
     let gap = 4.0;
 
     // Camera
@@ -35,11 +46,7 @@ pub fn setup(
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
             (Player {
-                config: Config {
-                    keyboard: KeyboardConfig::default(),
-                    mouse: MouseConfig::default(),
-                    controller: ControllerConfig::default(),
-                },
+                config: configs.player,
             }),
         ))
         // Gun
