@@ -9,11 +9,11 @@ pub mod system;
 pub mod ui;
 
 use crate::{
-    CLIArgs, GameConfigs, Hp,
     player::{
         config::Config,
         gun::{Gun, Interval, Muzzle, SelectFire},
     },
+    CLIArgs, GameConfigs, Hp,
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
@@ -51,19 +51,21 @@ pub fn setup_system(
             Hp::default(),
         ))
         // Gun
-        .with_child((
-            Transform::from_xyz(1., -1., -3.),
-            Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
-            MeshMaterial3d(materials.add(Color::BLACK)),
-            (Gun {
-                select_fire: SelectFire::Full,
-                interval: Interval {
-                    limit: 0.1,
-                    rest: 0.0,
-                    amount: 0.01,
-                },
-            }),
-        ))
+        .with_children(|parent| {
+            parent.spawn((
+                Transform::from_xyz(1., -1., -3.),
+                Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
+                MeshMaterial3d(materials.add(Color::BLACK)),
+                (Gun {
+                    select_fire: SelectFire::Full,
+                    interval: Interval {
+                        limit: 0.1,
+                        rest: 0.0,
+                        amount: 0.01,
+                    },
+                }),
+            ));
+        })
         // Muzzle
         .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
 }
