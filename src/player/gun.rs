@@ -1,4 +1,4 @@
-use crate::{player::Player, target::Target};
+use crate::player::Player;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -191,47 +191,6 @@ pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonI
         match gun.select_fire {
             SelectFire::Semi => gun.fullauto(),
             SelectFire::Full => gun.semiauto(),
-        }
-    }
-}
-
-pub fn bullet_hit_detection_system(
-    mut commands: Commands,
-    mut collision_event_reader: EventReader<CollisionStarted>,
-    targets: Query<Entity, With<Target>>,
-    bullets: Query<Entity, With<Bullet>>,
-    asset_server: Res<AssetServer>,
-) {
-    for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
-        debug!("Collision!!");
-
-        if targets.contains(*entity1) && targets.contains(*entity2) {
-            return;
-        }
-
-        if bullets.contains(*entity1) && bullets.contains(*entity2) {
-            commands.entity(*entity1).despawn();
-            commands.entity(*entity2).despawn();
-        }
-
-        if targets.contains(*entity1) && bullets.contains(*entity2) {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/kill.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
-
-            commands.entity(*entity1).despawn();
-            commands.entity(*entity2).despawn();
-        }
-
-        if bullets.contains(*entity1) && targets.contains(*entity2) {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/kill.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
-
-            commands.entity(*entity1).despawn();
-            commands.entity(*entity2).despawn();
         }
     }
 }

@@ -9,6 +9,7 @@ use std::{
 
 pub mod player;
 pub mod target;
+pub mod systems;
 
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
 pub struct GameConfigs {

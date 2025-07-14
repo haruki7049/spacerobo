@@ -5,7 +5,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, player, target::Target};
+use spacerobo::{CLIArgs, player, systems, target::Target};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -40,9 +40,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::ui::time_pause_system,
                 player::gun::gun_shoot_system,
                 player::gun::toggle_select_fire_system,
-                player::gun::bullet_hit_detection_system,
             ),
         )
+        .add_systems(Update, systems::bullet_hit_detection_system)
         .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .run();
 
