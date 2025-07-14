@@ -5,7 +5,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, player, systems, target::Target};
+use spacerobo::{CLIArgs, Hp, player, systems, target::Target};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::toggle_select_fire_system,
             ),
         )
-        .add_systems(Update, systems::bullet_hit_detection_system)
+        .add_systems(Update, systems::collision_detection_system)
         .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .run();
 
@@ -75,7 +75,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -88,7 +90,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -101,7 +105,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -114,7 +120,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -127,7 +135,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -140,6 +150,8 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 }

@@ -1,6 +1,6 @@
 //! # Gun systems, components & etc...
 
-use crate::player::Player;
+use crate::{Hp, player::Player};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -117,8 +117,10 @@ fn shoot(
         RigidBody::Dynamic,
         Collider::sphere(0.015625),
         LinearVelocity(bullet_force),
+        Mass(5.0),
         CollisionEventsEnabled,
         Bullet,
+        Hp::light_ammo(),
     ));
 
     commands.spawn((

@@ -8,7 +8,7 @@ pub mod movement;
 pub mod ui;
 
 use crate::{
-    CLIArgs, GameConfigs,
+    CLIArgs, GameConfigs, Hp,
     player::{
         config::Config,
         gun::{Gun, Interval, Muzzle, SelectFire},
@@ -41,11 +41,13 @@ pub fn setup(
             RigidBody::Dynamic,
             GravityScale(0.2),
             Collider::sphere(1.0),
+            Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
             (Player {
                 config: configs.player,
             }),
+            Hp::default(),
         ))
         // Gun
         .with_child((

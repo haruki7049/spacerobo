@@ -38,3 +38,27 @@ pub struct CLIArgs {
     #[arg(short, long, default_value = DEFAULT_CONFIG_PATH.lock().unwrap().display().to_string())]
     config_file: PathBuf,
 }
+
+#[derive(Debug, Component)]
+pub struct Hp {
+    limit: f32,
+    rest: f32,
+}
+
+impl std::default::Default for Hp {
+    fn default() -> Self {
+        Self {
+            limit: 100.,
+            rest: 100.,
+        }
+    }
+}
+
+impl Hp {
+    pub fn light_ammo() -> Self {
+        Self {
+            limit: 5.,
+            rest: 5.,
+        }
+    }
+}
