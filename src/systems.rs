@@ -1,6 +1,6 @@
 //! # System utils
 
-use crate::{target::Target, Hp};
+use crate::{Hp, target::Target};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
