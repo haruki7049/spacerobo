@@ -26,7 +26,6 @@ pub fn update_system(
                 } else {
                     rotation * Vec3::Y
                 };
-                // dbg!(direction);
 
                 let x_result: f32 = mouse.x * direction.x;
                 let y_result: f32 = mouse.x * direction.y;
@@ -44,7 +43,6 @@ pub fn update_system(
                 } else {
                     rotation * Vec3::X
                 };
-                // dbg!(direction);
 
                 let x_result: f32 = mouse.y * direction.x;
                 let y_result: f32 = mouse.y * direction.y;

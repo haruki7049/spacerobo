@@ -21,7 +21,6 @@ pub fn health_system(
 
             // Despawn the target
             commands.entity(death_event.entity).despawn();
-            dbg!("Despawning {} ...", death_event.entity);
         }
     }
 }
