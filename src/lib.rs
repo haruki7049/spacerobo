@@ -10,13 +10,24 @@ use std::{
 };
 
 pub mod player;
-pub mod systems;
+pub mod system;
 pub mod target;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
 pub struct GameConfigs {
     player: player::config::Config,
+}
+
+#[derive(Debug, Event)]
+pub struct DeathEvent {
+    entity: Entity,
+}
+
+impl DeathEvent {
+    pub fn new(entity: Entity) -> Self {
+        Self { entity }
+    }
 }
 
 /// Default Configuration Path, using directories crate to calculate ProjectDirs (~/.config/spacerobo)

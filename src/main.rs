@@ -5,7 +5,10 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, Hp, player, systems, target::Target};
+use spacerobo::{
+    CLIArgs, DeathEvent, Hp, player, system,
+    target::{self, Target},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -26,10 +29,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }),
             PhysicsPlugins::default(),
         ))
+        .add_event::<DeathEvent>()
         .insert_resource(args)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
-        .add_systems(Startup, (setup, player::setup, player::ui::setup))
+        .add_systems(
+            Startup,
+            (setup_system, player::setup_system, player::ui::setup_system),
+        )
         .add_systems(
             Update,
             (
@@ -43,17 +50,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::toggle_select_fire_system,
             ),
         )
+        .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .add_systems(
             Update,
-            (systems::collision_detection_system, systems::despawn_system),
+            (
+                system::collision_detection_system,
+                target::health_system,
+                player::system::health_system,
+            ),
         )
-        .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .run();
 
     Ok(())
 }
 
-fn setup(
+fn setup_system(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,

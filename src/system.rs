@@ -1,6 +1,6 @@
 //! # System utils
 
-use crate::{Hp, target::Target};
+use crate::{DeathEvent, Hp};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -9,6 +9,7 @@ use bevy::prelude::*;
 pub fn collision_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
+    mut event_writer: EventWriter<DeathEvent>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
@@ -29,6 +30,13 @@ pub fn collision_detection_system(
 
                 debug!("The first object's Hp: {:?}", &obj1_hp);
                 debug!("The second object's Hp: {:?}", &obj2_hp);
+
+                if obj1_hp.rest <= 0. {
+                    event_writer.write(DeathEvent::new(*entity1));
+                }
+                if obj2_hp.rest <= 0. {
+                    event_writer.write(DeathEvent::new(*entity2));
+                }
             }
             _ => debug!(
                 "The collisioned entity, {} or {} is missing Hp, LinearVelocity or Mass",
@@ -47,26 +55,4 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
     // By Isaac Newton
     // Probably...
     (speed * ***mass).abs()
-}
-
-pub fn despawn_system(
-    mut commands: Commands,
-    query: Query<(Entity, &Hp), With<Hp>>,
-    targets: Query<&Target>,
-    asset_server: Res<AssetServer>,
-) {
-    for (entity, hp) in query.iter() {
-        if hp.rest <= 0. {
-            if targets.get(entity).is_ok() {
-                commands.spawn((
-                    AudioPlayer::new(asset_server.load("SE/kill.ogg")),
-                    PlaybackSettings::ONCE.with_spatial(false),
-                ));
-            }
-
-            // Despawn the object
-            commands.entity(entity).despawn();
-            dbg!("Despawn!!");
-        }
-    }
 }

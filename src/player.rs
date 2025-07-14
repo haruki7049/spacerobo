@@ -5,6 +5,7 @@
 pub mod config;
 pub mod gun;
 pub mod movement;
+pub mod system;
 pub mod ui;
 
 use crate::{
@@ -24,7 +25,7 @@ pub struct Player {
 }
 
 /// setup system to spawn player entity
-pub fn setup(
+pub fn setup_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
