@@ -1,6 +1,6 @@
 //! # Gun systems, components & etc...
 
-use crate::{player::Player, Hp};
+use crate::{Hp, player::Player};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
