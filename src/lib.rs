@@ -52,20 +52,17 @@ pub struct CLIArgs {
 
 #[derive(Debug, Component)]
 pub struct Hp {
-    limit: f32,
     rest: f32,
 }
 
 impl std::default::Default for Hp {
     fn default() -> Self {
-        let limit = 100.;
-        Self { limit, rest: limit }
+        Self { rest: 100. }
     }
 }
 
 impl Hp {
     pub fn ammo() -> Self {
-        let limit = 5.;
-        Self { limit, rest: limit }
+        Self { rest: 5. }
     }
 }
