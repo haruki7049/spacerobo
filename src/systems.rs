@@ -1,11 +1,8 @@
 //! # System utils
 
-use bevy::prelude::*;
+use crate::{player::gun::Bullet, target::Target};
 use avian3d::prelude::*;
-use crate::{
-    target::Target,
-    player::gun::Bullet,
-};
+use bevy::prelude::*;
 
 /// This system detects the hits between a bullet and a target
 pub fn bullet_hit_detection_system(
