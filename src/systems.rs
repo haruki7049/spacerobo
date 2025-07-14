@@ -24,8 +24,8 @@ pub fn collision_detection_system(
                 let (ref mut obj1_hp, _obj1_linear, _obj1_mass) = obj1;
                 let (ref mut obj2_hp, _obj2_linear, _obj2_mass) = obj2;
 
-                obj1_hp.rest = obj1_hp.rest - damage;
-                obj2_hp.rest = obj2_hp.rest - damage;
+                obj1_hp.rest -= damage;
+                obj2_hp.rest -= damage;
 
                 debug!("The first object's Hp: {:?}", &obj1_hp);
                 debug!("The second object's Hp: {:?}", &obj2_hp);
