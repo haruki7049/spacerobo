@@ -47,18 +47,14 @@ pub struct Hp {
 
 impl std::default::Default for Hp {
     fn default() -> Self {
-        Self {
-            limit: 100.,
-            rest: 100.,
-        }
+        let limit = 100.;
+        Self { limit, rest: limit }
     }
 }
 
 impl Hp {
-    pub fn light_ammo() -> Self {
-        Self {
-            limit: 5.,
-            rest: 5.,
-        }
+    pub fn ammo() -> Self {
+        let limit = 5.;
+        Self { limit, rest: limit }
     }
 }

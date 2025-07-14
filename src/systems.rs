@@ -1,52 +1,72 @@
 //! # System utils
 
-use crate::Hp;
+use crate::{target::Target, Hp};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-/// This system detects the hits between a bullet and a target
+/// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
+/// This system is created to decrease the hp at contacted objects.
 pub fn collision_detection_system(
-    mut commands: Commands,
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
-    asset_server: Res<AssetServer>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
 
-        let mut object1 = query.get_mut(*entity1).ok();
-        let mut object2 = query.get_mut(*entity2).ok();
+        let objects = query.get_many_mut([*entity1, *entity2]).ok();
 
-        match (object1, object2) {
-            (Some(obj1), Some(obj2)) => {
-                let obj1_damage: f32 = calc_damage(obj1);
-                let obj2_damage: f32 = calc_damage(obj2);
-
-                dbg!(&obj1_damage);
-                dbg!(&obj2_damage);
-
+        match objects {
+            Some([mut obj1, mut obj2]) => {
+                let obj1_damage: f32 = calc_damage(&obj1);
+                let obj2_damage: f32 = calc_damage(&obj2);
                 let damage: f32 = obj1_damage + obj2_damage;
 
-                todo!()
-            }
-            (None, Some(obj)) | (Some(obj), None) => {
-                let damage: f32 = calc_damage(obj);
+                let (ref mut obj1_hp, _obj1_linear, _obj1_mass) = obj1;
+                let (ref mut obj2_hp, _obj2_linear, _obj2_mass) = obj2;
 
-                dbg!(damage);
-                todo!();
+                obj1_hp.rest = obj1_hp.rest - damage;
+                obj2_hp.rest = obj2_hp.rest - damage;
+
+                debug!("The first object's Hp: {:?}", &obj1_hp);
+                debug!("The second object's Hp: {:?}", &obj2_hp);
             }
-            (None, None) => (),
+            _ => debug!(
+                "The collisioned entity, {} or {} is missing Hp, LinearVelocity or Mass",
+                entity1, entity2
+            ),
         }
     }
 }
 
-fn calc_damage(object: (Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
-    let (hp, linear, mass) = object;
+fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
+    let (_hp, linear, mass) = object;
 
     let speed: f32 = linear.x + linear.y + linear.z;
 
     // Speed * Mass = Force
     // By Isaac Newton
     // Probably...
-    (speed * **mass).abs()
+    (speed * ***mass).abs()
+}
+
+pub fn despawn_system(
+    mut commands: Commands,
+    query: Query<(Entity, &Hp), With<Hp>>,
+    targets: Query<&Target>,
+    asset_server: Res<AssetServer>,
+) {
+    for (entity, hp) in query.iter() {
+        if hp.rest <= 0. {
+            if targets.get(entity).is_ok() {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/kill.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
+            }
+
+            // Despawn the object
+            commands.entity(entity).despawn();
+            dbg!("Despawn!!");
+        }
+    }
 }

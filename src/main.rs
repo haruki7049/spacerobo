@@ -5,7 +5,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, Hp, player, systems, target::Target};
+use spacerobo::{player, systems, target::Target, CLIArgs, Hp};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -33,8 +33,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_systems(
             Update,
             (
-                player::movement::keyboard_mouse_system,
-                player::movement::controller_system,
+                player::movement::keyboard::update_system,
+                player::movement::mouse::update_system,
+                player::movement::controller::update_system,
                 player::ui::ui_system,
                 player::ui::exit_system,
                 player::ui::time_pause_system,
@@ -42,7 +43,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::toggle_select_fire_system,
             ),
         )
-        .add_systems(Update, systems::collision_detection_system)
+        .add_systems(
+            Update,
+            (systems::collision_detection_system, systems::despawn_system),
+        )
         .add_systems(FixedUpdate, player::gun::gun_cooling_system)
         .run();
 

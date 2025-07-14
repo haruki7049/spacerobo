@@ -1,6 +1,6 @@
 //! # Gun systems, components & etc...
 
-use crate::{Hp, player::Player};
+use crate::{player::Player, Hp};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -117,10 +117,10 @@ fn shoot(
         RigidBody::Dynamic,
         Collider::sphere(0.015625),
         LinearVelocity(bullet_force),
-        Mass(5.0),
+        Mass(3.0),
         CollisionEventsEnabled,
         Bullet,
-        Hp::light_ammo(),
+        Hp::ammo(),
     ));
 
     commands.spawn((
@@ -185,9 +185,9 @@ fn full_auto(
 /// Gun cooling system.
 /// It controls full auto's shoot interval.
 pub fn gun_cooling_system(mut gun: Query<&mut Gun>) {
-    let mut gun = gun.single_mut().unwrap();
-
-    gun.interval.rest -= gun.interval.amount;
+    for mut gun in gun.iter_mut() {
+        gun.interval.rest -= gun.interval.amount;
+    }
 }
 
 /// Toggle gun's select fire.
