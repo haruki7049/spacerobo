@@ -14,7 +14,6 @@ use crate::{
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use std::path::PathBuf;
 
 #[derive(Component)]
 pub struct Player {
@@ -27,12 +26,7 @@ pub fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     cli_args: Res<CLIArgs>,
 ) {
-    let configs_path: PathBuf = cli_args.config.clone().unwrap_or_else(|| {
-        confy::get_configuration_file_path("spacerobo", "config")
-            .expect("Failed to get path for spacerobo")
-    });
-    let configs: GameConfigs = confy::load_path(&configs_path).unwrap();
-
+    let configs: GameConfigs = confy::load_path(&cli_args.config_file).unwrap();
     let gap = 4.0;
 
     // Camera
