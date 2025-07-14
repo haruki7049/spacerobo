@@ -1,3 +1,5 @@
+//! # Player systems, Compoments & etc...
+
 #![allow(clippy::type_complexity)]
 
 pub mod config;
@@ -15,11 +17,13 @@ use crate::{
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
+/// Player Component
 #[derive(Component)]
 pub struct Player {
     config: Config,
 }
 
+/// setup system to spawn player entity
 pub fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,

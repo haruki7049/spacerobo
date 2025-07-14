@@ -1,3 +1,5 @@
+//! # Gun systems, components & etc...
+
 use crate::player::Player;
 use avian3d::prelude::*;
 use bevy::prelude::*;
@@ -178,12 +180,16 @@ fn full_auto(
     }
 }
 
+/// Gun cooling system.
+/// It controls full auto's shoot interval.
 pub fn gun_cooling_system(mut gun: Query<&mut Gun>) {
     let mut gun = gun.single_mut().unwrap();
 
     gun.interval.rest -= gun.interval.amount;
 }
 
+/// Toggle gun's select fire.
+/// Full auto <---> Semi auto
 pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
     if keyboard.just_pressed(KeyCode::KeyT) {
         let mut gun = gun.single_mut().unwrap();

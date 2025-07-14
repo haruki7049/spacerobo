@@ -1,3 +1,5 @@
+//! # UI systems, components & etc...
+
 use crate::{player::Player, target::Target};
 use bevy::prelude::*;
 use std::time::Duration;

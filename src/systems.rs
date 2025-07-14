@@ -1,3 +1,5 @@
+//! # System utils
+
 use bevy::prelude::*;
 use avian3d::prelude::*;
 use crate::{
@@ -5,6 +7,7 @@ use crate::{
     player::gun::Bullet,
 };
 
+/// This system detects the hits between a bullet and a target
 pub fn bullet_hit_detection_system(
     mut commands: Commands,
     mut collision_event_reader: EventReader<CollisionStarted>,

@@ -1,3 +1,5 @@
+//! # Player's Movement controlling systems
+
 use crate::player::Player;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};

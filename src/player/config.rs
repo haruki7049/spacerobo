@@ -1,6 +1,9 @@
+//! Player's Configuration
+
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
+/// Configuration struct
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Config {
     pub keyboard: KeyboardConfig,
@@ -8,6 +11,7 @@ pub struct Config {
     pub controller: ControllerConfig,
 }
 
+/// Keyboard Configurations. This structure usually contains keymappings.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct KeyboardConfig {
     // Movements
@@ -42,11 +46,13 @@ impl std::default::Default for KeyboardConfig {
     }
 }
 
+/// Mouse Configurations
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct MouseConfig {
     pub x_reverse: bool,
     pub y_reverse: bool,
 }
 
+/// Controller (Gamepad) Configurations
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct ControllerConfig {}

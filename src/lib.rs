@@ -1,3 +1,5 @@
+//! Spacerobo
+
 use bevy::prelude::*;
 use clap::Parser;
 use directories::ProjectDirs;
@@ -11,11 +13,13 @@ pub mod player;
 pub mod target;
 pub mod systems;
 
+/// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
 pub struct GameConfigs {
     player: player::config::Config,
 }
 
+/// Default Configuration Path, using directories crate to calculate ProjectDirs (~/.config/spacerobo)
 static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
     let proj_dirs = ProjectDirs::from("dev", "haruki7049", "spacerobo")
         .expect("Failed to search ProjectDirs for dev.haruki7049.spacerobo");
@@ -26,6 +30,8 @@ static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
     Mutex::new(config_path)
 });
 
+/// Command-Line Arguments, using clap crate
+/// This structure allows users to set an additional configuration file
 #[derive(Parser, Debug, Resource)]
 #[clap(version, author, about)]
 pub struct CLIArgs {

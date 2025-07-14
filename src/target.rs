@@ -1,3 +1,5 @@
+//! # Target Component
+
 use bevy::prelude::*;
 
 #[derive(Component)]
