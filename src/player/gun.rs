@@ -1,6 +1,6 @@
 //! # Gun systems, components & etc...
 
-use crate::player::Player;
+use crate::{Hp, player::Player};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -58,134 +58,153 @@ pub struct Muzzle;
 #[derive(Component)]
 pub struct Bullet;
 
-/// Gun shoot system
-pub fn gun_shoot_system(
-    commands: Commands,
-    query: (
-        Query<&mut Gun>,
-        Query<&GlobalTransform, With<Muzzle>>,
-        Query<&LinearVelocity, With<Player>>,
-    ),
-    meshes: ResMut<Assets<Mesh>>,
-    materials: ResMut<Assets<StandardMaterial>>,
-    mouse: Res<ButtonInput<MouseButton>>,
-    asset_server: Res<AssetServer>,
-) {
-    let (gun, _muzzle, _player) = &query;
-
-    match gun.single().unwrap() {
-        Gun {
-            select_fire: SelectFire::Semi,
-            ..
-        } => semi_auto(commands, query, meshes, materials, mouse, asset_server),
-        Gun {
-            select_fire: SelectFire::Full,
-            ..
-        } => full_auto(commands, query, meshes, materials, mouse, asset_server),
-    }
-}
-
-fn shoot(
+/// Semi auto
+pub fn semi_auto_system(
     mut commands: Commands,
-    query: (
-        Query<&mut Gun>,
-        Query<&GlobalTransform, With<Muzzle>>,
+    querys: (
+        Query<&ChildOf, With<Gun>>,
+        Query<(&GlobalTransform, &ChildOf), With<Muzzle>>,
         Query<&LinearVelocity, With<Player>>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    asset_server: Res<AssetServer>,
-) {
-    let (_gun, muzzle, player) = query;
-
-    let global_transform = muzzle.single().unwrap();
-    let bullet_origin: Vec3 = global_transform.translation();
-    let player_linear: Vec3 = player.single().unwrap().0;
-
-    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-    let bullet_force: Vec3 = direction * 200.0 + player_linear;
-    debug!("bullet_force: {}", bullet_force);
-
-    // ray_origin debugging by spawning a sphere
-    commands.spawn((
-        Transform::from_translation(bullet_origin),
-        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: Color::WHITE,
-            ..Default::default()
-        })),
-        RigidBody::Dynamic,
-        Collider::sphere(0.015625),
-        LinearVelocity(bullet_force),
-        CollisionEventsEnabled,
-        Bullet,
-    ));
-
-    commands.spawn((
-        Transform::from_translation(global_transform.translation()),
-        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-        PlaybackSettings::ONCE.with_spatial(false),
-    ));
-}
-
-/// Semi auto
-fn semi_auto(
-    commands: Commands,
-    query: (
-        Query<&mut Gun>,
-        Query<&GlobalTransform, With<Muzzle>>,
-        Query<&LinearVelocity, With<Player>>,
-    ),
-    meshes: ResMut<Assets<Mesh>>,
-    materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
     if mouse.just_pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
 
-        // Shoot!!
-        shoot(commands, query, meshes, materials, asset_server);
+        // Unpacking querys
+        let (gun_query, muzzle_query, player_query) = querys;
+
+        for childof in gun_query.iter() {
+            // If the parent entity is not player, Do nothing and return
+            if player_query.get(childof.parent()).is_err() {
+                return;
+            }
+
+            for (global_transform, childof) in muzzle_query.iter() {
+                // If the parent entity is not gun, Do nothing and return
+                if gun_query.get(childof.parent()).is_err() {
+                    return;
+                }
+
+                for player_linear in player_query.iter() {
+                    let bullet_origin: Vec3 = global_transform.translation();
+
+                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                    let bullet_force: Vec3 = direction * 200.0 + **player_linear;
+                    debug!("bullet_force: {}", bullet_force);
+
+                    // ray_origin debugging by spawning a sphere
+                    commands.spawn((
+                        Transform::from_translation(bullet_origin),
+                        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
+                        MeshMaterial3d(materials.add(StandardMaterial {
+                            base_color: Color::WHITE,
+                            ..Default::default()
+                        })),
+                        RigidBody::Dynamic,
+                        Collider::sphere(0.015625),
+                        LinearVelocity(bullet_force),
+                        Mass(3.0),
+                        CollisionEventsEnabled,
+                        Bullet,
+                        Hp::ammo(),
+                    ));
+
+                    commands.spawn((
+                        Transform::from_translation(global_transform.translation()),
+                        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
+                        PlaybackSettings::ONCE.with_spatial(false),
+                    ));
+                }
+            }
+        }
     }
 }
 
 /// Full auto
-fn full_auto(
-    commands: Commands,
-    mut query: (
-        Query<&mut Gun>,
-        Query<&GlobalTransform, With<Muzzle>>,
+pub fn full_auto_system(
+    mut commands: Commands,
+    mut querys: (
+        Query<(&mut Gun, &ChildOf), With<Gun>>,
+        Query<(&GlobalTransform, &ChildOf), With<Muzzle>>,
         Query<&LinearVelocity, With<Player>>,
     ),
-    meshes: ResMut<Assets<Mesh>>,
-    materials: ResMut<Assets<StandardMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
     if mouse.pressed(MouseButton::Left) {
         debug!("Mouse Left clicked");
 
-        let (ref mut gun_query, _muzzle_query, _player_query) = query;
-        let mut gun = gun_query.single_mut().unwrap();
-        if gun.interval.rest >= 0. {
-            debug!("Full auto shoot aborted because of the gun's interval");
-            return;
+        // Unpacking querys
+        let (ref mut gun_query, muzzle_query, player_query) = querys;
+
+        // Get muzzle's GlobalTransform
+        for (global_transform, childof) in muzzle_query.iter() {
+            // If the parent entity is not gun, Do nothing and return
+            if gun_query.get(childof.parent()).is_err() {
+                return;
+            }
+
+            for (mut gun, childof) in gun_query.iter_mut() {
+                // If the parent entity is not player, Do nothing and return
+                if player_query.get(childof.parent()).is_err() {
+                    return;
+                }
+
+                if gun.interval.rest >= 0. {
+                    debug!("Full auto shoot aborted because of the gun's interval");
+                    return;
+                }
+
+                // Full auto interval
+                gun.interval.rest = gun.interval.limit;
+
+                for player_linear in player_query.iter() {
+                    let bullet_origin: Vec3 = global_transform.translation();
+
+                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                    let bullet_force: Vec3 = direction * 200.0 + **player_linear;
+                    debug!("bullet_force: {}", bullet_force);
+
+                    // ray_origin debugging by spawning a sphere
+                    commands.spawn((
+                        Transform::from_translation(bullet_origin),
+                        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
+                        MeshMaterial3d(materials.add(StandardMaterial {
+                            base_color: Color::WHITE,
+                            ..Default::default()
+                        })),
+                        RigidBody::Dynamic,
+                        Collider::sphere(0.015625),
+                        LinearVelocity(bullet_force),
+                        Mass(3.0),
+                        CollisionEventsEnabled,
+                        Bullet,
+                        Hp::ammo(),
+                    ));
+
+                    commands.spawn((
+                        Transform::from_translation(global_transform.translation()),
+                        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
+                        PlaybackSettings::ONCE.with_spatial(false),
+                    ));
+                }
+            }
         }
-
-        // Full auto interval
-        gun.interval.rest = gun.interval.limit;
-
-        // Shoot!!
-        shoot(commands, query, meshes, materials, asset_server);
     }
 }
 
 /// Gun cooling system.
 /// It controls full auto's shoot interval.
 pub fn gun_cooling_system(mut gun: Query<&mut Gun>) {
-    let mut gun = gun.single_mut().unwrap();
-
-    gun.interval.rest -= gun.interval.amount;
+    for mut gun in gun.iter_mut() {
+        gun.interval.rest -= gun.interval.amount;
+    }
 }
 
 /// Toggle gun's select fire.

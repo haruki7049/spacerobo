@@ -5,7 +5,10 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, player, systems, target::Target};
+use spacerobo::{
+    CLIArgs, DeathEvent, Hp, player, system,
+    target::{self, Target},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -26,30 +29,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }),
             PhysicsPlugins::default(),
         ))
+        .add_event::<DeathEvent>()
         .insert_resource(args)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
-        .add_systems(Startup, (setup, player::setup, player::ui::setup))
+        .add_systems(
+            Startup,
+            (setup_system, player::setup_system, player::ui::setup_system),
+        )
         .add_systems(
             Update,
             (
-                player::movement::keyboard_mouse_system,
-                player::movement::controller_system,
+                player::movement::keyboard::update_system,
+                player::movement::mouse::update_system,
+                player::movement::controller::update_system,
                 player::ui::ui_system,
                 player::ui::exit_system,
                 player::ui::time_pause_system,
-                player::gun::gun_shoot_system,
+                player::gun::full_auto_system,
+                player::gun::semi_auto_system,
                 player::gun::toggle_select_fire_system,
             ),
         )
-        .add_systems(Update, systems::bullet_hit_detection_system)
         .add_systems(FixedUpdate, player::gun::gun_cooling_system)
+        .add_systems(
+            Update,
+            (
+                system::collision_detection_system,
+                system::gameover_system,
+                target::health_system,
+                player::system::health_system,
+            ),
+        )
         .run();
 
     Ok(())
 }
 
-fn setup(
+fn setup_system(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -75,7 +92,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -88,7 +107,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -101,7 +122,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -114,7 +137,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -127,7 +152,9 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 
     commands.spawn((
@@ -140,6 +167,8 @@ fn setup(
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
+        Mass(1.0),
         Target,
+        Hp::default(),
     ));
 }

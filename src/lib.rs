@@ -10,13 +10,24 @@ use std::{
 };
 
 pub mod player;
-pub mod systems;
+pub mod system;
 pub mod target;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
 pub struct GameConfigs {
     player: player::config::Config,
+}
+
+#[derive(Debug, Event)]
+pub struct DeathEvent {
+    entity: Entity,
+}
+
+impl DeathEvent {
+    pub fn new(entity: Entity) -> Self {
+        Self { entity }
+    }
 }
 
 /// Default Configuration Path, using directories crate to calculate ProjectDirs (~/.config/spacerobo)
@@ -37,4 +48,21 @@ static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
 pub struct CLIArgs {
     #[arg(short, long, default_value = DEFAULT_CONFIG_PATH.lock().unwrap().display().to_string())]
     config_file: PathBuf,
+}
+
+#[derive(Debug, Component)]
+pub struct Hp {
+    rest: f32,
+}
+
+impl std::default::Default for Hp {
+    fn default() -> Self {
+        Self { rest: 100. }
+    }
+}
+
+impl Hp {
+    pub fn ammo() -> Self {
+        Self { rest: 5. }
+    }
 }
