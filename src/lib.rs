@@ -44,7 +44,7 @@ static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
 /// Command-Line Arguments, using clap crate
 /// This structure allows users to set an additional configuration file
 #[derive(Parser, Debug, Resource)]
-#[clap(version, author, about)]
+#[clap(version, author, about = env!("CARGO_PKG_DESCRIPTION"))]
 pub struct CLIArgs {
     #[arg(short, long, default_value = DEFAULT_CONFIG_PATH.lock().unwrap().display().to_string())]
     config_file: PathBuf,

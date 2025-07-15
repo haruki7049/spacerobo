@@ -2,6 +2,7 @@
 name = "spacerobo"
 authors = ["haruki7049 <tontonkirikiri@gmail.com>"]
 version = "0.1.0"
+description = "A game to simulate a robo's moving in space"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
