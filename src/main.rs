@@ -6,8 +6,9 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo::{
-    CLIArgs, DeathEvent, Hp, player, system,
+    player, system,
     target::{self, Target},
+    CLIArgs, DeathEvent, Hp,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -43,9 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::movement::keyboard::update_system,
                 player::movement::mouse::update_system,
                 player::movement::controller::update_system,
-                player::ui::ui_system,
-                player::ui::exit_system,
-                player::ui::time_pause_system,
+                player::ui::update_system,
                 player::gun::full_auto_system,
                 player::gun::semi_auto_system,
                 player::gun::toggle_select_fire_system,

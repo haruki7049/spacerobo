@@ -1,6 +1,6 @@
 //! # UI systems, components & etc...
 
-use crate::{player::Player, target::Target};
+use crate::player::Player;
 use bevy::prelude::*;
 use std::time::Duration;
 
@@ -43,7 +43,7 @@ pub fn setup_system(mut commands: Commands) {
         ));
 }
 
-pub fn ui_system(
+pub fn update_system(
     mut spans: ParamSet<(
         Query<&mut TextSpan, With<HeadingIndicator>>,
         Query<&mut TextSpan, With<CoordinatesIndicator>>,
@@ -68,23 +68,5 @@ pub fn ui_system(
     for mut span in &mut spans.p2() {
         let time: Duration = time.elapsed();
         **span = format!("<{}.{}>\n", time.as_secs(), time.subsec_millis());
-    }
-}
-
-pub fn time_pause_system(mut time: ResMut<Time<Virtual>>, targets_query: Query<&Target>) {
-    // If time was paused then do nothing
-    if time.is_paused() {
-        return;
-    }
-
-    // If you destroy all the targets, the Timer stop.
-    if targets_query.is_empty() {
-        time.pause();
-    }
-}
-
-pub fn exit_system(mut exit: EventWriter<AppExit>, keyboard: Res<ButtonInput<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::Escape) {
-        exit.write(AppExit::Success);
     }
 }

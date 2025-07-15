@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,
+    mut exit: EventWriter<AppExit>,
     mut query: Query<
         (
             &Transform,
@@ -21,6 +22,11 @@ pub fn update_system(
         if keyboard.just_pressed(player.config.keyboard.hover) {
             angular.0 = Vec3::ZERO;
             linear.0 = Vec3::ZERO;
+        }
+
+        // Exit spacerobo
+        if keyboard.just_pressed(KeyCode::Escape) {
+            exit.write(AppExit::Success);
         }
 
         // Moving

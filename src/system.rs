@@ -2,8 +2,8 @@
 
 use crate::{DeathEvent, Hp, player::Player, target::Target};
 use avian3d::prelude::*;
-use bevy::prelude::*;
-use std::{thread::sleep, time::Duration};
+use bevy::{platform::thread::sleep, prelude::*};
+use std::time::Duration;
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
 /// This system is created to decrease the hp at contacted objects.
