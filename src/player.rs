@@ -4,16 +4,17 @@
 
 pub mod config;
 pub mod gun;
+pub mod health;
 pub mod movement;
 pub mod system;
 pub mod ui;
 
 use crate::{
-    CLIArgs, GameConfigs, GameMode, Hp,
     player::{
         config::Config,
-        gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
+        gun::{select_fire::SelectFire, Gun, Interval, Muzzle},
     },
+    CLIArgs, GameConfigs, GameMode, Hp,
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;

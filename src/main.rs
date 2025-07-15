@@ -56,8 +56,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::select_fire::toggle_select_fire_system,
                 // Systems
                 system::gameover_system,
-                target::health_system,
-                player::system::health_system,
+                target::health::update_system,
+                player::health::update_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )
@@ -82,8 +82,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::select_fire::toggle_select_fire_system,
                 // Systems
                 scenes::versus::multi_player_system,
-                target::health_system,
-                player::system::health_system,
+                target::health::update_system,
+                player::health::update_system,
             )
                 .run_if(in_state(GameMode::Versus)),
         )
