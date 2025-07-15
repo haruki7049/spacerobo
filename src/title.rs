@@ -2,7 +2,7 @@ use crate::GameMode;
 use bevy::prelude::*;
 
 pub fn setup_system(mut commands: Commands) {
-    commands.spawn((StateScoped(GameMode::Title), Camera2d::default()));
+    commands.spawn((StateScoped(GameMode::Title), Camera2d));
 
     commands
         .spawn((
@@ -17,7 +17,7 @@ pub fn setup_system(mut commands: Commands) {
             "Spacerobo v{}\n",
             env!("CARGO_PKG_VERSION")
         )))
-        .with_child(TextSpan::new(format!("Press Space key...",)));
+        .with_child(TextSpan::new("Press Space key...".to_string()));
 }
 
 pub fn input_detection_system(
