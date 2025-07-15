@@ -3,6 +3,7 @@
 pub mod select_fire;
 
 use bevy::prelude::*;
+use crate::player::gun::select_fire::SelectFire;
 
 const BULLET_SIZE: f32 = 1. / 16.;
 
@@ -37,17 +38,6 @@ pub struct Interval {
 
     /// A number for rest_interval decrementing
     pub amount: f32,
-}
-
-/// Select fire setting for Gun component
-#[derive(Clone, Copy, Default)]
-pub enum SelectFire {
-    /// Semi auto
-    #[default]
-    Semi,
-
-    /// Full auto
-    Full,
 }
 
 /// A marker component to know muzzle's transform

@@ -12,7 +12,7 @@ use crate::{
     CLIArgs, GameConfigs, Hp,
     player::{
         config::Config,
-        gun::{Gun, Interval, Muzzle, SelectFire},
+        gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
     },
 };
 use avian3d::prelude::*;

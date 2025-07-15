@@ -1,12 +1,23 @@
 use crate::{
-    Hp,
     player::{
-        Gun, Muzzle, Player, SelectFire,
-        gun::{BULLET_SIZE, Bullet},
+        gun::{Bullet, BULLET_SIZE, Gun},
+        Muzzle, Player,
     },
+    Hp,
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
+
+/// Select fire setting for Gun component
+#[derive(Clone, Copy, Default)]
+pub enum SelectFire {
+    /// Semi auto
+    #[default]
+    Semi,
+
+    /// Full auto
+    Full,
+}
 
 /// Semi auto
 pub fn semi_auto_system(
