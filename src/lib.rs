@@ -31,6 +31,7 @@ pub enum GameMode {
     #[default]
     Title,
     ShootingRange,
+    Versus,
 }
 
 impl DeathEvent {
