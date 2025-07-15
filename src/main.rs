@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .insert_resource(Time::<Virtual>::default())
         .add_systems(
             OnEnter(GameMode::Title),
-            scenes::title::setup_system.run_if(in_state(GameMode::Title)),
+            scenes::title::setup_system,
         )
         .add_systems(
             Update,
