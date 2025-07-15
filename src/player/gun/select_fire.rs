@@ -1,15 +1,15 @@
 use crate::{
-    Hp,
     player::{
+        gun::{Bullet, Gun, BULLET_SIZE},
         Muzzle, Player,
-        gun::{BULLET_SIZE, Bullet, Gun},
     },
+    Hp,
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
 /// Select fire setting for Gun component
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum SelectFire {
     /// Semi auto
     #[default]
@@ -23,7 +23,7 @@ pub enum SelectFire {
 pub fn semi_auto_system(
     mut commands: Commands,
     querys: (
-        Query<&ChildOf, With<Gun>>,
+        Query<(&Gun, &ChildOf), With<Gun>>,
         Query<(&GlobalTransform, &ChildOf), With<Muzzle>>,
         Query<&LinearVelocity, With<Player>>,
     ),
@@ -32,13 +32,13 @@ pub fn semi_auto_system(
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    if mouse.just_pressed(MouseButton::Left) {
-        debug!("Mouse Left clicked");
+    // Unpacking querys
+    let (gun_query, muzzle_query, player_query) = querys;
 
-        // Unpacking querys
-        let (gun_query, muzzle_query, player_query) = querys;
+    for (gun, childof) in gun_query.iter() {
+        if mouse.just_pressed(MouseButton::Left) && gun.select_fire == SelectFire::Semi {
+            debug!("Mouse Left clicked");
 
-        for childof in gun_query.iter() {
             // If the parent entity is not player, Do nothing and return
             if player_query.get(childof.parent()).is_err() {
                 return;
@@ -98,20 +98,20 @@ pub fn full_auto_system(
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    if mouse.pressed(MouseButton::Left) {
-        debug!("Mouse Left clicked");
+    // Unpacking querys
+    let (ref mut gun_query, muzzle_query, player_query) = querys;
 
-        // Unpacking querys
-        let (ref mut gun_query, muzzle_query, player_query) = querys;
+    // Get muzzle's GlobalTransform
+    for (global_transform, childof) in muzzle_query.iter() {
+        // If the parent entity is not gun, Do nothing and return
+        if gun_query.get(childof.parent()).is_err() {
+            return;
+        }
 
-        // Get muzzle's GlobalTransform
-        for (global_transform, childof) in muzzle_query.iter() {
-            // If the parent entity is not gun, Do nothing and return
-            if gun_query.get(childof.parent()).is_err() {
-                return;
-            }
+        for (mut gun, childof) in gun_query.iter_mut() {
+            if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
+                debug!("Mouse Left clicked");
 
-            for (mut gun, childof) in gun_query.iter_mut() {
                 // If the parent entity is not player, Do nothing and return
                 if player_query.get(childof.parent()).is_err() {
                     return;

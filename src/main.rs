@@ -6,8 +6,9 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo::{
-    CLIArgs, DeathEvent, Hp, player, system,
+    player, system,
     target::{self, Target},
+    CLIArgs, DeathEvent, Hp,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -53,12 +54,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_systems(
             Update,
             (
-                system::collision_detection_system,
                 system::gameover_system,
                 target::health_system,
                 player::system::health_system,
             ),
         )
+        .add_systems(FixedUpdate, system::collision_detection_system)
         .run();
 
     Ok(())
