@@ -12,7 +12,7 @@ use std::{
 pub mod player;
 pub mod system;
 pub mod target;
-pub mod title;
+pub mod scenes;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
