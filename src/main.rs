@@ -30,10 +30,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .insert_resource(args)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
-        .add_systems(
-            OnEnter(GameMode::Title),
-            scenes::title::setup_system,
-        )
+        .add_systems(OnEnter(GameMode::Title), scenes::title::setup_system)
         .add_systems(
             Update,
             (scenes::title::input_detection_system).run_if(in_state(GameMode::Title)),
