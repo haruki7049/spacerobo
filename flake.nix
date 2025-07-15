@@ -143,6 +143,7 @@
 
             # Rust
             programs.rustfmt.enable = true;
+            programs.rustfmt.package = rust;
 
             # TOML
             programs.taplo.enable = true;

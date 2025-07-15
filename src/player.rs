@@ -6,7 +6,6 @@ pub mod config;
 pub mod gun;
 pub mod health;
 pub mod movement;
-pub mod system;
 pub mod ui;
 
 use crate::{
