@@ -9,7 +9,7 @@ pub mod system;
 pub mod ui;
 
 use crate::{
-    CLIArgs, GameConfigs, Hp,
+    CLIArgs, GameConfigs, GameMode, Hp,
     player::{
         config::Config,
         gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
@@ -37,6 +37,7 @@ pub fn setup_system(
     // Camera
     commands
         .spawn((
+            StateScoped(GameMode::ShootingRange),
             Camera3d::default(),
             Transform::from_xyz(0., 0., 0.),
             RigidBody::Dynamic,

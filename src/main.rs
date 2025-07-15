@@ -6,8 +6,9 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo::{
-    CLIArgs, DeathEvent, Hp, player, system,
+    CLIArgs, DeathEvent, GameMode, Hp, player, system,
     target::{self, Target},
+    title,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -29,17 +30,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }),
             PhysicsPlugins::default(),
         ))
+        .init_state::<GameMode>()
         .add_event::<DeathEvent>()
         .insert_resource(args)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
         .add_systems(
-            Startup,
+            OnEnter(GameMode::Title),
+            title::setup_system.run_if(in_state(GameMode::Title)),
+        )
+        .add_systems(
+            Update,
+            (title::input_detection_system).run_if(in_state(GameMode::Title)),
+        )
+        .add_systems(
+            OnEnter(GameMode::ShootingRange),
             (setup_system, player::setup_system, player::ui::setup_system),
         )
         .add_systems(
             Update,
             (
+                // Player
                 player::movement::keyboard::update_system,
                 player::movement::mouse::update_system,
                 player::movement::controller::update_system,
@@ -47,18 +58,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::select_fire::full_auto_system,
                 player::gun::select_fire::semi_auto_system,
                 player::gun::select_fire::toggle_select_fire_system,
-            ),
-        )
-        .add_systems(FixedUpdate, player::gun::gun_cooling_system)
-        .add_systems(
-            Update,
-            (
+                // Systems
                 system::gameover_system,
                 target::health_system,
                 player::system::health_system,
-            ),
+            )
+                .run_if(in_state(GameMode::ShootingRange)),
         )
-        .add_systems(FixedUpdate, system::collision_detection_system)
+        .add_systems(
+            FixedUpdate,
+            (
+                // Player
+                player::gun::gun_cooling_system,
+                // Systems
+                system::collision_detection_system,
+            )
+                .run_if(in_state(GameMode::ShootingRange)),
+        )
         .run();
 
     Ok(())
@@ -81,6 +97,7 @@ fn setup_system(
 
     // Targets
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: RED.into(),
@@ -96,6 +113,7 @@ fn setup_system(
     ));
 
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: BLUE.into(),
@@ -111,6 +129,7 @@ fn setup_system(
     ));
 
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: GREEN.into(),
@@ -126,6 +145,7 @@ fn setup_system(
     ));
 
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: YELLOW.into(),
@@ -141,6 +161,7 @@ fn setup_system(
     ));
 
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: SILVER.into(),
@@ -156,6 +177,7 @@ fn setup_system(
     ));
 
     commands.spawn((
+        StateScoped(GameMode::ShootingRange),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: BLACK.into(),

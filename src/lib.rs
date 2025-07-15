@@ -12,6 +12,7 @@ use std::{
 pub mod player;
 pub mod system;
 pub mod target;
+pub mod title;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
@@ -22,6 +23,14 @@ pub struct GameConfigs {
 #[derive(Debug, Event)]
 pub struct DeathEvent {
     entity: Entity,
+}
+
+#[derive(Debug, States, Default, Hash, Eq, PartialEq, Clone)]
+#[states(scoped_entities)]
+pub enum GameMode {
+    #[default]
+    Title,
+    ShootingRange,
 }
 
 impl DeathEvent {
