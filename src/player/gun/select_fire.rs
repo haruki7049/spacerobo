@@ -1,9 +1,9 @@
 use crate::{
-    player::{
-        gun::{Bullet, BULLET_SIZE, Gun},
-        Muzzle, Player,
-    },
     Hp,
+    player::{
+        Muzzle, Player,
+        gun::{BULLET_SIZE, Bullet, Gun},
+    },
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
