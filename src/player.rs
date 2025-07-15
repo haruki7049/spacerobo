@@ -10,11 +10,11 @@ pub mod system;
 pub mod ui;
 
 use crate::{
+    CLIArgs, GameConfigs, GameMode, Hp,
     player::{
         config::Config,
-        gun::{select_fire::SelectFire, Gun, Interval, Muzzle},
+        gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
     },
-    CLIArgs, GameConfigs, GameMode, Hp,
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;

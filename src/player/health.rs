@@ -1,4 +1,4 @@
-use crate::{player::Player, DeathEvent};
+use crate::{DeathEvent, player::Player};
 use bevy::prelude::*;
 
 pub fn update_system(
