@@ -1,9 +1,9 @@
+use crate::{GameMode, Hp, target::Target};
+use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
     prelude::*,
 };
-use avian3d::prelude::*;
-use crate::{Hp, target::Target, GameMode};
 
 pub fn setup_system(
     mut commands: Commands,
