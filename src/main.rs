@@ -45,9 +45,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::movement::mouse::update_system,
                 player::movement::controller::update_system,
                 player::ui::update_system,
-                player::gun::full_auto_system,
-                player::gun::semi_auto_system,
-                player::gun::toggle_select_fire_system,
+                player::gun::select_fire::full_auto_system,
+                player::gun::select_fire::semi_auto_system,
+                player::gun::select_fire::toggle_select_fire_system,
             ),
         )
         .add_systems(FixedUpdate, player::gun::gun_cooling_system)
