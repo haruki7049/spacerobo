@@ -1,6 +1,6 @@
 //! # System utils
 
-use crate::{player::Player, target::Target, DeathEvent, Hp};
+use crate::{DeathEvent, Hp, player::Player, target::Target};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use std::{thread::sleep, time::Duration};
