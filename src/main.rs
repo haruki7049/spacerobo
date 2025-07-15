@@ -6,9 +6,8 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo::{
-    player, system,
+    CLIArgs, DeathEvent, Hp, player, system,
     target::{self, Target},
-    CLIArgs, DeathEvent, Hp,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
