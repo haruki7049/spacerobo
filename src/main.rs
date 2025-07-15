@@ -56,6 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Update,
             (
                 system::collision_detection_system,
+                system::gameover_system,
                 target::health_system,
                 player::system::health_system,
             ),
