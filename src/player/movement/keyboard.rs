@@ -37,7 +37,7 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.forward;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -59,7 +59,7 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.left;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_X;
@@ -81,7 +81,7 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.back;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::Z;
@@ -103,7 +103,7 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.right;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::X;
@@ -124,7 +124,7 @@ pub fn update_system(
                 PlaybackSettings::ONCE.with_spatial(false),
             ));
 
-            let force: f32 = player.config.robo.thruster.force.roll_left;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -143,7 +143,7 @@ pub fn update_system(
                 PlaybackSettings::ONCE.with_spatial(false),
             ));
 
-            let force: f32 = player.config.robo.thruster.force.roll_right;
+            let force: f32 = player.config.robo.thruster.force.dash;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::Z;

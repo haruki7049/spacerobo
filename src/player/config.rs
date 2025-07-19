@@ -28,12 +28,8 @@ pub struct ThrusterConfig {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ForceConfig {
     // Keyboard
-    pub forward: f32,
-    pub back: f32,
-    pub left: f32,
-    pub right: f32,
-    pub roll_left: f32,
-    pub roll_right: f32,
+    pub accelerate: f32,
+    pub dash: f32,
 
     // Mouse
     pub pitch: f32,
@@ -43,12 +39,8 @@ pub struct ForceConfig {
 impl std::default::Default for ForceConfig {
     fn default() -> Self {
         Self {
-            forward: 10.0,
-            back: 10.0,
-            left: 10.0,
-            right: 10.0,
-            roll_left: 3.0,
-            roll_right: 3.0,
+            accelerate: 0.1,
+            dash: 3.0,
             pitch: 1.0,
             yaw: 1.0,
         }
@@ -66,6 +58,8 @@ pub struct KeyboardConfig {
     pub roll_left: KeyCode,
     pub roll_right: KeyCode,
 
+    pub dash: KeyCode,
+
     // Hovering
     pub hover: KeyCode,
 
@@ -82,6 +76,8 @@ impl std::default::Default for KeyboardConfig {
             right: KeyCode::KeyD,
             roll_left: KeyCode::KeyQ,
             roll_right: KeyCode::KeyE,
+
+            dash: KeyCode::ShiftLeft,
 
             hover: KeyCode::ControlLeft,
 
