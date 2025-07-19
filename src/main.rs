@@ -47,9 +47,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Update,
             (
                 // Player
-                player::movement::keyboard::update_system,
-                player::movement::mouse::update_system,
-                player::movement::controller::update_system,
                 player::ui::update_system,
                 player::gun::select_fire::full_auto_system,
                 player::gun::select_fire::semi_auto_system,
@@ -58,6 +55,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 system::gameover_system,
                 target::health::update_system,
                 player::health::update_system,
+            )
+                .run_if(in_state(GameMode::ShootingRange)),
+        )
+        .add_systems(
+            FixedUpdate,
+            (
+                // Player movement systems
+                player::movement::keyboard::update_system,
+                player::movement::mouse::update_system,
+                player::movement::controller::update_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )

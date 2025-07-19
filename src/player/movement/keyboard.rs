@@ -37,14 +37,14 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            const FORCE: f32 = 10.0;
+            let force: f32 = player.config.robo.thruster.force.forward;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             velocity += result;
@@ -59,14 +59,14 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            const FORCE: f32 = 10.0;
+            let force: f32 = player.config.robo.thruster.force.left;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_X;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             velocity += result;
@@ -81,14 +81,14 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            const FORCE: f32 = 10.0;
+            let force: f32 = player.config.robo.thruster.force.back;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             velocity += result;
@@ -103,14 +103,14 @@ pub fn update_system(
             ));
 
             let mut velocity: Vec3 = Vec3::ZERO;
-            const FORCE: f32 = 10.0;
+            let force: f32 = player.config.robo.thruster.force.right;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::X;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             velocity += result;
@@ -124,14 +124,14 @@ pub fn update_system(
                 PlaybackSettings::ONCE.with_spatial(false),
             ));
 
-            const FORCE: f32 = 3.0;
+            let force: f32 = player.config.robo.thruster.force.roll_left;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             angular.0 += result;
@@ -143,14 +143,14 @@ pub fn update_system(
                 PlaybackSettings::ONCE.with_spatial(false),
             ));
 
-            const FORCE: f32 = 3.0;
+            let force: f32 = player.config.robo.thruster.force.roll_right;
 
             let rotation: Quat = transform.rotation;
             let direction: Vec3 = rotation * Vec3::Z;
 
-            let x: f32 = FORCE * direction.x;
-            let y: f32 = FORCE * direction.y;
-            let z: f32 = FORCE * direction.z;
+            let x: f32 = force * direction.x;
+            let y: f32 = force * direction.y;
+            let z: f32 = force * direction.z;
             let result: Vec3 = Vec3::new(x, y, z);
 
             angular.0 += result;

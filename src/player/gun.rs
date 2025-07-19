@@ -5,7 +5,7 @@ pub mod select_fire;
 use crate::player::gun::select_fire::SelectFire;
 use bevy::prelude::*;
 
-const BULLET_SIZE: f32 = 1. / 16.;
+const BULLET_SIZE: f32 = 1. / 8.;
 
 /// Gun component
 #[derive(Component, Default)]
