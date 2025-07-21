@@ -25,7 +25,7 @@ pub fn update_system(
         }
 
         // Exit spacerobo
-        if keyboard.just_pressed(KeyCode::Escape) {
+        if keyboard.just_pressed(player.config.keyboard.quit) {
             exit.write(AppExit::Success);
         }
 

@@ -65,6 +65,9 @@ pub struct KeyboardConfig {
 
     // Gun
     pub toggle_firemode: KeyCode,
+
+    // Game quit key
+    pub quit: KeyCode,
 }
 
 impl std::default::Default for KeyboardConfig {
@@ -82,6 +85,8 @@ impl std::default::Default for KeyboardConfig {
             hover: KeyCode::ControlLeft,
 
             toggle_firemode: KeyCode::KeyT,
+
+            quit: KeyCode::Escape,
         }
     }
 }
