@@ -40,7 +40,7 @@ impl std::default::Default for ForceConfig {
     fn default() -> Self {
         Self {
             accelerate: 0.1,
-            dash: 3.0,
+            dash: 10.0,
             pitch: 1.0,
             yaw: 1.0,
         }
