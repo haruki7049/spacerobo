@@ -54,6 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 // Systems
                 system::gameover_system,
                 target::health::update_system,
+                player::gun::bullet::health::update_system,
                 player::health::update_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),

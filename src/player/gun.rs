@@ -1,6 +1,7 @@
 //! # Gun systems, components & etc...
 
 pub mod select_fire;
+pub mod bullet;
 
 use crate::player::gun::select_fire::SelectFire;
 use bevy::prelude::*;
@@ -43,10 +44,6 @@ pub struct Interval {
 /// A marker component to know muzzle's transform
 #[derive(Component)]
 pub struct Muzzle;
-
-/// A marker component for a bullet shot by a Gun
-#[derive(Component)]
-pub struct Bullet;
 
 /// Gun cooling system.
 /// It controls full auto's shoot interval.
