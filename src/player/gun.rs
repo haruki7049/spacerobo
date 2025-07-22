@@ -1,7 +1,7 @@
 //! # Gun systems, components & etc...
 
-pub mod select_fire;
 pub mod bullet;
+pub mod select_fire;
 
 use crate::player::gun::select_fire::SelectFire;
 use bevy::prelude::*;
