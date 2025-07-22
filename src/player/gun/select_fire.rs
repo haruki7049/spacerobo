@@ -2,7 +2,7 @@ use crate::{
     Hp,
     player::{
         Muzzle, Player,
-        gun::{BULLET_SIZE, Bullet, Gun},
+        gun::{BULLET_SIZE, Gun, bullet::Bullet},
     },
 };
 use avian3d::prelude::*;

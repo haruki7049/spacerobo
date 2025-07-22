@@ -27,13 +27,13 @@ pub fn update_system(
                     rotation * Vec3::Y
                 };
 
-                let x_result: f32 = mouse.x * direction.x;
-                let y_result: f32 = mouse.x * direction.y;
-                let z_result: f32 = mouse.x * direction.z;
+                let x: f32 = mouse.x * direction.x;
+                let y: f32 = mouse.x * direction.y;
+                let z: f32 = mouse.x * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-                velocity.x += x_result;
-                velocity.y += y_result;
-                velocity.z += z_result;
+                // Add yaw thruster's info
+                velocity += result * player.config.robo.thruster.force.yaw;
             }
 
             // Mouse Y
@@ -44,18 +44,16 @@ pub fn update_system(
                     rotation * Vec3::X
                 };
 
-                let x_result: f32 = mouse.y * direction.x;
-                let y_result: f32 = mouse.y * direction.y;
-                let z_result: f32 = mouse.y * direction.z;
+                let x: f32 = mouse.y * direction.x;
+                let y: f32 = mouse.y * direction.y;
+                let z: f32 = mouse.y * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-                velocity.x += x_result;
-                velocity.y += y_result;
-                velocity.z += z_result;
+                // Add pitch thruster's info
+                velocity += result * player.config.robo.thruster.force.pitch;
             }
 
-            angular.x += velocity.x;
-            angular.y += velocity.y;
-            angular.z += velocity.z;
+            angular.0 += velocity;
         }
     }
 }

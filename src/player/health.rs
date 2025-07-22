@@ -1,7 +1,7 @@
 use crate::{DeathEvent, player::Player};
 use bevy::prelude::*;
 
-pub fn health_system(
+pub fn update_system(
     mut commands: Commands,
     mut event_reader: EventReader<DeathEvent>,
     query: Query<&Player>,

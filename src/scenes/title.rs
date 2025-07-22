@@ -17,7 +17,9 @@ pub fn setup_system(mut commands: Commands) {
             "Spacerobo v{}\n",
             env!("CARGO_PKG_VERSION")
         )))
-        .with_child(TextSpan::new("Press Space key...".to_string()));
+        .with_child(TextSpan::new(
+            "Press space key => Shooting Range\n".to_string(),
+        ));
 }
 
 pub fn input_detection_system(

@@ -10,9 +10,9 @@ use std::{
 };
 
 pub mod player;
+pub mod scenes;
 pub mod system;
 pub mod target;
-pub mod title;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]

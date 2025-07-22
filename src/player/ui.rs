@@ -2,7 +2,6 @@
 
 use crate::player::Player;
 use bevy::prelude::*;
-use std::time::Duration;
 
 #[derive(Component)]
 pub struct HeadingIndicator;
@@ -32,14 +31,6 @@ pub fn setup_system(mut commands: Commands) {
                 ..default()
             }),
             CoordinatesIndicator,
-        ))
-        .with_child((
-            TextSpan::default(),
-            TextFont {
-                font_size: 21.0,
-                ..Default::default()
-            },
-            Timer,
         ));
 }
 
@@ -50,7 +41,6 @@ pub fn update_system(
         Query<&mut TextSpan, With<Timer>>,
     )>,
     player_query: Query<&mut Transform, With<Player>>,
-    time: Res<Time<Virtual>>,
 ) {
     for mut span in &mut spans.p0() {
         for transform in &player_query {
@@ -63,10 +53,5 @@ pub fn update_system(
         for transform in &player_query {
             **span = format!("[{:.2}]\n", transform.translation);
         }
-    }
-
-    for mut span in &mut spans.p2() {
-        let time: Duration = time.elapsed();
-        **span = format!("<{}.{}>\n", time.as_secs(), time.subsec_millis());
     }
 }

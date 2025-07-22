@@ -4,8 +4,8 @@
 
 pub mod config;
 pub mod gun;
+pub mod health;
 pub mod movement;
-pub mod system;
 pub mod ui;
 
 use crate::{
@@ -31,8 +31,13 @@ pub fn setup_system(
     mut materials: ResMut<Assets<StandardMaterial>>,
     cli_args: Res<CLIArgs>,
 ) {
-    let configs: GameConfigs = confy::load_path(&cli_args.config_file).unwrap();
+    let configs: GameConfigs = confy::load_path(&cli_args.config_file).unwrap_or_else(|_| {
+        info!("Running Spacerobo with default GameConfigs...");
+        GameConfigs::default()
+    });
     let gap = 4.0;
+
+    debug!("Your GameConfigs: {:?}", configs);
 
     // Camera
     commands
