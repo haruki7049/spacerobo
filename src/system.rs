@@ -1,9 +1,8 @@
 //! # System utils
 
-use crate::{DeathEvent, Hp, player::Player, target::Target};
+use crate::{DeathEvent, Hp};
 use avian3d::prelude::*;
-use bevy::{platform::thread::sleep, prelude::*};
-use std::time::Duration;
+use bevy::prelude::*;
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
 /// This system is created to decrease the hp at contacted objects.
@@ -44,25 +43,6 @@ pub fn collision_detection_system(
                 entity1, entity2
             ),
         }
-    }
-}
-
-pub fn gameover_system(
-    players: Query<&Player>,
-    targets: Query<&Target>,
-    mut exit: EventWriter<AppExit>,
-) {
-    if targets.is_empty() {
-        info!("No targets detected. GAMECLEAR!!");
-
-        let duration: Duration = Duration::from_secs(3);
-        sleep(duration);
-        exit.write(AppExit::Success);
-    }
-
-    if players.is_empty() {
-        info!("No targets detected. GAMEOVER...");
-        exit.write(AppExit::Success);
     }
 }
 
