@@ -29,143 +29,244 @@ pub fn update_system(
             exit.write(AppExit::Success);
         }
 
-        // Moving
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.forward)
+        // Accelerate
         {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+            if keyboard.pressed(player.config.keyboard.forward) {
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.accelerate;
 
-            let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.dash;
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::NEG_Z;
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                velocity += result;
 
-            velocity += result;
+                linear.0 += velocity;
+            }
 
-            linear.0 += velocity;
+            if keyboard.pressed(player.config.keyboard.left) {
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.accelerate;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_X;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                velocity += result;
+
+                linear.0 += velocity;
+            }
+
+            if keyboard.pressed(player.config.keyboard.back) {
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.accelerate;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::Z;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                velocity += result;
+
+                linear.0 += velocity;
+            }
+
+            if keyboard.pressed(player.config.keyboard.right) {
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.accelerate;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::X;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                velocity += result;
+
+                linear.0 += velocity;
+            }
+
+            if keyboard.pressed(player.config.keyboard.roll_left) {
+                let force: f32 = player.config.robo.thruster.force.accelerate;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_Z;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                angular.0 += result;
+            }
+
+            if keyboard.pressed(player.config.keyboard.roll_right) {
+                let force: f32 = player.config.robo.thruster.force.accelerate;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::Z;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                angular.0 += result;
+            }
         }
 
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.left)
+        // Dash
         {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.forward)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
 
-            let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.dash;
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.dash;
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::NEG_X;
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+                velocity += result;
 
-            linear.0 += velocity;
-        }
+                linear.0 += velocity;
+            }
 
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.back)
-        {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.left)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
 
-            let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.dash;
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.dash;
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::Z;
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_X;
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+                velocity += result;
 
-            linear.0 += velocity;
-        }
+                linear.0 += velocity;
+            }
 
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.right)
-        {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.back)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
 
-            let mut velocity: Vec3 = Vec3::ZERO;
-            let force: f32 = player.config.robo.thruster.force.dash;
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.dash;
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::X;
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::Z;
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-            velocity += result;
+                velocity += result;
 
-            linear.0 += velocity;
-        }
+                linear.0 += velocity;
+            }
 
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.roll_left)
-        {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.right)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
 
-            let force: f32 = player.config.robo.thruster.force.dash;
+                let mut velocity: Vec3 = Vec3::ZERO;
+                let force: f32 = player.config.robo.thruster.force.dash;
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::NEG_Z;
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::X;
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
 
-            angular.0 += result;
-        }
+                velocity += result;
 
-        if keyboard.pressed(player.config.keyboard.dash)
-            && keyboard.just_pressed(player.config.keyboard.roll_right)
-        {
-            commands.spawn((
-                AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
+                linear.0 += velocity;
+            }
 
-            let force: f32 = player.config.robo.thruster.force.dash;
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.roll_left)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
 
-            let rotation: Quat = transform.rotation;
-            let direction: Vec3 = rotation * Vec3::Z;
+                let force: f32 = player.config.robo.thruster.force.dash;
 
-            let x: f32 = force * direction.x;
-            let y: f32 = force * direction.y;
-            let z: f32 = force * direction.z;
-            let result: Vec3 = Vec3::new(x, y, z);
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::NEG_Z;
 
-            angular.0 += result;
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                angular.0 += result;
+            }
+
+            if keyboard.pressed(player.config.keyboard.dash)
+                && keyboard.just_pressed(player.config.keyboard.roll_right)
+            {
+                commands.spawn((
+                    AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
+                    PlaybackSettings::ONCE.with_spatial(false),
+                ));
+
+                let force: f32 = player.config.robo.thruster.force.dash;
+
+                let rotation: Quat = transform.rotation;
+                let direction: Vec3 = rotation * Vec3::Z;
+
+                let x: f32 = force * direction.x;
+                let y: f32 = force * direction.y;
+                let z: f32 = force * direction.z;
+                let result: Vec3 = Vec3::new(x, y, z);
+
+                angular.0 += result;
+            }
         }
     }
 }
