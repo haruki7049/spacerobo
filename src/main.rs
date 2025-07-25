@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, DeathEvent, GameMode, player, scenes, system, target};
+use spacerobo::{CLIArgs, DeathEvent, GameMode, player, scenes, system};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -52,9 +52,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::select_fire::semi_auto_system,
                 player::gun::select_fire::toggle_select_fire_system,
                 // Systems
-                target::health::update_system,
                 player::gun::bullet::health::update_system,
                 player::health::update_system,
+                scenes::shooting_range::health::update_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )

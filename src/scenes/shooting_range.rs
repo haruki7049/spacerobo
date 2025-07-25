@@ -1,9 +1,14 @@
-use crate::{GameMode, Hp, target::Target};
+pub mod health;
+
+use crate::{GameMode, Hp};
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLACK, BLUE, GREEN, RED, SILVER, YELLOW},
     prelude::*,
 };
+
+#[derive(Component)]
+pub struct Target;
 
 pub fn setup_system(
     mut commands: Commands,

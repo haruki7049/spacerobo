@@ -12,7 +12,6 @@ use std::{
 pub mod player;
 pub mod scenes;
 pub mod system;
-pub mod target;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default)]
