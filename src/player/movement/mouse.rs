@@ -11,8 +11,8 @@ pub fn update_system(
         if accumulated_mouse_motion.delta != Vec2::ZERO {
             let delta = accumulated_mouse_motion.delta;
 
-            let x = delta.x * -1. / 100.;
-            let y = delta.y * -1. / 100.;
+            let x = -delta.x / 100.;
+            let y = -delta.y / 100.;
             let mouse: Vec2 = Vec2::new(x, y);
 
             let rotation: Quat = transform.rotation;
