@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, DeathEvent, GameMode, player, scenes};
+use spacerobo::{cli::CLIArgs, DeathEvent, GameMode, player, scenes};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
