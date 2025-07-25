@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{CLIArgs, DeathEvent, GameMode, player, scenes, system};
+use spacerobo::{CLIArgs, DeathEvent, GameMode, player, scenes};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -30,11 +30,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .insert_resource(args)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
+        // Title
         .add_systems(OnEnter(GameMode::Title), scenes::title::setup_system)
         .add_systems(
             Update,
             (scenes::title::input_detection_system).run_if(in_state(GameMode::Title)),
         )
+        // Shooting range
         .add_systems(
             OnEnter(GameMode::ShootingRange),
             (
@@ -55,6 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::gun::bullet::health::update_system,
                 player::health::update_system,
                 scenes::shooting_range::health::update_system,
+                scenes::shooting_range::collision_detection_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )
@@ -65,17 +68,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 player::movement::keyboard::update_system,
                 player::movement::mouse::update_system,
                 player::movement::controller::update_system,
+                // Player gun systems
+                player::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
-        )
-        .add_systems(
-            FixedUpdate,
-            (
-                // Player
-                player::gun::gun_cooling_system,
-                // Systems
-                system::collision_detection_system,
-            ),
         )
         .run();
 
