@@ -1,5 +1,5 @@
-use clap::Parser;
 use bevy::prelude::*;
+use clap::Parser;
 use directories::ProjectDirs;
 use std::{
     path::PathBuf,
@@ -25,4 +25,3 @@ static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
     config_path.push(filename);
     Mutex::new(config_path)
 });
-

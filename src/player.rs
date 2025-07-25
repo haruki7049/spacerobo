@@ -9,7 +9,9 @@ pub mod movement;
 pub mod ui;
 
 use crate::{
-    cli::CLIArgs, configs::GameConfigs, GameMode, Hp,
+    GameMode, Hp,
+    cli::CLIArgs,
+    configs::GameConfigs,
     player::{
         config::Config,
         gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
