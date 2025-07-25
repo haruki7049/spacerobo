@@ -30,7 +30,9 @@ pub fn update_system(
         }
 
         // Moving
-        if keyboard.just_pressed(player.config.keyboard.forward) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.forward)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
@@ -52,7 +54,9 @@ pub fn update_system(
             linear.0 += velocity;
         }
 
-        if keyboard.just_pressed(player.config.keyboard.left) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.left)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
@@ -74,7 +78,9 @@ pub fn update_system(
             linear.0 += velocity;
         }
 
-        if keyboard.just_pressed(player.config.keyboard.back) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.back)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
@@ -96,7 +102,9 @@ pub fn update_system(
             linear.0 += velocity;
         }
 
-        if keyboard.just_pressed(player.config.keyboard.right) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.right)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
@@ -118,7 +126,9 @@ pub fn update_system(
             linear.0 += velocity;
         }
 
-        if keyboard.just_pressed(player.config.keyboard.roll_left) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.roll_left)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
@@ -137,7 +147,9 @@ pub fn update_system(
             angular.0 += result;
         }
 
-        if keyboard.just_pressed(player.config.keyboard.roll_right) {
+        if keyboard.pressed(player.config.keyboard.dash)
+            && keyboard.just_pressed(player.config.keyboard.roll_right)
+        {
             commands.spawn((
                 AudioPlayer::new(asset_server.load("SE/engine_dash.ogg")),
                 PlaybackSettings::ONCE.with_spatial(false),
