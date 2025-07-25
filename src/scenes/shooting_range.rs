@@ -20,100 +20,31 @@ pub fn setup_system(
         Transform::from_xyz(2.0, 8.0, 2.0),
     ));
 
+    let targets_translation: Vec<(Vec3, Color)> = vec![
+        (Vec3::new(10.0, 0.0, 0.0), RED.into()),
+        (Vec3::new(0.0, 10.0, 0.0), BLUE.into()),
+        (Vec3::new(0.0, 0.0, 10.0), GREEN.into()),
+        (Vec3::new(-10.0, 0.0, 0.0), YELLOW.into()),
+        (Vec3::new(0.0, -10.0, 0.0), SILVER.into()),
+        (Vec3::new(0.0, 0.0, -10.0), BLACK.into()),
+    ];
+
     // Targets
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: RED.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(10.0, 0.0, 0.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
-
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: BLUE.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(0.0, 10.0, 0.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
-
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: GREEN.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(-10.0, 0.0, 0.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
-
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: YELLOW.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(0.0, -10.0, 0.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
-
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: SILVER.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(0.0, 0.0, 10.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
-
-    commands.spawn((
-        StateScoped(GameMode::ShootingRange),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: BLACK.into(),
-            ..Default::default()
-        })),
-        Transform::from_xyz(0.0, 0.0, -10.0),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::default(),
-    ));
+    for (translation, base_color) in targets_translation {
+        commands.spawn((
+            StateScoped(GameMode::ShootingRange),
+            Mesh3d(meshes.add(Sphere::default().mesh())),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color,
+                ..Default::default()
+            })),
+            Transform::from_translation(translation),
+            RigidBody::Static,
+            Collider::sphere(1.0),
+            CollisionEventsEnabled,
+            Mass(1.0),
+            Target,
+            Hp::default(),
+        ));
+    }
 }
