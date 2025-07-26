@@ -72,6 +72,10 @@ pub fn setup_system(
                     }),
                 ))
                 // Muzzle
-                .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
+                .with_child((
+                    Transform::from_xyz(1., -1., -4.3),
+                    Muzzle,
+                    RigidBody::Static,
+                ));
         });
 }
