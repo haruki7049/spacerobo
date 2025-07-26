@@ -1,4 +1,4 @@
-use crate::player::Player;
+use crate::scenes::shooting_range::player::Player;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 

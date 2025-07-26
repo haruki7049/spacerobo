@@ -1,6 +1,6 @@
 //! # UI systems, components & etc...
 
-use crate::player::Player;
+use crate::scenes::shooting_range::player::Player;
 use bevy::prelude::*;
 
 #[derive(Component)]

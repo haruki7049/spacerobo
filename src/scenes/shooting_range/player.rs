@@ -2,18 +2,17 @@
 
 #![allow(clippy::type_complexity)]
 
-pub mod config;
 pub mod gun;
 pub mod health;
 pub mod movement;
 pub mod ui;
 
 use crate::{
+    configs::player::Config,
     GameMode, Hp,
     cli::CLIArgs,
     configs::GameConfigs,
-    player::{
-        config::Config,
+    scenes::shooting_range::player::{
         gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
     },
 };

@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, player, scenes};
+use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, scenes};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -41,21 +41,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             OnEnter(GameMode::ShootingRange),
             (
                 scenes::shooting_range::setup_system,
-                player::setup_system,
-                player::ui::setup_system,
+                scenes::shooting_range::player::setup_system,
+                scenes::shooting_range::player::ui::setup_system,
             ),
         )
         .add_systems(
             Update,
             (
                 // Player
-                player::ui::update_system,
-                player::gun::select_fire::full_auto_system,
-                player::gun::select_fire::semi_auto_system,
-                player::gun::select_fire::toggle_select_fire_system,
+                scenes::shooting_range::player::ui::update_system,
+                scenes::shooting_range::player::gun::select_fire::full_auto_system,
+                scenes::shooting_range::player::gun::select_fire::semi_auto_system,
+                scenes::shooting_range::player::gun::select_fire::toggle_select_fire_system,
                 // Systems
-                player::gun::bullet::health::update_system,
-                player::health::update_system,
+                scenes::shooting_range::player::gun::bullet::health::update_system,
+                scenes::shooting_range::player::health::update_system,
                 scenes::shooting_range::health::update_system,
                 scenes::shooting_range::collision_detection_system,
             )
@@ -65,11 +65,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             FixedUpdate,
             (
                 // Player movement systems
-                player::movement::keyboard::update_system,
-                player::movement::mouse::update_system,
-                player::movement::controller::update_system,
+                scenes::shooting_range::player::movement::keyboard::update_system,
+                scenes::shooting_range::player::movement::mouse::update_system,
+                scenes::shooting_range::player::movement::controller::update_system,
                 // Player gun systems
-                player::gun::gun_cooling_system,
+                scenes::shooting_range::player::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )

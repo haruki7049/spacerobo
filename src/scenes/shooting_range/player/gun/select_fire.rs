@@ -1,6 +1,6 @@
 use crate::{
     Hp,
-    player::{
+    scenes::shooting_range::player::{
         Muzzle, Player,
         gun::{BULLET_SIZE, Gun, bullet::Bullet},
     },

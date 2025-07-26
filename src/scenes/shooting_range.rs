@@ -1,4 +1,5 @@
 pub mod health;
+pub mod player;
 
 use crate::{DeathEvent, GameMode, Hp};
 use avian3d::prelude::*;
