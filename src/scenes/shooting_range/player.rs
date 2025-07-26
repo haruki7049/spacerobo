@@ -8,13 +8,11 @@ pub mod movement;
 pub mod ui;
 
 use crate::{
-    configs::player::Config,
     GameMode, Hp,
     cli::CLIArgs,
     configs::GameConfigs,
-    scenes::shooting_range::player::{
-        gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
-    },
+    configs::player::Config,
+    scenes::shooting_range::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;

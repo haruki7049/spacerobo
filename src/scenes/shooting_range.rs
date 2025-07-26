@@ -4,7 +4,7 @@ pub mod player;
 use crate::{DeathEvent, GameMode, Hp};
 use avian3d::prelude::*;
 use bevy::{
-    color::palettes::basic::{BLUE, GREEN, RED, YELLOW, WHITE},
+    color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
 
