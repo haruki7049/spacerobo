@@ -24,8 +24,8 @@ pub fn semi_auto_system(
     mut commands: Commands,
     querys: (
         Query<(&Gun, &ChildOf), With<Gun>>,
-        Query<(&GlobalTransform, &ChildOf), With<Muzzle>>,
-        Query<&LinearVelocity, With<Player>>,
+        Query<(&GlobalTransform, &ChildOf, &LinearVelocity), With<Muzzle>>,
+        Query<&Player>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -44,17 +44,18 @@ pub fn semi_auto_system(
                 return;
             }
 
-            for (global_transform, childof) in muzzle_query.iter() {
+            for (global_transform, childof, linear) in muzzle_query.iter() {
                 // If the parent entity is not gun, Do nothing and return
                 if gun_query.get(childof.parent()).is_err() {
                     return;
                 }
 
-                for player_linear in player_query.iter() {
+                // Shoot!!
+                {
                     let bullet_origin: Vec3 = global_transform.translation();
 
                     let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                    let bullet_force: Vec3 = direction * 200.0 + **player_linear;
+                    let bullet_force: Vec3 = direction * 200.0 + **linear;
                     debug!("bullet_force: {}", bullet_force);
 
                     // ray_origin debugging by spawning a sphere
