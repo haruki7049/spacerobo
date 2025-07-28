@@ -9,8 +9,6 @@ pub mod ui;
 
 use crate::{
     GameMode, Hp,
-    cli::CLIArgs,
-    configs::GameConfigs,
     scenes::shooting_range::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
 };
 use avian3d::prelude::*;
@@ -25,15 +23,8 @@ pub fn setup_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    cli_args: Res<CLIArgs>,
 ) {
-    let configs: GameConfigs = confy::load_path(&cli_args.config_file).unwrap_or_else(|_| {
-        info!("Running Spacerobo with default GameConfigs...");
-        GameConfigs::default()
-    });
     let gap = 4.0;
-
-    debug!("Your GameConfigs: {:?}", configs);
 
     // Camera
     commands
@@ -47,8 +38,8 @@ pub fn setup_system(
             Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            Player,
             Hp::default(),
+            Player,
         ))
         // Gun
         .with_children(|parent| {

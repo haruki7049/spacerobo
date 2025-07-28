@@ -1,21 +1,11 @@
-use crate::{
-    configs::GameConfigs,
-    scenes::shooting_range::player::Player,
-};
+use crate::{configs::GameConfigs, scenes::shooting_range::player::Player};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,
     mut exit: EventWriter<AppExit>,
-    mut query: Query<
-        (
-            &Transform,
-            &mut AngularVelocity,
-            &mut LinearVelocity,
-        ),
-        With<Player>,
-    >,
+    mut query: Query<(&Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
     keyboard: Res<ButtonInput<KeyCode>>,
     asset_server: Res<AssetServer>,
     game_configs: Res<GameConfigs>,

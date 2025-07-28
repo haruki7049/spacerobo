@@ -4,10 +4,17 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, scenes};
+use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
+
+    let configs: GameConfigs = confy::load_path(&args.config_file).unwrap_or_else(|_| {
+        info!("Running Spacerobo with default GameConfigs...");
+        GameConfigs::default()
+    });
+
+    debug!("Your GameConfigs: {:?}", configs);
 
     App::new()
         .add_plugins((
@@ -27,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ))
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
-        .insert_resource(args)
+        .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
         // Title
