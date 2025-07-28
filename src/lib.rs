@@ -23,6 +23,7 @@ pub enum GameMode {
     #[default]
     Title,
     ShootingRange,
+    Versus,
 }
 
 #[derive(Debug, Component)]
