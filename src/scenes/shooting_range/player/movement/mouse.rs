@@ -1,12 +1,16 @@
-use crate::scenes::shooting_range::player::Player;
+use crate::{
+    configs::GameConfigs,
+    scenes::shooting_range::player::Player,
+};
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
 pub fn update_system(
-    mut query: Query<(&mut Transform, &mut AngularVelocity, &Player), With<Player>>,
+    mut query: Query<(&mut Transform, &mut AngularVelocity), With<Player>>,
+    game_configs: Res<GameConfigs>,
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
 ) {
-    for (transform, mut angular, player) in query.iter_mut() {
+    for (transform, mut angular) in query.iter_mut() {
         // Mouse control
         if accumulated_mouse_motion.delta != Vec2::ZERO {
             let delta = accumulated_mouse_motion.delta;
@@ -21,7 +25,7 @@ pub fn update_system(
 
             // Mouse X
             {
-                let direction: Vec3 = if player.config.mouse.x_reverse {
+                let direction: Vec3 = if game_configs.player.mouse.x_reverse {
                     rotation * Vec3::NEG_Y
                 } else {
                     rotation * Vec3::Y
@@ -33,12 +37,12 @@ pub fn update_system(
                 let result: Vec3 = Vec3::new(x, y, z);
 
                 // Add yaw thruster's info
-                velocity += result * player.config.robo.thruster.force.yaw;
+                velocity += result * game_configs.player.robo.thruster.force.yaw;
             }
 
             // Mouse Y
             {
-                let direction: Vec3 = if player.config.mouse.y_reverse {
+                let direction: Vec3 = if game_configs.player.mouse.y_reverse {
                     rotation * Vec3::NEG_X
                 } else {
                     rotation * Vec3::X
@@ -50,7 +54,7 @@ pub fn update_system(
                 let result: Vec3 = Vec3::new(x, y, z);
 
                 // Add pitch thruster's info
-                velocity += result * player.config.robo.thruster.force.pitch;
+                velocity += result * game_configs.player.robo.thruster.force.pitch;
             }
 
             angular.0 += velocity;

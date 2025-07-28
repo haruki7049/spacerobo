@@ -11,7 +11,6 @@ use crate::{
     GameMode, Hp,
     cli::CLIArgs,
     configs::GameConfigs,
-    configs::player::Config,
     scenes::shooting_range::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire},
 };
 use avian3d::prelude::*;
@@ -19,9 +18,7 @@ use bevy::prelude::*;
 
 /// Player Component
 #[derive(Component)]
-pub struct Player {
-    config: Config,
-}
+pub struct Player;
 
 /// setup system to spawn player entity
 pub fn setup_system(
@@ -50,9 +47,7 @@ pub fn setup_system(
             Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            (Player {
-                config: configs.player,
-            }),
+            Player,
             Hp::default(),
         ))
         // Gun
