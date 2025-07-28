@@ -1,4 +1,5 @@
-use crate::{DeathEvent, scenes::shooting_range::player::gun::bullet::Bullet};
+use crate::DeathEvent;
+use super::super::bullet::Bullet;
 use bevy::prelude::*;
 
 pub fn update_system(

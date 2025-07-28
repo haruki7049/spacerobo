@@ -1,9 +1,7 @@
-use crate::{
-    Hp,
-    scenes::shooting_range::player::{
-        Muzzle, Player,
-        gun::{BULLET_SIZE, Gun, bullet::Bullet},
-    },
+use crate::Hp;
+use super::super::{
+    Muzzle, Player,
+    gun::{BULLET_SIZE, Gun, bullet::Bullet},
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
