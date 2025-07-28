@@ -1,5 +1,5 @@
-use crate::DeathEvent;
 use super::super::bullet::Bullet;
+use crate::DeathEvent;
 use bevy::prelude::*;
 
 pub fn update_system(
