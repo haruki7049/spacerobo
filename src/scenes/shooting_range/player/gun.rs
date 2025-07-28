@@ -3,7 +3,7 @@
 pub mod bullet;
 pub mod select_fire;
 
-use crate::scenes::shooting_range::player::gun::select_fire::SelectFire;
+use self::select_fire::SelectFire;
 use bevy::prelude::*;
 
 const BULLET_SIZE: f32 = 1. / 8.;
