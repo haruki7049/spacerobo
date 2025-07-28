@@ -1,4 +1,5 @@
-use crate::{DeathEvent, scenes::shooting_range::Target};
+use crate::DeathEvent;
+use super::Target;
 use bevy::prelude::*;
 
 pub fn update_system(
