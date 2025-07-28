@@ -1,4 +1,5 @@
-use crate::{configs::GameConfigs, scenes::shooting_range::player::Player};
+use crate::configs::GameConfigs;
+use super::super::Player;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
