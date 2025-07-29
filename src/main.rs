@@ -1,4 +1,5 @@
 use avian3d::prelude::*;
+use bevy_octopus::prelude::*;
 use bevy::{
     prelude::*,
     window::{CursorGrabMode, CursorOptions},
@@ -31,6 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ..default()
             }),
             PhysicsPlugins::default(),
+            OctopusPlugin,
         ))
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
