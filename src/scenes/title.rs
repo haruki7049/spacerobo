@@ -23,9 +23,7 @@ pub fn setup_system(mut commands: Commands) {
         .with_child(TextSpan::new(
             "Press enter key => Versus <WIP>\n".to_string(),
         ))
-        .with_child(TextSpan::new(
-            "Press escape key => Exit...\n".to_string(),
-        ));
+        .with_child(TextSpan::new("Press escape key => Exit...\n".to_string()));
 }
 
 pub fn input_detection_system(

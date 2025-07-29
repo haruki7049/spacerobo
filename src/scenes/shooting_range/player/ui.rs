@@ -1,7 +1,7 @@
 //! # UI systems, components & etc...
 
-use crate::GameMode;
 use super::Player;
+use crate::GameMode;
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -16,10 +16,7 @@ pub struct Timer;
 pub fn setup_system(mut commands: Commands) {
     // Heading Indicator
     commands
-        .spawn((
-            Text::default(),
-            StateScoped(GameMode::ShootingRange),
-        ))
+        .spawn((Text::default(), StateScoped(GameMode::ShootingRange)))
         .with_child((
             TextSpan::default(),
             (TextFont {

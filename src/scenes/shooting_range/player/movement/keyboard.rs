@@ -1,5 +1,5 @@
 use super::super::Player;
-use crate::{configs::GameConfigs, GameMode};
+use crate::{GameMode, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
