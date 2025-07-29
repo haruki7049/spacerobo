@@ -27,7 +27,7 @@ pub fn setup_system(
     // Camera
     commands
         .spawn((
-            StateScoped(GameMode::ShootingRange),
+            StateScoped(GameMode::Versus),
             Camera3d::default(),
             Transform::from_xyz(0., 0., 0.),
             RigidBody::Dynamic,
