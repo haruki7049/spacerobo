@@ -1,11 +1,11 @@
 use super::super::Player;
-use crate::configs::GameConfigs;
+use crate::{configs::GameConfigs, GameMode};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,
-    mut exit: EventWriter<AppExit>,
+    mut gamemode: ResMut<NextState<GameMode>>,
     mut query: Query<(&Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
     keyboard: Res<ButtonInput<KeyCode>>,
     asset_server: Res<AssetServer>,
@@ -20,7 +20,7 @@ pub fn update_system(
 
         // Exit spacerobo
         if keyboard.just_pressed(game_configs.player.keyboard.quit) {
-            exit.write(AppExit::Success);
+            gamemode.set(GameMode::Title);
         }
 
         // Accelerate

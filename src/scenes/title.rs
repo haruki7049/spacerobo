@@ -28,6 +28,7 @@ pub fn setup_system(mut commands: Commands) {
 pub fn input_detection_system(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut gamemode: ResMut<NextState<GameMode>>,
+    mut exit: EventWriter<AppExit>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
         gamemode.set(GameMode::ShootingRange);
@@ -35,5 +36,9 @@ pub fn input_detection_system(
 
     if keyboard.just_pressed(KeyCode::Enter) {
         gamemode.set(GameMode::Versus);
+    }
+
+    if keyboard.just_pressed(KeyCode::Escape) {
+        exit.write(AppExit::Success);
     }
 }
