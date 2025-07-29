@@ -45,4 +45,12 @@ impl Hp {
     pub fn ammo() -> Self {
         Self { rest: 5. }
     }
+
+    pub fn player() -> Self {
+        Self { rest: 100. }
+    }
+
+    pub fn target() -> Self {
+        Self { rest: 100. }
+    }
 }

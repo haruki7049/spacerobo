@@ -36,7 +36,7 @@ pub fn setup_system(
             Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            Hp::default(),
+            Hp::player(),
             Player,
         ))
         // Gun

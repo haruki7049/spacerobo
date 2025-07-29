@@ -43,7 +43,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -59,7 +59,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -75,7 +75,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -91,7 +91,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -107,7 +107,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -123,7 +123,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -139,7 +139,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
 
                 commands.spawn((
@@ -155,7 +155,7 @@ pub fn setup_system(
                     CollisionEventsEnabled,
                     Mass(1.0),
                     Target,
-                    Hp::default(),
+                    Hp::target(),
                 ));
             }
         }
