@@ -38,6 +38,10 @@ impl std::default::Default for Hp {
 }
 
 impl Hp {
+    pub fn new(hp: f32) -> Self {
+        Self { rest: hp }
+    }
+
     pub fn ammo() -> Self {
         Self { rest: 5. }
     }
