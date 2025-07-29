@@ -1,9 +1,9 @@
 use avian3d::prelude::*;
-use bevy_octopus::prelude::*;
 use bevy::{
     prelude::*,
     window::{CursorGrabMode, CursorOptions},
 };
+use bevy_octopus::prelude::*;
 use clap::Parser;
 use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes};
 
