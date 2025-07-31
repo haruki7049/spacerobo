@@ -68,6 +68,9 @@ pub struct KeyboardConfig {
 
     // Game quit key
     pub quit: KeyCode,
+
+    // Respawn key
+    pub respawn: KeyCode,
 }
 
 impl std::default::Default for KeyboardConfig {
@@ -87,6 +90,8 @@ impl std::default::Default for KeyboardConfig {
             toggle_firemode: KeyCode::KeyT,
 
             quit: KeyCode::Escape,
+
+            respawn: KeyCode::Space,
         }
     }
 }

@@ -56,6 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Update,
             (
                 // Player
+                scenes::shooting_range::player::respawn_system,
                 scenes::shooting_range::player::ui::update_system,
                 scenes::shooting_range::player::gun::select_fire::full_auto_system,
                 scenes::shooting_range::player::gun::select_fire::semi_auto_system,
