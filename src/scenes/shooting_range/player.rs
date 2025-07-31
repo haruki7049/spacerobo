@@ -8,7 +8,7 @@ pub mod movement;
 pub mod ui;
 
 use super::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
-use crate::{configs::GameConfigs, GameMode, Hp};
+use crate::{GameMode, Hp, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -73,7 +73,7 @@ pub fn respawn_system(
     keyboard: Res<ButtonInput<KeyCode>>,
 ) {
     if !query.is_empty() {
-        return
+        return;
     }
 
     if keyboard.just_pressed(game_configs.player.keyboard.respawn) {
