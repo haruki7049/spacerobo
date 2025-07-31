@@ -1,6 +1,7 @@
 //! Spacerobo
 
 use bevy::prelude::*;
+use bevy_octopus::prelude::*;
 
 pub mod cli;
 pub mod configs;
@@ -54,3 +55,6 @@ impl Hp {
         Self { rest: 100. }
     }
 }
+
+pub const TCP_CHANNEL: ChannelId = ChannelId("tcp");
+pub const UDP_CHANNEL: ChannelId = ChannelId("udp");

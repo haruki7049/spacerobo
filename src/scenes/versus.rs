@@ -1,3 +1,4 @@
+pub mod internet;
 pub mod health;
 pub mod player;
 

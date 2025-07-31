@@ -5,7 +5,10 @@ use bevy::{
 };
 use bevy_octopus::prelude::*;
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes};
+use spacerobo::{
+    DeathEvent, GameMode, TCP_CHANNEL, cli::CLIArgs, configs::GameConfigs, scenes,
+    scenes::versus::internet::PlayerInfo,
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -36,6 +39,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ))
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
+        .add_transformer::<PlayerInfo, JsonTransformer>(TCP_CHANNEL)
         .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
@@ -119,6 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             )
                 .run_if(in_state(GameMode::Versus)),
         )
+        .add_observer(scenes::versus::internet::internet_observer)
         .run();
 
     Ok(())
