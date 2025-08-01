@@ -45,6 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_transformer::<PlayerInfo, JsonTransformer>(CLIENT_CHANNEL)
         .add_transformer::<PlayerSpawnInfo, JsonTransformer>(CLIENT_CHANNEL)
         .add_transformer::<PlayerInfo, JsonTransformer>(SERVER_CHANNEL)
+        .add_transformer::<PlayerSpawnInfo, JsonTransformer>(SERVER_CHANNEL)
         .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())

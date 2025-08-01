@@ -24,6 +24,7 @@ pub fn send_player_info_system(
             angular: **angular,
         };
 
+        info!("Sending PlayerInfo");
         event.write(SendChannelMessage {
             channel_id: SERVER_CHANNEL,
             message: player_info,

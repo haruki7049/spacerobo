@@ -33,8 +33,10 @@ pub fn setup_system(
         game_configs.network.ip, game_configs.network.server.port
     );
 
+    info!("Sending PlayerSpawnInfo");
+
     ev.write(SendChannelMessage {
-        channel_id: CLIENT_CHANNEL,
+        channel_id: SERVER_CHANNEL,
         message: PlayerSpawnInfo {
             health: 100.0,
             transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
