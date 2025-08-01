@@ -6,13 +6,10 @@ pub mod controller;
 pub mod keyboard;
 pub mod mouse;
 
+use super::{super::internet::PlayerInfo, super::player::Player};
+use crate::{Hp, SERVER_CHANNEL};
 use bevy::prelude::*;
 use bevy_octopus::prelude::*;
-use super::{
-    super::internet::{PlayerInfo},
-    super::player::Player,
-};
-use crate::{Hp, SERVER_CHANNEL};
 
 pub fn send_player_info_system(
     mut event: EventWriter<SendChannelMessage<PlayerInfo>>,
