@@ -1,5 +1,5 @@
-pub mod internet;
 pub mod health;
+pub mod internet;
 pub mod player;
 
 use crate::{DeathEvent, Hp};

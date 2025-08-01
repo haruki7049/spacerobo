@@ -6,8 +6,8 @@ use bevy::{
 use bevy_octopus::prelude::*;
 use clap::Parser;
 use spacerobo::{
-    DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes, SERVER_CHANNEL, CLIENT_CHANNEL,
-    scenes::versus::internet::PlayerInfo,
+    CLIENT_CHANNEL, DeathEvent, GameMode, SERVER_CHANNEL, cli::CLIArgs, configs::GameConfigs,
+    scenes, scenes::versus::internet::PlayerInfo,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

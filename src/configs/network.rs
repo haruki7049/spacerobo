@@ -30,16 +30,12 @@ pub struct Server {
 
 impl std::default::Default for Client {
     fn default() -> Self {
-        Self {
-            port: 10000,
-        }
+        Self { port: 10000 }
     }
 }
 
 impl std::default::Default for Server {
     fn default() -> Self {
-        Self {
-            port: 10001,
-        }
+        Self { port: 10001 }
     }
 }

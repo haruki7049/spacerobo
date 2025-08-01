@@ -1,23 +1,23 @@
-use crate::{CLIENT_CHANNEL, SERVER_CHANNEL, Hp, GameMode, configs::GameConfigs};
-use bevy::prelude::*;
-use serde::{Serialize, Deserialize};
-use bevy_octopus::{
-    prelude::*,
-    transports::{tcp::TcpAddress, udp::UdpAddress},
-};
 use super::player::Player;
+use crate::{CLIENT_CHANNEL, GameMode, Hp, SERVER_CHANNEL, configs::GameConfigs};
+use bevy::prelude::*;
+use bevy_octopus::{prelude::*, transports::tcp::TcpAddress};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerInfo {
     health: f32,
 }
 
-pub fn setup_system(
-    mut commands: Commands,
-    game_configs: Res<GameConfigs>
-) {
-    let client_address: String = format!("{}:{}", game_configs.network.ip, game_configs.network.client.port);
-    let server_address: String = format!("{}:{}", game_configs.network.ip, game_configs.network.server.port);
+pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
+    let client_address: String = format!(
+        "{}:{}",
+        game_configs.network.ip, game_configs.network.client.port
+    );
+    let server_address: String = format!(
+        "{}:{}",
+        game_configs.network.ip, game_configs.network.server.port
+    );
 
     // Server
     commands.spawn((
@@ -40,9 +40,7 @@ pub fn update_system(
     query: Query<&Hp, With<Player>>,
 ) {
     for hp in query.iter() {
-        let player_info: PlayerInfo = PlayerInfo {
-            health: hp.rest,
-        };
+        let player_info: PlayerInfo = PlayerInfo { health: hp.rest };
 
         ev.write(SendChannelMessage {
             channel_id: SERVER_CHANNEL,
