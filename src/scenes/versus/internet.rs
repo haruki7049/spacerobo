@@ -1,13 +1,14 @@
-use super::player::Player;
-use crate::{CLIENT_CHANNEL, GameMode, Hp, SERVER_CHANNEL, configs::GameConfigs};
+pub mod opponent;
+
+use crate::{CLIENT_CHANNEL, GameMode, SERVER_CHANNEL, configs::GameConfigs};
 use bevy::prelude::*;
 use bevy_octopus::{prelude::*, transports::tcp::TcpAddress};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerInfo {
-    health: f32,
-    transform: Transform,
+    pub health: f32,
+    pub transform: Transform,
 }
 
 pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
@@ -33,28 +34,6 @@ pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
         NetworkBundle::new(CLIENT_CHANNEL),
         ClientNode(TcpAddress::new(&client_address)),
     ));
-}
-
-pub fn update_system(
-    mut channel_received: EventReader<ReceiveChannelMessage<PlayerInfo>>,
-    mut ev: EventWriter<SendChannelMessage<PlayerInfo>>,
-    query: Query<(&Hp, &Transform), With<Player>>,
-) {
-    for (hp, transform) in query.iter() {
-        let player_info: PlayerInfo = PlayerInfo {
-            health: hp.rest,
-            transform: *transform,
-        };
-
-        ev.write(SendChannelMessage {
-            channel_id: SERVER_CHANNEL,
-            message: player_info,
-        });
-    }
-
-    for event in channel_received.read() {
-        info!("Received: {:?}", event);
-    }
 }
 
 pub fn internet_observer(trigger: Trigger<NetworkEvent>) {

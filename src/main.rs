@@ -106,7 +106,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 scenes::versus::player::gun::select_fire::semi_auto_system,
                 scenes::versus::player::gun::select_fire::toggle_select_fire_system,
                 // Systems
-                scenes::versus::internet::update_system,
+                scenes::versus::internet::opponent::update_system,
+                scenes::versus::player::movement::send_player_info_system,
                 scenes::versus::player::gun::bullet::health::update_system,
                 scenes::versus::player::health::update_system,
                 scenes::versus::health::update_system,
