@@ -1,18 +1,15 @@
-use super::PlayerInfo;
+use super::PlayerSpawnInfo;
 use crate::Hp;
-use bevy::{
-    prelude::*,
-    color::palettes::basic::RED,
-};
-use bevy_octopus::prelude::*;
 use avian3d::prelude::*;
+use bevy::{color::palettes::basic::RED, prelude::*};
+use bevy_octopus::prelude::*;
 
 #[derive(Component)]
 struct Opponent;
 
 pub fn update_system(
     mut commands: Commands,
-    mut channel_received: EventReader<ReceiveChannelMessage<PlayerInfo>>,
+    mut channel_received: EventReader<ReceiveChannelMessage<PlayerSpawnInfo>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {

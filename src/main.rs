@@ -6,8 +6,11 @@ use bevy::{
 use bevy_octopus::prelude::*;
 use clap::Parser;
 use spacerobo::{
-    CLIENT_CHANNEL, DeathEvent, GameMode, SERVER_CHANNEL, cli::CLIArgs, configs::GameConfigs,
-    scenes, scenes::versus::internet::PlayerInfo,
+    CLIENT_CHANNEL, DeathEvent, GameMode, SERVER_CHANNEL,
+    cli::CLIArgs,
+    configs::GameConfigs,
+    scenes,
+    scenes::versus::internet::{PlayerInfo, PlayerSpawnInfo},
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -40,6 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
         .add_transformer::<PlayerInfo, JsonTransformer>(CLIENT_CHANNEL)
+        .add_transformer::<PlayerSpawnInfo, JsonTransformer>(CLIENT_CHANNEL)
         .add_transformer::<PlayerInfo, JsonTransformer>(SERVER_CHANNEL)
         .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))

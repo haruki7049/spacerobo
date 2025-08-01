@@ -9,9 +9,21 @@ use serde::{Deserialize, Serialize};
 pub struct PlayerInfo {
     pub health: f32,
     pub transform: Transform,
+    pub linear: Vec3,
+    pub angular: Vec3,
 }
 
-pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PlayerSpawnInfo {
+    pub health: f32,
+    pub transform: Transform,
+}
+
+pub fn setup_system(
+    mut commands: Commands,
+    mut ev: EventWriter<SendChannelMessage<PlayerSpawnInfo>>,
+    game_configs: Res<GameConfigs>,
+) {
     let client_address: String = format!(
         "{}:{}",
         game_configs.network.ip, game_configs.network.client.port
@@ -20,6 +32,14 @@ pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
         "{}:{}",
         game_configs.network.ip, game_configs.network.server.port
     );
+
+    ev.write(SendChannelMessage {
+        channel_id: CLIENT_CHANNEL,
+        message: PlayerSpawnInfo {
+            health: 100.0,
+            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+        },
+    });
 
     // Server
     commands.spawn((

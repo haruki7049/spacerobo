@@ -8,17 +8,20 @@ pub mod mouse;
 
 use super::{super::internet::PlayerInfo, super::player::Player};
 use crate::{Hp, SERVER_CHANNEL};
+use avian3d::prelude::*;
 use bevy::prelude::*;
 use bevy_octopus::prelude::*;
 
 pub fn send_player_info_system(
     mut event: EventWriter<SendChannelMessage<PlayerInfo>>,
-    query: Query<(&Hp, &Transform), With<Player>>,
+    query: Query<(&Hp, &Transform, &LinearVelocity, &AngularVelocity), With<Player>>,
 ) {
-    for (hp, transform) in query.iter() {
+    for (hp, transform, linear, angular) in query.iter() {
         let player_info: PlayerInfo = PlayerInfo {
             health: hp.rest,
             transform: *transform,
+            linear: **linear,
+            angular: **angular,
         };
 
         event.write(SendChannelMessage {
