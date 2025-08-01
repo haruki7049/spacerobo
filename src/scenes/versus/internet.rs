@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerInfo {
     health: f32,
+    transform: Transform,
 }
 
 pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
@@ -37,10 +38,13 @@ pub fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
 pub fn update_system(
     mut channel_received: EventReader<ReceiveChannelMessage<PlayerInfo>>,
     mut ev: EventWriter<SendChannelMessage<PlayerInfo>>,
-    query: Query<&Hp, With<Player>>,
+    query: Query<(&Hp, &Transform), With<Player>>,
 ) {
-    for hp in query.iter() {
-        let player_info: PlayerInfo = PlayerInfo { health: hp.rest };
+    for (hp, transform) in query.iter() {
+        let player_info: PlayerInfo = PlayerInfo {
+            health: hp.rest,
+            transform: *transform,
+        };
 
         ev.write(SendChannelMessage {
             channel_id: SERVER_CHANNEL,
