@@ -56,5 +56,5 @@ impl Hp {
     }
 }
 
-pub const TCP_CHANNEL: ChannelId = ChannelId("tcp");
-pub const UDP_CHANNEL: ChannelId = ChannelId("udp");
+pub const CLIENT_CHANNEL: ChannelId = ChannelId("client");
+pub const SERVER_CHANNEL: ChannelId = ChannelId("server");

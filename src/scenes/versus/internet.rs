@@ -1,13 +1,11 @@
-use crate::{TCP_CHANNEL, UDP_CHANNEL, configs::GameConfigs};
+use crate::{CLIENT_CHANNEL, SERVER_CHANNEL, Hp, GameMode, configs::GameConfigs};
 use bevy::prelude::*;
 use serde::{Serialize, Deserialize};
 use bevy_octopus::{
     prelude::*,
     transports::{tcp::TcpAddress, udp::UdpAddress},
 };
-
-pub const CLIENT_PORT: u16 = 10000;
-pub const SERVER_PORT: u16 = 10001;
+use super::player::Player;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerInfo {
@@ -18,37 +16,42 @@ pub fn setup_system(
     mut commands: Commands,
     game_configs: Res<GameConfigs>
 ) {
-    let client_address: String = format!("{}:{}", game_configs.network.ip, CLIENT_PORT);
-    let server_address: String = format!("{}:{}", game_configs.network.ip, SERVER_PORT);
+    let client_address: String = format!("{}:{}", game_configs.network.ip, game_configs.network.client.port);
+    let server_address: String = format!("{}:{}", game_configs.network.ip, game_configs.network.server.port);
 
-    // tcp client
+    // Server
     commands.spawn((
-        NetworkBundle::new(TCP_CHANNEL),
-        ClientNode(TcpAddress::new(client_address)),
+        StateScoped(GameMode::Versus),
+        NetworkBundle::new(SERVER_CHANNEL),
+        ServerNode(TcpAddress::new(&server_address)),
     ));
 
-    // udp server
+    // Client
     commands.spawn((
-        NetworkBundle::new(UDP_CHANNEL),
-        ServerNode(UdpAddress::new(server_address)),
+        StateScoped(GameMode::Versus),
+        NetworkBundle::new(CLIENT_CHANNEL),
+        ClientNode(TcpAddress::new(&client_address)),
     ));
 }
 
 pub fn update_system(
-    mut channel_recviced: EventReader<ReceiveChannelMessage<PlayerInfo>>,
+    mut channel_received: EventReader<ReceiveChannelMessage<PlayerInfo>>,
     mut ev: EventWriter<SendChannelMessage<PlayerInfo>>,
+    query: Query<&Hp, With<Player>>,
 ) {
-    for event in channel_recviced.read() {
-        info!("recevice {:?}", event.message);
-        if event.channel_id == UDP_CHANNEL {
-            info!("{:?}", TCP_CHANNEL);
-            info!("{:?}", event);
+    for hp in query.iter() {
+        let player_info: PlayerInfo = PlayerInfo {
+            health: hp.rest,
+        };
 
-            ev.write(SendChannelMessage {
-                channel_id: TCP_CHANNEL,
-                message: event.message.clone(),
-            });
-        }
+        ev.write(SendChannelMessage {
+            channel_id: SERVER_CHANNEL,
+            message: player_info,
+        });
+    }
+
+    for event in channel_received.read() {
+        info!("Received: {:?}", event);
     }
 }
 

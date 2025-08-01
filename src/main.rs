@@ -6,7 +6,7 @@ use bevy::{
 use bevy_octopus::prelude::*;
 use clap::Parser;
 use spacerobo::{
-    DeathEvent, GameMode, TCP_CHANNEL, cli::CLIArgs, configs::GameConfigs, scenes,
+    DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes, SERVER_CHANNEL, CLIENT_CHANNEL,
     scenes::versus::internet::PlayerInfo,
 };
 
@@ -39,7 +39,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ))
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
-        .add_transformer::<PlayerInfo, JsonTransformer>(TCP_CHANNEL)
+        .add_transformer::<PlayerInfo, JsonTransformer>(CLIENT_CHANNEL)
+        .add_transformer::<PlayerInfo, JsonTransformer>(SERVER_CHANNEL)
         .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
@@ -91,6 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             OnEnter(GameMode::Versus),
             (
                 scenes::versus::setup_system,
+                scenes::versus::internet::setup_system,
                 scenes::versus::player::setup_system,
                 scenes::versus::player::ui::setup_system,
             ),
@@ -104,6 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 scenes::versus::player::gun::select_fire::semi_auto_system,
                 scenes::versus::player::gun::select_fire::toggle_select_fire_system,
                 // Systems
+                scenes::versus::internet::update_system,
                 scenes::versus::player::gun::bullet::health::update_system,
                 scenes::versus::player::health::update_system,
                 scenes::versus::health::update_system,
