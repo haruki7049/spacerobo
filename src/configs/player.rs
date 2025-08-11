@@ -30,6 +30,7 @@ pub struct ForceConfig {
     // Keyboard
     pub accelerate: f32,
     pub dash: f32,
+    pub boost: f32,
 
     // Mouse
     pub pitch: f32,
@@ -41,6 +42,7 @@ impl std::default::Default for ForceConfig {
         Self {
             accelerate: 0.1,
             dash: 10.0,
+            boost: 100.0,
             pitch: 1.0,
             yaw: 1.0,
         }
