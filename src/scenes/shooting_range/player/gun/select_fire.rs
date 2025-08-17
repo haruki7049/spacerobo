@@ -23,7 +23,7 @@ pub fn semi_auto_system(
     querys: (
         Query<(&Gun, &ChildOf), With<Gun>>,
         Query<(&GlobalTransform, &ChildOf, &LinearVelocity), With<Muzzle>>,
-        Query<&Player>,
+        Query<&LinearVelocity, With<Player>>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -42,42 +42,44 @@ pub fn semi_auto_system(
                 return;
             }
 
-            for (global_transform, childof, linear) in muzzle_query.iter() {
-                // If the parent entity is not gun, Do nothing and return
-                if gun_query.get(childof.parent()).is_err() {
-                    return;
-                }
+            for (global_transform, childof, muzzle_linear) in muzzle_query.iter() {
+                for player_linear in player_query.iter() {
+                    // If the parent entity is not gun, Do nothing and return
+                    if gun_query.get(childof.parent()).is_err() {
+                        return;
+                    }
 
-                // Shoot!!
-                {
-                    let bullet_origin: Vec3 = global_transform.translation();
+                    // Shoot!!
+                    {
+                        let bullet_origin: Vec3 = global_transform.translation();
 
-                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                    let bullet_force: Vec3 = direction * 200.0 + **linear;
-                    debug!("bullet_force: {}", bullet_force);
+                        let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                        let bullet_force: Vec3 = direction * 200.0 + **player_linear + **muzzle_linear;
+                        debug!("bullet_force: {}", bullet_force);
 
-                    // ray_origin debugging by spawning a sphere
-                    commands.spawn((
-                        Transform::from_translation(bullet_origin),
-                        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-                        MeshMaterial3d(materials.add(StandardMaterial {
-                            base_color: Color::WHITE,
-                            ..Default::default()
-                        })),
-                        RigidBody::Dynamic,
-                        Collider::sphere(0.015625),
-                        LinearVelocity(bullet_force),
-                        Mass(3.0),
-                        CollisionEventsEnabled,
-                        Bullet,
-                        Hp::ammo(),
-                    ));
+                        // ray_origin debugging by spawning a sphere
+                        commands.spawn((
+                            Transform::from_translation(bullet_origin),
+                            Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
+                            MeshMaterial3d(materials.add(StandardMaterial {
+                                base_color: Color::WHITE,
+                                ..Default::default()
+                            })),
+                            RigidBody::Dynamic,
+                            Collider::sphere(0.015625),
+                            LinearVelocity(bullet_force),
+                            Mass(3.0),
+                            CollisionEventsEnabled,
+                            Bullet,
+                            Hp::ammo(),
+                        ));
 
-                    commands.spawn((
-                        Transform::from_translation(global_transform.translation()),
-                        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-                        PlaybackSettings::ONCE.with_spatial(false),
-                    ));
+                        commands.spawn((
+                            Transform::from_translation(global_transform.translation()),
+                            AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
+                            PlaybackSettings::ONCE.with_spatial(false),
+                        ));
+                    }
                 }
             }
         }
@@ -90,7 +92,7 @@ pub fn full_auto_system(
     mut querys: (
         Query<(&mut Gun, &ChildOf), With<Gun>>,
         Query<(&GlobalTransform, &ChildOf, &LinearVelocity), With<Muzzle>>,
-        Query<&Player>,
+        Query<&LinearVelocity, With<Player>>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -101,59 +103,61 @@ pub fn full_auto_system(
     let (ref mut gun_query, muzzle_query, player_query) = querys;
 
     // Get muzzle's GlobalTransform
-    for (global_transform, childof, linear) in muzzle_query.iter() {
-        // If the parent entity is not gun, Do nothing and return
-        if gun_query.get(childof.parent()).is_err() {
-            return;
-        }
+    for (global_transform, childof, muzzle_linear) in muzzle_query.iter() {
+        for player_linear in player_query.iter() {
+            // If the parent entity is not gun, Do nothing and return
+            if gun_query.get(childof.parent()).is_err() {
+                return;
+            }
 
-        for (mut gun, childof) in gun_query.iter_mut() {
-            if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
-                debug!("Mouse Left clicked");
+            for (mut gun, childof) in gun_query.iter_mut() {
+                if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
+                    debug!("Mouse Left clicked");
 
-                // If the parent entity is not player, Do nothing and return
-                if player_query.get(childof.parent()).is_err() {
-                    return;
-                }
+                    // If the parent entity is not player, Do nothing and return
+                    if player_query.get(childof.parent()).is_err() {
+                        return;
+                    }
 
-                if gun.interval.rest >= 0. {
-                    debug!("Full auto shoot aborted because of the gun's interval");
-                    return;
-                }
+                    if gun.interval.rest >= 0. {
+                        debug!("Full auto shoot aborted because of the gun's interval");
+                        return;
+                    }
 
-                // Full auto interval
-                gun.interval.rest = gun.interval.limit;
+                    // Full auto interval
+                    gun.interval.rest = gun.interval.limit;
 
-                // Shoot!!
-                {
-                    let bullet_origin: Vec3 = global_transform.translation();
+                    // Shoot!!
+                    {
+                        let bullet_origin: Vec3 = global_transform.translation();
 
-                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                    let bullet_force: Vec3 = direction * 200.0 + **linear;
-                    debug!("bullet_force: {}", bullet_force);
+                        let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                        let bullet_force: Vec3 = direction * 200.0 + **player_linear + **muzzle_linear;
+                        debug!("bullet_force: {}", bullet_force);
 
-                    // ray_origin debugging by spawning a sphere
-                    commands.spawn((
-                        Transform::from_translation(bullet_origin),
-                        Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-                        MeshMaterial3d(materials.add(StandardMaterial {
-                            base_color: Color::WHITE,
-                            ..Default::default()
-                        })),
-                        RigidBody::Dynamic,
-                        Collider::sphere(0.015625),
-                        LinearVelocity(bullet_force),
-                        Mass(3.0),
-                        CollisionEventsEnabled,
-                        Bullet,
-                        Hp::ammo(),
-                    ));
+                        // ray_origin debugging by spawning a sphere
+                        commands.spawn((
+                            Transform::from_translation(bullet_origin),
+                            Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
+                            MeshMaterial3d(materials.add(StandardMaterial {
+                                base_color: Color::WHITE,
+                                ..Default::default()
+                            })),
+                            RigidBody::Dynamic,
+                            Collider::sphere(0.015625),
+                            LinearVelocity(bullet_force),
+                            Mass(3.0),
+                            CollisionEventsEnabled,
+                            Bullet,
+                            Hp::ammo(),
+                        ));
 
-                    commands.spawn((
-                        Transform::from_translation(global_transform.translation()),
-                        AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-                        PlaybackSettings::ONCE.with_spatial(false),
-                    ));
+                        commands.spawn((
+                            Transform::from_translation(global_transform.translation()),
+                            AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
+                            PlaybackSettings::ONCE.with_spatial(false),
+                        ));
+                    }
                 }
             }
         }
