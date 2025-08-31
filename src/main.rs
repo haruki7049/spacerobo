@@ -81,43 +81,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )
-        // Versus
-        .add_systems(
-            OnEnter(GameMode::Versus),
-            (
-                scenes::versus::setup_system,
-                scenes::versus::player::setup_system,
-                scenes::versus::player::ui::setup_system,
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                // Player
-                scenes::versus::player::ui::update_system,
-                scenes::versus::player::gun::select_fire::full_auto_system,
-                scenes::versus::player::gun::select_fire::semi_auto_system,
-                scenes::versus::player::gun::select_fire::toggle_select_fire_system,
-                // Systems
-                scenes::versus::player::gun::bullet::health::update_system,
-                scenes::versus::player::health::update_system,
-                scenes::versus::health::update_system,
-                scenes::versus::collision_detection_system,
-            )
-                .run_if(in_state(GameMode::Versus)),
-        )
-        .add_systems(
-            FixedUpdate,
-            (
-                // Player movement systems
-                scenes::versus::player::movement::keyboard::update_system,
-                scenes::versus::player::movement::mouse::update_system,
-                scenes::versus::player::movement::controller::update_system,
-                // Player gun systems
-                scenes::versus::player::gun::gun_cooling_system,
-            )
-                .run_if(in_state(GameMode::Versus)),
-        )
         .run();
 
     Ok(())

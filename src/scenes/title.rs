@@ -20,9 +20,6 @@ pub fn setup_system(mut commands: Commands) {
         .with_child(TextSpan::new(
             "Press space key => Shooting Range\n".to_string(),
         ))
-        .with_child(TextSpan::new(
-            "Press enter key => Versus <WIP>\n".to_string(),
-        ))
         .with_child(TextSpan::new("Press escape key => Exit...\n".to_string()));
 }
 
@@ -33,10 +30,6 @@ pub fn input_detection_system(
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
         gamemode.set(GameMode::ShootingRange);
-    }
-
-    if keyboard.just_pressed(KeyCode::Enter) {
-        gamemode.set(GameMode::Versus);
     }
 
     if keyboard.just_pressed(KeyCode::Escape) {
