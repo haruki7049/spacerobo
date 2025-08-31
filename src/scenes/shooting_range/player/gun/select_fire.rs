@@ -54,7 +54,8 @@ pub fn semi_auto_system(
                         let bullet_origin: Vec3 = global_transform.translation();
 
                         let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                        let bullet_force: Vec3 = direction * 500.0 + **player_linear + **muzzle_linear;
+                        let bullet_force: Vec3 =
+                            direction * 500.0 + **player_linear + **muzzle_linear;
                         debug!("bullet_force: {}", bullet_force);
 
                         // ray_origin debugging by spawning a sphere
@@ -132,7 +133,8 @@ pub fn full_auto_system(
                         let bullet_origin: Vec3 = global_transform.translation();
 
                         let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                        let bullet_force: Vec3 = direction * 500.0 + **player_linear + **muzzle_linear;
+                        let bullet_force: Vec3 =
+                            direction * 500.0 + **player_linear + **muzzle_linear;
                         debug!("bullet_force: {}", bullet_force);
 
                         // ray_origin debugging by spawning a sphere
