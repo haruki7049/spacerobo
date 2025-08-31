@@ -55,6 +55,17 @@ pub fn setup_system(
                         },
                     }),
                 ))
+                // Spot light
+                .with_child((
+                    SpotLight {
+                        intensity: 100_000_000.0,
+                        range: 100_000_000.0,
+                        outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
+                        shadows_enabled: true,
+                        ..default()
+                    },
+                    Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+                ))
                 // Muzzle
                 .with_child((
                     Transform::from_xyz(1., -1., -4.3),
