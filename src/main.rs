@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, cli::CLIArgs, configs::GameConfigs, scenes};
+use spacerobo::{DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, scenes};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -37,6 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .insert_resource(configs)
         .insert_resource(Gravity(Vec3::NEG_Y * 0.))
         .insert_resource(Time::<Virtual>::default())
+        .insert_resource(KillCounter::default())
         // Title
         .add_systems(OnEnter(GameMode::Title), scenes::title::setup_system)
         .add_systems(

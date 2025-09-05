@@ -25,6 +25,29 @@ pub enum GameMode {
     ShootingRange,
 }
 
+#[derive(Debug, Resource, Default)]
+pub struct KillCounter {
+    inner: usize,
+}
+
+impl KillCounter {
+    pub fn get(&self) -> usize {
+        self.inner
+    }
+
+    pub fn reset(&mut self) {
+        self.inner = 0;
+    }
+
+    pub fn increment(&mut self) {
+        self.inner += 1;
+    }
+
+    pub fn decrement(&mut self) {
+        self.inner -= 1;
+    }
+}
+
 #[derive(Debug, Component)]
 pub struct Hp {
     rest: f32,

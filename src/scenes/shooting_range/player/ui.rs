@@ -1,7 +1,7 @@
 //! # UI systems, components & etc...
 
 use super::Player;
-use crate::GameMode;
+use crate::{GameMode, KillCounter};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -11,7 +11,7 @@ pub struct HeadingIndicator;
 pub struct CoordinatesIndicator;
 
 #[derive(Component)]
-pub struct Timer;
+pub struct KillCounterUI;
 
 pub fn setup_system(mut commands: Commands) {
     // Heading Indicator
@@ -32,6 +32,14 @@ pub fn setup_system(mut commands: Commands) {
                 ..default()
             }),
             CoordinatesIndicator,
+        ))
+        .with_child((
+            TextSpan::default(),
+            (TextFont {
+                font_size: 21.0,
+                ..default()
+            }),
+            KillCounterUI,
         ));
 }
 
@@ -39,9 +47,10 @@ pub fn update_system(
     mut spans: ParamSet<(
         Query<&mut TextSpan, With<HeadingIndicator>>,
         Query<&mut TextSpan, With<CoordinatesIndicator>>,
-        Query<&mut TextSpan, With<Timer>>,
+        Query<&mut TextSpan, With<KillCounterUI>>,
     )>,
     player_query: Query<&mut Transform, With<Player>>,
+    kill_counter: Res<KillCounter>,
 ) {
     for mut span in &mut spans.p0() {
         for transform in &player_query {
@@ -54,5 +63,9 @@ pub fn update_system(
         for transform in &player_query {
             **span = format!("[{:.2}]\n", transform.translation);
         }
+    }
+
+    for mut span in &mut spans.p1() {
+        **span = format!("Kill Counter: {:.2}\n", kill_counter.get());
     }
 }

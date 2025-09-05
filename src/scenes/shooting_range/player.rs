@@ -8,7 +8,7 @@ pub mod movement;
 pub mod ui;
 
 use super::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
-use crate::{GameMode, Hp, configs::GameConfigs};
+use crate::{KillCounter, GameMode, Hp, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -21,7 +21,11 @@ pub fn setup_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut kill_counter: ResMut<KillCounter>,
 ) {
+    // Reset KillCounter
+    kill_counter.reset();
+
     let gap = 4.0;
 
     // Camera
@@ -79,6 +83,7 @@ pub fn respawn_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut kill_counter: ResMut<KillCounter>,
     query: Query<&Player>,
     game_configs: Res<GameConfigs>,
     keyboard: Res<ButtonInput<KeyCode>>,
@@ -89,6 +94,9 @@ pub fn respawn_system(
 
     if keyboard.just_pressed(game_configs.player.keyboard.respawn) {
         info!("Respawning player...");
+
+        // Reset KillCounter
+        kill_counter.reset();
 
         let gap = 4.0;
 
