@@ -8,7 +8,7 @@ pub mod movement;
 pub mod ui;
 
 use super::player::gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
-use crate::{KillCounter, GameMode, Hp, configs::GameConfigs};
+use crate::{GameMode, Hp, KillCounter, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
