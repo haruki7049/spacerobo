@@ -268,7 +268,10 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
     (speed * ***mass).abs()
 }
 
-pub fn when_going_outside_system(mut query: Query<(&Transform, Entity), With<Hp>>, mut event_writer: EventWriter<DeathEvent>) {
+pub fn when_going_outside_system(
+    mut query: Query<(&Transform, Entity), With<Hp>>,
+    mut event_writer: EventWriter<DeathEvent>,
+) {
     for (transform, entity) in query.iter_mut() {
         if transform.translation.x > 2000.0
             || transform.translation.y > 2000.0
