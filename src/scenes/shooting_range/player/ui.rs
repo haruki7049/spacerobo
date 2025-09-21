@@ -52,6 +52,10 @@ pub fn update_system(
     player_query: Query<&mut Transform, With<Player>>,
     kill_counter: Res<KillCounter>,
 ) {
+    for transform in player_query.iter() {
+        debug!("Player's translation: {:?}", transform);
+    }
+
     for mut span in &mut spans.p0() {
         for transform in &player_query {
             let rot: Vec3 = transform.rotation.xyz();
