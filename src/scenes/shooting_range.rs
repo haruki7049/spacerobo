@@ -1,7 +1,8 @@
+pub mod bot;
 pub mod health;
 pub mod player;
 
-use crate::{DeathEvent, GameMode, Hp};
+use crate::{DeathEvent, GameMode, Hp, scenes::shooting_range::bot::Bot};
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
@@ -25,6 +26,58 @@ pub fn setup_system(
         },
         Transform::from_xyz(2.0, 8.0, 2.0),
     ));
+
+    // Bots
+    commands
+        .spawn((
+            StateScoped(GameMode::ShootingRange),
+            Mesh3d(meshes.add(Sphere::default().mesh())),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: RED.into(),
+                ..Default::default()
+            })),
+            Transform::from_xyz(100.0, 0.0, 0.0),
+            RigidBody::Static,
+            Collider::sphere(1.0),
+            CollisionEventsEnabled,
+            Mass(1.0),
+            Bot,
+            Hp::target(),
+        ))
+        // Gun
+        .with_children(|parent| {
+            parent
+                .spawn((
+                    Transform::from_xyz(0., 0., -0.5),
+                    Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
+                    MeshMaterial3d(materials.add(Color::BLACK)),
+                    (bot::gun::Gun {
+                        select_fire: bot::gun::select_fire::SelectFire::Full,
+                        interval: bot::gun::Interval {
+                            limit: 0.1,
+                            rest: 0.0,
+                            amount: 0.005,
+                        },
+                    }),
+                ))
+                // Spot light
+                .with_child((
+                    SpotLight {
+                        intensity: 100_000_000.0,
+                        range: 100_000_000.0,
+                        outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
+                        shadows_enabled: true,
+                        ..default()
+                    },
+                    Transform::from_xyz(0., 0., 0.).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+                ))
+                // Muzzle
+                .with_child((
+                    Transform::from_xyz(0., 0., 0.),
+                    bot::gun::Muzzle,
+                    RigidBody::Static,
+                ));
+        });
 
     // Targets
     for i in 1..5 {

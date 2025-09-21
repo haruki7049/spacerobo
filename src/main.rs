@@ -62,6 +62,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 scenes::shooting_range::player::gun::select_fire::full_auto_system,
                 scenes::shooting_range::player::gun::select_fire::semi_auto_system,
                 scenes::shooting_range::player::gun::select_fire::toggle_select_fire_system,
+                // Bot
+                scenes::shooting_range::bot::gun::select_fire::full_auto_system,
                 // Systems
                 scenes::shooting_range::player::gun::bullet::health::update_system,
                 scenes::shooting_range::player::health::update_system,
@@ -79,6 +81,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 scenes::shooting_range::player::movement::controller::update_system,
                 // Player gun systems
                 scenes::shooting_range::player::gun::gun_cooling_system,
+                // Bot gun systems
+                scenes::shooting_range::bot::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )
