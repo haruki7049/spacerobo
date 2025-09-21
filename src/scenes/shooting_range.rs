@@ -267,3 +267,17 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
     // Probably...
     (speed * ***mass).abs()
 }
+
+pub fn when_going_outside_system(mut query: Query<(&Transform, &mut Hp), With<Hp>>) {
+    for (transform, mut hp) in query.iter_mut() {
+        if transform.translation.x > 20000.0
+            || transform.translation.y > 20000.0
+            || transform.translation.z > 20000.0
+            || transform.translation.x < -20000.0
+            || transform.translation.y < -20000.0
+            || transform.translation.z < -20000.0
+        {
+            hp.rest -= 100_000_000.0;
+        }
+    }
+}

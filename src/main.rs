@@ -69,6 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 scenes::shooting_range::player::health::update_system,
                 scenes::shooting_range::health::update_system,
                 scenes::shooting_range::collision_detection_system,
+                scenes::shooting_range::when_going_outside_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         )
