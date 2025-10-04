@@ -4,7 +4,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, scenes};
+use spacerobo::{DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, scenes, entities};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -49,24 +49,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             OnEnter(GameMode::ShootingRange),
             (
                 scenes::shooting_range::setup_system,
-                scenes::shooting_range::player::setup_system,
-                scenes::shooting_range::player::ui::setup_system,
+                entities::player::setup_system,
+                entities::player::ui::setup_system,
             ),
         )
         .add_systems(
             Update,
             (
                 // Player
-                scenes::shooting_range::player::respawn_system,
-                scenes::shooting_range::player::ui::update_system,
-                scenes::shooting_range::player::gun::select_fire::full_auto_system,
-                scenes::shooting_range::player::gun::select_fire::semi_auto_system,
-                scenes::shooting_range::player::gun::select_fire::toggle_select_fire_system,
+                entities::player::respawn_system,
+                entities::player::ui::update_system,
+                entities::player::gun::select_fire::full_auto_system,
+                entities::player::gun::select_fire::semi_auto_system,
+                entities::player::gun::select_fire::toggle_select_fire_system,
+                entities::player::gun::bullet::health::update_system,
+                entities::player::health::update_system,
                 // Bot
                 scenes::shooting_range::bot::gun::select_fire::full_auto_system,
                 // Systems
-                scenes::shooting_range::player::gun::bullet::health::update_system,
-                scenes::shooting_range::player::health::update_system,
                 scenes::shooting_range::health::update_system,
                 scenes::shooting_range::collision_detection_system,
                 scenes::shooting_range::when_going_outside_system,
@@ -77,11 +77,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             FixedUpdate,
             (
                 // Player movement systems
-                scenes::shooting_range::player::movement::keyboard::update_system,
-                scenes::shooting_range::player::movement::mouse::update_system,
-                scenes::shooting_range::player::movement::controller::update_system,
+                entities::player::movement::keyboard::update_system,
+                entities::player::movement::mouse::update_system,
+                entities::player::movement::controller::update_system,
                 // Player gun systems
-                scenes::shooting_range::player::gun::gun_cooling_system,
+                entities::player::gun::gun_cooling_system,
                 // Bot gun systems
                 scenes::shooting_range::bot::gun::gun_cooling_system,
             )

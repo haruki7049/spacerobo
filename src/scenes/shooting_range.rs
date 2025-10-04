@@ -1,6 +1,5 @@
 pub mod bot;
 pub mod health;
-pub mod player;
 
 use crate::{DeathEvent, GameMode, Hp, scenes::shooting_range::bot::Bot};
 use avian3d::prelude::*;
