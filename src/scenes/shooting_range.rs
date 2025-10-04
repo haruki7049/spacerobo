@@ -1,7 +1,6 @@
-pub mod bot;
 pub mod health;
 
-use crate::{DeathEvent, GameMode, Hp, scenes::shooting_range::bot::Bot};
+use crate::{DeathEvent, GameMode, Hp, entities::bot};
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
@@ -40,7 +39,7 @@ pub fn setup_system(
             Collider::sphere(1.0),
             CollisionEventsEnabled,
             Mass(1.0),
-            Bot,
+            bot::Bot,
             Hp::target(),
         ))
         // Gun
