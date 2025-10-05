@@ -52,28 +52,58 @@ impl KillCounter {
 #[derive(Debug, Component)]
 pub struct Hp {
     rest: f32,
+    maximum: f32,
 }
 
 impl std::default::Default for Hp {
     fn default() -> Self {
-        Self { rest: 100. }
+        Self {
+            rest: 100.,
+            maximum: 100.,
+        }
     }
 }
 
 impl Hp {
+    pub fn rest(&self) -> f32 {
+        self.rest
+    }
+
+    pub fn maximum(&self) -> f32 {
+        self.maximum
+    }
+
     pub fn new(hp: f32) -> Self {
-        Self { rest: hp }
+        Self {
+            rest: hp,
+            maximum: hp,
+        }
     }
 
     pub fn ammo() -> Self {
-        Self { rest: 5. }
+        let hp: f32 = 5.;
+
+        Self {
+            rest: hp,
+            maximum: hp,
+        }
     }
 
     pub fn player() -> Self {
-        Self { rest: 100. }
+        let hp: f32 = 100.;
+
+        Self {
+            rest: hp,
+            maximum: hp,
+        }
     }
 
     pub fn target() -> Self {
-        Self { rest: 100. }
+        let hp: f32 = 100.;
+
+        Self {
+            rest: hp,
+            maximum: hp,
+        }
     }
 }
