@@ -9,6 +9,7 @@ use aeronet_webtransport::{
 };
 use bevy::prelude::*;
 use std::time::Duration;
+use super::entities::player::Player;
 
 pub fn setup_system(mut commands: Commands) {
     let identity = wtransport::Identity::self_signed(["localhost", "127.0.0.1", "::1"])
@@ -90,6 +91,25 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>, clients: Query<&ChildOf>)
         }
         Disconnected::ByError(err) => {
             warn!("{client} disconnected from {server} due to error: {err:?}");
+        }
+    }
+}
+
+pub fn update_system(
+    mut clients: Query<(Entity, &mut Session), With<ChildOf>>,
+    player: Query<&Transform, With<Player>>,
+) {
+    for (client, mut session) in &mut clients {
+        let session = &mut *session;
+        for packet in session.recv.drain(..) {
+            let received = String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
+            info!("{client} > {received}");
+
+            for transform in player.iter() {
+                let reply = format!("{:?}", transform.translation);
+                info!("{client} < {reply}");
+                session.send.push(reply.into());
+            }
         }
     }
 }

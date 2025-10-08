@@ -36,6 +36,7 @@ impl Plugin for VersusMasterPlugin {
                 entities::player::health::update_system,
                 // Systems
                 health::update_system,
+                server::update_system,
                 collision_detection_system,
             )
                 .run_if(in_state(GameMode::VersusMaster)),
