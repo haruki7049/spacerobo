@@ -1,9 +1,57 @@
 pub mod entities;
 pub mod health;
 
-use crate::{DeathEvent, Hp};
+use crate::{DeathEvent, Hp, GameMode, KillCounter};
 use avian3d::prelude::*;
 use bevy::prelude::*;
+
+pub struct VersusMasterPlugin;
+
+impl Plugin for VersusMasterPlugin {
+    fn build(&self, app: &mut App) {
+        app.init_state::<GameMode>();
+        app.add_event::<DeathEvent>();
+        app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
+        app.insert_resource(KillCounter::default());
+        app.add_systems(
+            OnEnter(GameMode::VersusMaster),
+            (
+                setup_system,
+                entities::player::setup_system,
+                entities::player::ui::setup_system,
+            ),
+        );
+        app.add_systems(
+            Update,
+            (
+                // Player
+                entities::player::respawn_system,
+                entities::player::ui::update_system,
+                entities::player::gun::select_fire::full_auto_system,
+                entities::player::gun::select_fire::semi_auto_system,
+                entities::player::gun::select_fire::toggle_select_fire_system,
+                entities::player::gun::bullet::health::update_system,
+                entities::player::health::update_system,
+                // Systems
+                health::update_system,
+                collision_detection_system,
+            )
+                .run_if(in_state(GameMode::VersusMaster)),
+        );
+        app.add_systems(
+            FixedUpdate,
+            (
+                // Player movement systems
+                entities::player::movement::keyboard::update_system,
+                entities::player::movement::mouse::update_system,
+                entities::player::movement::controller::update_system,
+                // Player gun systems
+                entities::player::gun::gun_cooling_system,
+            )
+                .run_if(in_state(GameMode::VersusMaster)),
+        );
+    }
+}
 
 #[derive(Component)]
 pub struct Target;

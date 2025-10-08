@@ -5,7 +5,11 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::{DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, scenes};
+use spacerobo::{
+    cli::CLIArgs,
+    configs::GameConfigs,
+    scenes::{shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_master::VersusMasterPlugin},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -34,100 +38,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             PhysicsPlugins::default(),
             WebTransportClientPlugin,
             WebTransportServerPlugin,
+
+            TitlePlugin,
+            ShootingRangePlugin,
+            VersusMasterPlugin,
         ))
-        .init_state::<GameMode>()
-        .add_event::<DeathEvent>()
         .insert_resource(configs)
-        .insert_resource(Gravity(Vec3::NEG_Y * 0.))
-        .insert_resource(Time::<Virtual>::default())
-        .insert_resource(KillCounter::default())
-        // Title
-        .add_systems(OnEnter(GameMode::Title), scenes::title::setup_system)
-        .add_systems(
-            Update,
-            (scenes::title::input_detection_system).run_if(in_state(GameMode::Title)),
-        )
-        // Shooting range
-        .add_systems(
-            OnEnter(GameMode::ShootingRange),
-            (
-                scenes::shooting_range::setup_system,
-                scenes::shooting_range::entities::player::setup_system,
-                scenes::shooting_range::entities::player::ui::setup_system,
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                // Player
-                scenes::shooting_range::entities::player::respawn_system,
-                scenes::shooting_range::entities::player::ui::update_system,
-                scenes::shooting_range::entities::player::gun::select_fire::full_auto_system,
-                scenes::shooting_range::entities::player::gun::select_fire::semi_auto_system,
-                scenes::shooting_range::entities::player::gun::select_fire::toggle_select_fire_system,
-                scenes::shooting_range::entities::player::gun::bullet::health::update_system,
-                scenes::shooting_range::entities::player::health::update_system,
-                // Bot
-                scenes::shooting_range::entities::bot::gun::select_fire::full_auto_system,
-                // Systems
-                scenes::shooting_range::health::update_system,
-                scenes::shooting_range::collision_detection_system,
-                scenes::shooting_range::when_going_outside_system,
-            )
-                .run_if(in_state(GameMode::ShootingRange)),
-        )
-        .add_systems(
-            FixedUpdate,
-            (
-                // Player movement systems
-                scenes::shooting_range::entities::player::movement::keyboard::update_system,
-                scenes::shooting_range::entities::player::movement::mouse::update_system,
-                scenes::shooting_range::entities::player::movement::controller::update_system,
-                // Player gun systems
-                scenes::shooting_range::entities::player::gun::gun_cooling_system,
-                // Bot gun systems
-                scenes::shooting_range::entities::bot::gun::gun_cooling_system,
-            )
-                .run_if(in_state(GameMode::ShootingRange)),
-        )
-        // Versus Master
-        .add_systems(
-            OnEnter(GameMode::VersusMaster),
-            (
-                scenes::versus_master::setup_system,
-                scenes::versus_master::entities::player::setup_system,
-                scenes::versus_master::entities::player::ui::setup_system,
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                // Player
-                scenes::versus_master::entities::player::respawn_system,
-                scenes::versus_master::entities::player::ui::update_system,
-                scenes::versus_master::entities::player::gun::select_fire::full_auto_system,
-                scenes::versus_master::entities::player::gun::select_fire::semi_auto_system,
-                scenes::versus_master::entities::player::gun::select_fire::toggle_select_fire_system,
-                scenes::versus_master::entities::player::gun::bullet::health::update_system,
-                scenes::versus_master::entities::player::health::update_system,
-                // Systems
-                scenes::versus_master::health::update_system,
-                scenes::versus_master::collision_detection_system,
-            )
-                .run_if(in_state(GameMode::VersusMaster)),
-        )
-        .add_systems(
-            FixedUpdate,
-            (
-                // Player movement systems
-                scenes::versus_master::entities::player::movement::keyboard::update_system,
-                scenes::versus_master::entities::player::movement::mouse::update_system,
-                scenes::versus_master::entities::player::movement::controller::update_system,
-                // Player gun systems
-                scenes::versus_master::entities::player::gun::gun_cooling_system,
-            )
-                .run_if(in_state(GameMode::VersusMaster)),
-        )
         .run();
 
     Ok(())

@@ -1,6 +1,19 @@
 use crate::GameMode;
 use bevy::prelude::*;
 
+pub struct TitlePlugin;
+
+impl Plugin for TitlePlugin {
+    fn build(&self, app: &mut App) {
+        app.init_state::<GameMode>();
+        app.add_systems(OnEnter(GameMode::Title), setup_system);
+        app.add_systems(
+            Update,
+            (input_detection_system).run_if(in_state(GameMode::Title)),
+        );
+    }
+}
+
 pub fn setup_system(mut commands: Commands) {
     commands.spawn((StateScoped(GameMode::Title), Camera2d));
 
