@@ -1,9 +1,9 @@
+use aeronet_webtransport::{client::WebTransportClientPlugin, server::WebTransportServerPlugin};
 use avian3d::prelude::*;
 use bevy::{
     prelude::*,
     window::{CursorGrabMode, CursorOptions},
 };
-use aeronet_webtransport::{client::WebTransportClientPlugin, server::WebTransportServerPlugin};
 use clap::Parser;
 use spacerobo::{
     DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, entities, scenes,
