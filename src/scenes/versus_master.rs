@@ -1,5 +1,6 @@
 pub mod entities;
 pub mod health;
+pub mod server;
 
 use crate::{DeathEvent, GameMode, Hp, KillCounter};
 use avian3d::prelude::*;
@@ -19,6 +20,7 @@ impl Plugin for VersusMasterPlugin {
                 setup_system,
                 entities::player::setup_system,
                 entities::player::ui::setup_system,
+                server::setup_system,
             ),
         );
         app.add_systems(
@@ -50,6 +52,11 @@ impl Plugin for VersusMasterPlugin {
             )
                 .run_if(in_state(GameMode::VersusMaster)),
         );
+        app.add_observer(server::on_opened);
+        app.add_observer(server::on_closed);
+        app.add_observer(server::on_session_request);
+        app.add_observer(server::on_connected);
+        app.add_observer(server::on_disconnected);
     }
 }
 

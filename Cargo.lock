@@ -5301,6 +5301,7 @@ dependencies = [
  "directories",
  "serde",
  "toml 0.9.7",
+ "wtransport",
 ]
 
 [[package]]
