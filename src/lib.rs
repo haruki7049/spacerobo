@@ -4,7 +4,6 @@ use bevy::prelude::*;
 
 pub mod cli;
 pub mod configs;
-pub mod entities;
 pub mod scenes;
 
 #[derive(Debug, Event)]
@@ -24,6 +23,8 @@ pub enum GameMode {
     #[default]
     Title,
     ShootingRange,
+    VersusMaster,
+    VersusGuest,
 }
 
 #[derive(Debug, Resource, Default)]

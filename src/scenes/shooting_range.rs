@@ -1,6 +1,7 @@
+pub mod entities;
 pub mod health;
 
-use crate::{DeathEvent, GameMode, Hp, entities::bot};
+use crate::{DeathEvent, GameMode, Hp};
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
@@ -39,7 +40,7 @@ pub fn setup_system(
             Collider::sphere(1.0),
             CollisionEventsEnabled,
             Mass(1.0),
-            bot::Bot,
+            entities::bot::Bot,
             Hp::target(),
         ))
         // Gun
@@ -49,9 +50,9 @@ pub fn setup_system(
                     Transform::from_xyz(0., 0., -0.5),
                     Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
                     MeshMaterial3d(materials.add(Color::BLACK)),
-                    (bot::gun::Gun {
-                        select_fire: bot::gun::select_fire::SelectFire::Full,
-                        interval: bot::gun::Interval {
+                    (entities::bot::gun::Gun {
+                        select_fire: entities::bot::gun::select_fire::SelectFire::Full,
+                        interval: entities::bot::gun::Interval {
                             limit: 0.1,
                             rest: 0.0,
                             amount: 0.005,
@@ -72,7 +73,7 @@ pub fn setup_system(
                 // Muzzle
                 .with_child((
                     Transform::from_xyz(0., 0., 0.),
-                    bot::gun::Muzzle,
+                    entities::bot::gun::Muzzle,
                     RigidBody::Static,
                 ));
         });
