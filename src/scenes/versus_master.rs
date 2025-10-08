@@ -1,5 +1,5 @@
-pub mod health;
 pub mod entities;
+pub mod health;
 
 use crate::{DeathEvent, Hp};
 use avian3d::prelude::*;
@@ -8,9 +8,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Target;
 
-pub fn setup_system(
-    mut commands: Commands,
-) {
+pub fn setup_system(mut commands: Commands) {
     // Light
     commands.spawn((
         PointLight {

@@ -20,9 +20,7 @@ pub fn setup_system(mut commands: Commands) {
         .with_child(TextSpan::new(
             "Press space key => Shooting Range\n".to_string(),
         ))
-        .with_child(TextSpan::new(
-            "Press M key => Versus Master\n".to_string(),
-        ))
+        .with_child(TextSpan::new("Press M key => Versus Master\n".to_string()))
         .with_child(TextSpan::new("Press escape key => Exit...\n".to_string()));
 }
 
