@@ -8,7 +8,9 @@ use clap::Parser;
 use spacerobo::{
     cli::CLIArgs,
     configs::GameConfigs,
-    scenes::{shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_master::VersusMasterPlugin},
+    scenes::{
+        shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_master::VersusMasterPlugin,
+    },
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -38,7 +40,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             PhysicsPlugins::default(),
             WebTransportClientPlugin,
             WebTransportServerPlugin,
-
             TitlePlugin,
             ShootingRangePlugin,
             VersusMasterPlugin,

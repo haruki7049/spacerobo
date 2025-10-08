@@ -1,7 +1,7 @@
 pub mod entities;
 pub mod health;
 
-use crate::{DeathEvent, Hp, GameMode, KillCounter};
+use crate::{DeathEvent, GameMode, Hp, KillCounter};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
