@@ -3,6 +3,7 @@ use bevy::{
     prelude::*,
     window::{CursorGrabMode, CursorOptions},
 };
+use aeronet_webtransport::{client::WebTransportClientPlugin, server::WebTransportServerPlugin};
 use clap::Parser;
 use spacerobo::{
     DeathEvent, GameMode, KillCounter, cli::CLIArgs, configs::GameConfigs, entities, scenes,
@@ -33,6 +34,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ..default()
             }),
             PhysicsPlugins::default(),
+            WebTransportClientPlugin,
+            WebTransportServerPlugin,
         ))
         .init_state::<GameMode>()
         .add_event::<DeathEvent>()
