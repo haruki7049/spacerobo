@@ -1,5 +1,5 @@
-pub mod entities;
-pub mod health;
+mod entities;
+mod health;
 
 use crate::{DeathEvent, GameMode, Hp, KillCounter};
 use avian3d::prelude::*;
@@ -37,6 +37,8 @@ impl Plugin for ShootingRangePlugin {
                 entities::player::health::update_system,
                 // Bot
                 entities::bot::gun::select_fire::full_auto_system,
+                entities::bot::gun::bullet::health::update_system,
+                entities::bot::health::update_system,
                 // Systems
                 health::update_system,
                 collision_detection_system,
@@ -64,7 +66,7 @@ impl Plugin for ShootingRangePlugin {
 #[derive(Component)]
 pub struct Target;
 
-pub fn setup_system(
+fn setup_system(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -104,7 +106,6 @@ pub fn setup_system(
                     Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
                     MeshMaterial3d(materials.add(Color::BLACK)),
                     (entities::bot::gun::Gun {
-                        select_fire: entities::bot::gun::select_fire::SelectFire::Full,
                         interval: entities::bot::gun::Interval {
                             limit: 0.1,
                             rest: 0.0,
@@ -121,11 +122,11 @@ pub fn setup_system(
                         shadows_enabled: true,
                         ..default()
                     },
-                    Transform::from_xyz(0., 0., 0.).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+                    Transform::from_xyz(0., 0., -1.).looking_to(Vec3::NEG_Z, Vec3::ZERO),
                 ))
                 // Muzzle
                 .with_child((
-                    Transform::from_xyz(0., 0., 0.),
+                    Transform::from_xyz(0., 0., -1.),
                     entities::bot::gun::Muzzle,
                     RigidBody::Static,
                 ));
@@ -269,7 +270,7 @@ pub fn setup_system(
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
 /// This system is created to decrease the hp at contacted objects.
-pub fn collision_detection_system(
+fn collision_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
     mut event_writer: EventWriter<DeathEvent>,
@@ -320,7 +321,7 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
     (speed * ***mass).abs()
 }
 
-pub fn when_going_outside_system(
+fn when_going_outside_system(
     mut query: Query<(&Transform, Entity), With<Hp>>,
     mut event_writer: EventWriter<DeathEvent>,
 ) {

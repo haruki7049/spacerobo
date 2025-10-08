@@ -10,6 +10,8 @@ pub fn update_system(
     for death_event in event_reader.read() {
         if query.get(death_event.entity).is_ok() {
             commands.entity(death_event.entity).despawn();
+
+            info!("Bot is dead!!");
         }
     }
 }

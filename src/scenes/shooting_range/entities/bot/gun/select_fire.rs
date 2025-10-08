@@ -6,17 +6,6 @@ use crate::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-/// Select fire setting for Gun component
-#[derive(Clone, Copy, Default, PartialEq, Eq)]
-pub enum SelectFire {
-    /// Semi auto
-    #[default]
-    Semi,
-
-    /// Full auto
-    Full,
-}
-
 /// Full auto
 pub fn full_auto_system(
     mut commands: Commands,
@@ -86,19 +75,6 @@ pub fn full_auto_system(
                     ));
                 }
             }
-        }
-    }
-}
-
-/// Toggle gun's select fire.
-/// Full auto <---> Semi auto
-pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::KeyT) {
-        let mut gun = gun.single_mut().unwrap();
-
-        match gun.select_fire {
-            SelectFire::Semi => gun.fullauto(),
-            SelectFire::Full => gun.semiauto(),
         }
     }
 }

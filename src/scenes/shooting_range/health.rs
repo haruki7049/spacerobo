@@ -1,11 +1,11 @@
-use super::Target;
+use super::{Target, entities::bot::Bot};
 use crate::{DeathEvent, KillCounter};
 use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,
     mut death_reader: EventReader<DeathEvent>,
-    query: Query<&Target>,
+    query: Query<Entity, Or<(With<Target>, With<Bot>)>>,
     mut kill_counter: ResMut<KillCounter>,
     asset_server: Res<AssetServer>,
 ) {
