@@ -1,3 +1,4 @@
+use url::Url;
 use super::entities::player::Player;
 use crate::configs::GameConfigs;
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
@@ -13,7 +14,7 @@ pub fn setup_system(
     configs: Res<GameConfigs>,
     mut session_id: Local<usize>,
 ) {
-    let target: IpAddr = configs.network.client.target.clone();
+    let target: Url = configs.network.client.domain.clone();
     *session_id += 1;
     let name: String = format!("{}. {}", *session_id, target);
 
