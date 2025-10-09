@@ -50,39 +50,30 @@ fn client_config(cert_hash: String) -> Result<ClientConfig, Box<dyn std::error::
         .build())
 }
 
-pub fn on_connecting(trigger: Trigger<OnAdd, SessionEndpoint>, names: Query<&Name>) {
+pub fn on_connecting(trigger: Trigger<OnAdd, SessionEndpoint>) {
     let target = trigger.target();
-    let name = names
-        .get(target)
-        .expect("our session entity should have a name");
 
-    info!("{name} connecting");
+    info!("{target} connecting");
 }
 
-pub fn on_connected(trigger: Trigger<OnAdd, Session>, names: Query<&Name>) {
+pub fn on_connected(trigger: Trigger<OnAdd, Session>) {
     let target = trigger.target();
-    let name = names
-        .get(target)
-        .expect("our session entity should have a name");
 
-    info!("{name} connected");
+    info!("{target} connected");
 }
 
-pub fn on_disconnected(trigger: Trigger<Disconnected>, names: Query<&Name>) {
+pub fn on_disconnected(trigger: Trigger<Disconnected>) {
     let target = trigger.target();
-    let name = names
-        .get(target)
-        .expect("our session entity should have a name");
 
     let messages = match &*trigger {
         Disconnected::ByUser(reason) => {
-            format!("{name} disconnected by user: {reason}")
+            format!("{target} disconnected by user: {reason}")
         }
         Disconnected::ByPeer(reason) => {
-            format!("{name} disconnected by peer: {reason}")
+            format!("{target} disconnected by peer: {reason}")
         }
         Disconnected::ByError(err) => {
-            format!("{name} disconnected due to error: {err:?}")
+            format!("{target} disconnected due to error: {err:?}")
         }
     };
 
