@@ -1,3 +1,5 @@
+use super::entities::player::Player;
+use crate::configs::GameConfigs;
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -8,11 +10,17 @@ use aeronet_webtransport::{
     server::{ServerConfig, SessionRequest, SessionResponse, WebTransportServer},
 };
 use bevy::prelude::*;
-use std::time::Duration;
-use super::entities::player::Player;
+use std::{net::IpAddr, time::Duration};
 
-pub fn setup_system(mut commands: Commands) {
-    let identity = wtransport::Identity::self_signed(["localhost", "127.0.0.1", "::1"])
+pub fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {
+    let addresses: Vec<String> = configs
+        .network
+        .ipaddr
+        .iter()
+        .map(|v: &IpAddr| v.to_string())
+        .collect();
+
+    let identity = wtransport::Identity::self_signed(addresses)
         .expect("all given SANs should be valid DNS names");
     let cert = &identity.certificate_chain().as_slice()[0];
     let spki_fingerprint = cert::spki_fingerprint_b64(cert).expect("should be a valid certificate");
@@ -102,7 +110,8 @@ pub fn update_system(
     for (client, mut session) in &mut clients {
         let session = &mut *session;
         for packet in session.recv.drain(..) {
-            let received = String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
+            let received =
+                String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
             info!("{client} > {received}");
 
             for transform in player.iter() {
