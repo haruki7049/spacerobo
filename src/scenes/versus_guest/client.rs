@@ -7,7 +7,6 @@ use aeronet_webtransport::{
     client::{ClientConfig, WebTransportClient},
 };
 use bevy::prelude::*;
-use std::net::IpAddr;
 
 pub fn setup_system(
     mut commands: Commands,
@@ -81,21 +80,21 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>) {
 }
 
 pub fn update_system(
-    mut sessions: Query<(Entity, &mut Session), With<ChildOf>>,
+    mut sessions: Query<(Entity, &mut Session)>,
     players: Query<&Transform, With<Player>>,
 ) {
-    for (server, mut session) in &mut sessions {
+    for (server, mut session) in sessions.iter_mut() {
         let session = &mut *session;
+        for transform in players.iter() {
+            let reply = format!("{:?}", transform.translation);
+            info!("{server} < {reply}");
+            session.send.push(reply.into());
+        }
+
         for packet in session.recv.drain(..) {
             let received =
                 String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
             info!("{server} > {received}");
-
-            for transform in players.iter() {
-                let reply = format!("{:?}", transform.translation);
-                info!("{server} < {reply}");
-                session.send.push(reply.into());
-            }
         }
     }
 }
