@@ -9,7 +9,8 @@ use spacerobo::{
     cli::CLIArgs,
     configs::GameConfigs,
     scenes::{
-        shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_master::VersusMasterPlugin,
+        shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_guest::VersusGuestPlugin,
+        versus_master::VersusMasterPlugin,
     },
 };
 
@@ -43,6 +44,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             TitlePlugin,
             ShootingRangePlugin,
             VersusMasterPlugin,
+            VersusGuestPlugin,
         ))
         .insert_resource(configs)
         .run();

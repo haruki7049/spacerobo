@@ -15,7 +15,7 @@ impl Plugin for VersusGuestPlugin {
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
         app.add_systems(
-            OnEnter(GameMode::VersusMaster),
+            OnEnter(GameMode::VersusGuest),
             (
                 setup_system,
                 entities::player::setup_system,
@@ -39,7 +39,7 @@ impl Plugin for VersusGuestPlugin {
                 client::update_system,
                 collision_detection_system,
             )
-                .run_if(in_state(GameMode::VersusMaster)),
+                .run_if(in_state(GameMode::VersusGuest)),
         );
         app.add_systems(
             FixedUpdate,
@@ -51,7 +51,7 @@ impl Plugin for VersusGuestPlugin {
                 // Player gun systems
                 entities::player::gun::gun_cooling_system,
             )
-                .run_if(in_state(GameMode::VersusMaster)),
+                .run_if(in_state(GameMode::VersusGuest)),
         );
         app.add_observer(client::on_connecting);
         app.add_observer(client::on_connected);
