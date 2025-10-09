@@ -4,18 +4,39 @@ use serde::{Deserialize, Serialize};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// Configuration struct
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Default, Debug)]
 pub struct Config {
+    pub server: ServerConfig,
+    pub client: ClientConfig,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ServerConfig {
     pub ipaddr: Vec<IpAddr>,
 }
 
-impl std::default::Default for Config {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ClientConfig {
+    pub cert_hash: String,
+    pub target: IpAddr,
+}
+
+impl std::default::Default for ServerConfig {
     fn default() -> Self {
         Self {
             ipaddr: vec![
                 IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
                 IpAddr::V6(Ipv6Addr::LOCALHOST),
             ],
+        }
+    }
+}
+
+impl std::default::Default for ClientConfig {
+    fn default() -> Self {
+        Self {
+            cert_hash: String::default(),
+            target: IpAddr::V4(Ipv4Addr::LOCALHOST),
         }
     }
 }
