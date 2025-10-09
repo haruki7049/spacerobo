@@ -1,4 +1,3 @@
-use url::Url;
 use super::entities::player::Player;
 use crate::configs::GameConfigs;
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
@@ -7,6 +6,7 @@ use aeronet_webtransport::{
     client::{ClientConfig, WebTransportClient},
 };
 use bevy::prelude::*;
+use url::Url;
 
 pub fn setup_system(
     mut commands: Commands,
