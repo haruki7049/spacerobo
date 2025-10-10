@@ -2,7 +2,7 @@
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 pub mod cli;
 pub mod configs;

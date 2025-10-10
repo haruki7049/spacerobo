@@ -120,15 +120,18 @@ pub fn update_system(
                 },
             };
 
-            let reply: String = serde_json::to_string(&information).expect("Failed to parse Information to Json data");
+            let reply: String = serde_json::to_string(&information)
+                .expect("Failed to parse Information to Json data");
             info!("{client} < {reply}");
             session.send.push(reply.into());
         }
 
         for packet in session.recv.drain(..) {
-            let received =
+            let received: String =
                 String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
-            info!("{client} > {received}");
+            let info: Information =
+                serde_json::from_str(&received).expect("Failed to parse Json data to Information");
+            info!("{client} > {info:?}");
         }
     }
 }
