@@ -112,12 +112,12 @@ impl Hp {
 
 #[derive(Debug)]
 pub struct Information {
-    player: PlayerInformation,
+    pub player: PlayerInformation,
 }
 
 #[derive(Debug)]
 pub struct PlayerInformation {
-    transform: Transform,
-    angular: AngularVelocity,
-    linear: LinearVelocity,
+    pub transform: Transform,
+    pub angular: AngularVelocity,
+    pub linear: LinearVelocity,
 }
