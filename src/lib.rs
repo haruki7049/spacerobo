@@ -1,5 +1,6 @@
 //! Spacerobo
 
+use avian3d::prelude::*;
 use bevy::prelude::*;
 
 pub mod cli;
@@ -107,4 +108,16 @@ impl Hp {
             maximum: hp,
         }
     }
+}
+
+#[derive(Debug)]
+pub struct Information {
+    player: PlayerInformation,
+}
+
+#[derive(Debug)]
+pub struct PlayerInformation {
+    transform: Transform,
+    angular: AngularVelocity,
+    linear: LinearVelocity,
 }

@@ -6,6 +6,7 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo::{
+    GameMode,
     cli::CLIArgs,
     configs::GameConfigs,
     scenes::{
@@ -46,6 +47,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             VersusMasterPlugin,
             VersusGuestPlugin,
         ))
+        .init_state::<GameMode>()
         .insert_resource(configs)
         .run();
 

@@ -10,7 +10,6 @@ pub struct VersusGuestPlugin;
 
 impl Plugin for VersusGuestPlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<GameMode>();
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());

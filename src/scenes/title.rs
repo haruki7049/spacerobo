@@ -5,7 +5,6 @@ pub struct TitlePlugin;
 
 impl Plugin for TitlePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<GameMode>();
         app.add_systems(OnEnter(GameMode::Title), setup_system);
         app.add_systems(
             Update,

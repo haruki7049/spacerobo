@@ -1,10 +1,11 @@
 use super::entities::player::Player;
-use crate::configs::GameConfigs;
+use crate::{Information, PlayerInformation, configs::GameConfigs};
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
     cert,
     client::{ClientConfig, WebTransportClient},
 };
+use avian3d::prelude::*;
 use bevy::prelude::*;
 use url::Url;
 
@@ -81,12 +82,20 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>) {
 
 pub fn update_system(
     mut sessions: Query<(Entity, &mut Session)>,
-    players: Query<&Transform, With<Player>>,
+    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
 ) {
     for (server, mut session) in sessions.iter_mut() {
         let session = &mut *session;
-        for transform in players.iter() {
-            let reply = format!("{:?}", transform.translation);
+        for (transform, angular, linear) in player.iter() {
+            let information: Information = Information {
+                player: PlayerInformation {
+                    transform: *transform,
+                    angular: *angular,
+                    linear: *linear,
+                },
+            };
+
+            let reply = format!("{:?}", information);
             info!("{server} < {reply}");
             session.send.push(reply.into());
         }

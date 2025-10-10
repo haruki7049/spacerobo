@@ -1,5 +1,5 @@
 use super::entities::player::Player;
-use crate::configs::GameConfigs;
+use crate::{Information, PlayerInformation, configs::GameConfigs};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -9,6 +9,7 @@ use aeronet_webtransport::{
     cert,
     server::{ServerConfig, SessionRequest, SessionResponse, WebTransportServer},
 };
+use avian3d::prelude::*;
 use bevy::prelude::*;
 use std::{net::IpAddr, time::Duration};
 
@@ -106,12 +107,20 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>, clients: Query<&ChildOf>)
 
 pub fn update_system(
     mut sessions: Query<(Entity, &mut Session), With<ChildOf>>,
-    player: Query<&Transform, With<Player>>,
+    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
 ) {
     for (client, mut session) in sessions.iter_mut() {
         let session = &mut *session;
-        for transform in player.iter() {
-            let reply = format!("{:?}", transform.translation);
+        for (transform, angular, linear) in player.iter() {
+            let information: Information = Information {
+                player: PlayerInformation {
+                    transform: *transform,
+                    angular: *angular,
+                    linear: *linear,
+                },
+            };
+
+            let reply = format!("{:?}", information);
             info!("{client} < {reply}");
             session.send.push(reply.into());
         }
