@@ -2,6 +2,7 @@
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use serde::{Serialize, Deserialize};
 
 pub mod cli;
 pub mod configs;
@@ -110,12 +111,12 @@ impl Hp {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Information {
     pub player: PlayerInformation,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PlayerInformation {
     pub transform: Transform,
     pub angular: AngularVelocity,

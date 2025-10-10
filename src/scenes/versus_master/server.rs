@@ -120,7 +120,7 @@ pub fn update_system(
                 },
             };
 
-            let reply = format!("{:?}", information);
+            let reply: String = serde_json::to_string(&information).expect("Failed to parse Information to Json data");
             info!("{client} < {reply}");
             session.send.push(reply.into());
         }
