@@ -2,10 +2,12 @@ use super::{Target, entities::bot::Bot};
 use crate::{DeathEvent, KillCounter};
 use bevy::prelude::*;
 
+type WithBotOrTarget = Or<(With<Target>, With<Bot>)>;
+
 pub fn update_system(
     mut commands: Commands,
     mut death_reader: EventReader<DeathEvent>,
-    query: Query<Entity, Or<(With<Target>, With<Bot>)>>,
+    query: Query<Entity, WithBotOrTarget>,
     mut kill_counter: ResMut<KillCounter>,
     asset_server: Res<AssetServer>,
 ) {
