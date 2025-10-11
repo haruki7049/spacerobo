@@ -1,7 +1,7 @@
 //! # Opponent systems, Compoments & etc...
 
-pub mod health;
 pub mod bullet;
+pub mod health;
 
 use crate::{GameMode, Hp, Information, OpponentResource};
 use avian3d::prelude::*;
