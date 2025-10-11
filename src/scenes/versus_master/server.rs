@@ -1,5 +1,5 @@
 use super::entities::player::Player;
-use crate::{Information, PlayerInformation, configs::GameConfigs};
+use crate::{Information, OpponentResource, PlayerInformation, configs::GameConfigs};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -11,6 +11,7 @@ use aeronet_webtransport::{
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use chrono::{DateTime, Utc};
 use std::{net::IpAddr, time::Duration};
 
 pub fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {
@@ -108,15 +109,19 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>, clients: Query<&ChildOf>)
 pub fn update_system(
     mut sessions: Query<(Entity, &mut Session), With<ChildOf>>,
     player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
+    mut opponent_resource: ResMut<OpponentResource>,
 ) {
     for (client, mut session) in sessions.iter_mut() {
         let session = &mut *session;
         for (transform, angular, linear) in player.iter() {
+            let timestamp: DateTime<Utc> = Utc::now();
+
             let information: Information = Information {
                 player: PlayerInformation {
                     transform: *transform,
                     angular: *angular,
                     linear: *linear,
+                    timestamp,
                 },
             };
 
@@ -131,7 +136,9 @@ pub fn update_system(
                 String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
             let info: Information =
                 serde_json::from_str(&received).expect("Failed to parse Json data to Information");
-            info!("{client} > {info:?}");
+
+            debug!("{client} > {info:?}");
+            opponent_resource.set(info);
         }
     }
 }

@@ -2,7 +2,7 @@ pub mod entities;
 pub mod health;
 pub mod server;
 
-use crate::{DeathEvent, GameMode, Hp, KillCounter};
+use crate::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
@@ -13,6 +13,7 @@ impl Plugin for VersusMasterPlugin {
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
+        app.insert_resource(OpponentResource::default());
         app.add_systems(
             OnEnter(GameMode::VersusMaster),
             (
@@ -33,6 +34,9 @@ impl Plugin for VersusMasterPlugin {
                 entities::player::gun::select_fire::toggle_select_fire_system,
                 entities::player::gun::bullet::health::update_system,
                 entities::player::health::update_system,
+                // Opponent
+                entities::opponent::update_system,
+                entities::opponent::health::update_system,
                 // Systems
                 health::update_system,
                 server::update_system,
