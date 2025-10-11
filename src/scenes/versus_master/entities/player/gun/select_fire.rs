@@ -17,6 +17,9 @@ pub enum SelectFire {
     Full,
 }
 
+#[derive(Component)]
+pub struct DespawnTimer(Timer);
+
 /// Semi auto
 pub fn semi_auto_system(
     mut commands: Commands,
@@ -73,6 +76,7 @@ pub fn semi_auto_system(
                             CollisionEventsEnabled,
                             Bullet,
                             Hp::ammo(),
+                            DespawnTimer(Timer::from_seconds(5.0, TimerMode::Once)),
                         ));
 
                         commands.spawn((
@@ -152,6 +156,7 @@ pub fn full_auto_system(
                             CollisionEventsEnabled,
                             Bullet,
                             Hp::ammo(),
+                            DespawnTimer(Timer::from_seconds(5.0, TimerMode::Once)),
                         ));
 
                         commands.spawn((
@@ -175,6 +180,20 @@ pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonI
         match gun.select_fire {
             SelectFire::Semi => gun.fullauto(),
             SelectFire::Full => gun.semiauto(),
+        }
+    }
+}
+
+pub fn timer_system(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut query: Query<(Entity, &mut DespawnTimer), With<Bullet>>,
+) {
+    for (entity, mut timer) in query.iter_mut() {
+        timer.0.tick(time.delta());
+        if timer.0.finished() {
+            commands.entity(entity).despawn();
+            debug!("Entity despawned after 5 seconds.");
         }
     }
 }

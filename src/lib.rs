@@ -115,6 +115,7 @@ impl Hp {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Information {
     pub player: PlayerInformation,
+    pub bullets: Vec<BulletInformation>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -123,6 +124,13 @@ pub struct PlayerInformation {
     pub angular: AngularVelocity,
     pub linear: LinearVelocity,
     pub timestamp: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct BulletInformation {
+    pub transform: Transform,
+    pub angular: AngularVelocity,
+    pub linear: LinearVelocity,
 }
 
 #[derive(Debug, Resource, Default)]

@@ -1,5 +1,7 @@
-use super::entities::player::Player;
-use crate::{Information, OpponentResource, PlayerInformation, configs::GameConfigs};
+use super::entities::player::{Player, gun::bullet::Bullet};
+use crate::{
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
+};
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
     cert,
@@ -85,15 +87,28 @@ pub fn update_system(
     mut sessions: Query<(Entity, &mut Session)>,
     player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
     mut opponent_resource: ResMut<OpponentResource>,
+    bullets_query: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Bullet>>,
 ) {
     for (server, mut session) in sessions.iter_mut() {
         let session = &mut *session;
 
-        // Sender
+        // Bullets
+        let mut bullets: Vec<BulletInformation> = Vec::new();
+        for (transform, angular, linear) in bullets_query.iter() {
+            let b: BulletInformation = BulletInformation {
+                transform: *transform,
+                angular: *angular,
+                linear: *linear,
+            };
+
+            bullets.push(b);
+        }
+
+        // Player
         for (transform, angular, linear) in player.iter() {
             let timestamp: DateTime<Utc> = Utc::now();
-
             let information: Information = Information {
+                bullets: bullets.clone(),
                 player: PlayerInformation {
                     transform: *transform,
                     angular: *angular,
@@ -108,7 +123,6 @@ pub fn update_system(
             session.send.push(reply.into());
         }
 
-        // Receiver
         for packet in session.recv.drain(..) {
             let received: String =
                 String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());

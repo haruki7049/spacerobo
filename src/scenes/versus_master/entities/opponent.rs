@@ -1,6 +1,6 @@
 //! # Opponent systems, Compoments & etc...
 
-//pub mod gun;
+pub mod bullet;
 pub mod health;
 
 use crate::{GameMode, Hp, Information, OpponentResource};

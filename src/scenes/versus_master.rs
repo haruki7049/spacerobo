@@ -32,11 +32,13 @@ impl Plugin for VersusMasterPlugin {
                 entities::player::gun::select_fire::full_auto_system,
                 entities::player::gun::select_fire::semi_auto_system,
                 entities::player::gun::select_fire::toggle_select_fire_system,
+                entities::player::gun::select_fire::timer_system,
                 entities::player::gun::bullet::health::update_system,
                 entities::player::health::update_system,
                 // Opponent
                 entities::opponent::update_system,
                 entities::opponent::health::update_system,
+                entities::opponent::bullet::update_system,
                 // Systems
                 health::update_system,
                 server::update_system,

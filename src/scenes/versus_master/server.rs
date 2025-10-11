@@ -1,5 +1,7 @@
-use super::entities::player::Player;
-use crate::{Information, OpponentResource, PlayerInformation, configs::GameConfigs};
+use super::entities::player::{Player, gun::bullet::Bullet};
+use crate::{
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
+};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -110,13 +112,28 @@ pub fn update_system(
     mut sessions: Query<(Entity, &mut Session), With<ChildOf>>,
     player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
     mut opponent_resource: ResMut<OpponentResource>,
+    bullets_query: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Bullet>>,
 ) {
     for (client, mut session) in sessions.iter_mut() {
         let session = &mut *session;
+
+        // Bullets
+        let mut bullets: Vec<BulletInformation> = Vec::new();
+        for (transform, angular, linear) in bullets_query.iter() {
+            let b: BulletInformation = BulletInformation {
+                transform: *transform,
+                angular: *angular,
+                linear: *linear,
+            };
+
+            bullets.push(b);
+        }
+
+        // Player
         for (transform, angular, linear) in player.iter() {
             let timestamp: DateTime<Utc> = Utc::now();
-
             let information: Information = Information {
+                bullets: bullets.clone(),
                 player: PlayerInformation {
                     transform: *transform,
                     angular: *angular,
