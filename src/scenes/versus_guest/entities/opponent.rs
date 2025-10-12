@@ -3,7 +3,7 @@
 pub mod bullet;
 pub mod health;
 
-use crate::{GameMode, Information, OpponentResource, Damage};
+use crate::{Damage, GameMode, Information, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 //use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};

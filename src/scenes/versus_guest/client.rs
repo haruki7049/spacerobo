@@ -1,6 +1,10 @@
-use super::entities::{player::{Player, gun::bullet::Bullet}, opponent::{DamageCollector, Opponent}};
+use super::entities::{
+    opponent::{DamageCollector, Opponent},
+    player::{Player, gun::bullet::Bullet},
+};
 use crate::{
-    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs, Damage
+    BulletInformation, Damage, Information, OpponentResource, PlayerInformation,
+    configs::GameConfigs,
 };
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
