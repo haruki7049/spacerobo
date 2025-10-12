@@ -3,7 +3,7 @@
 pub mod bullet;
 pub mod health;
 
-use crate::{GameMode, Hp, Information, OpponentResource};
+use crate::{GameMode, Information, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 //use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
@@ -46,7 +46,6 @@ pub fn update_system(
             Mass(5.0),
             info.player.angular,
             info.player.linear,
-            Hp::player(),
             Opponent,
             CollisionEventsEnabled,
         ))
