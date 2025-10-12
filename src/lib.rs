@@ -119,11 +119,17 @@ pub struct Information {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Damage {
+    pub inner: f32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PlayerInformation {
     pub transform: Transform,
     pub angular: AngularVelocity,
     pub linear: LinearVelocity,
     pub timestamp: DateTime<Utc>,
+    pub damages: Vec<Damage>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

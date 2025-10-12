@@ -1,6 +1,6 @@
-use super::entities::player::{Player, gun::bullet::Bullet};
+use super::entities::{player::{Player, gun::bullet::Bullet}, opponent::{DamageCollector, Opponent}};
 use crate::{
-    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs, Damage
 };
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
@@ -85,9 +85,10 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>) {
 
 pub fn update_system(
     mut sessions: Query<(Entity, &mut Session)>,
-    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
     mut opponent_resource: ResMut<OpponentResource>,
+    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
     bullets_query: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Bullet>>,
+    damage_collector_query: Query<&DamageCollector, With<Opponent>>,
 ) {
     for (server, mut session) in sessions.iter_mut() {
         let session = &mut *session;
@@ -104,12 +105,20 @@ pub fn update_system(
             bullets.push(b);
         }
 
+        let mut damages: Vec<Damage> = Vec::new();
+        for damage_collector in damage_collector_query.iter() {
+            for inner in &damage_collector.0 {
+                damages.push(inner.clone());
+            }
+        }
+
         // Player
         for (transform, angular, linear) in player.iter() {
             let timestamp: DateTime<Utc> = Utc::now();
             let information: Information = Information {
                 bullets: bullets.clone(),
                 player: PlayerInformation {
+                    damages: damages.clone(),
                     transform: *transform,
                     angular: *angular,
                     linear: *linear,

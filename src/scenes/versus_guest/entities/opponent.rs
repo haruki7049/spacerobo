@@ -3,7 +3,7 @@
 pub mod bullet;
 pub mod health;
 
-use crate::{GameMode, Information, OpponentResource};
+use crate::{GameMode, Information, OpponentResource, Damage};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 //use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
@@ -11,6 +11,9 @@ use bevy::prelude::*;
 /// Opponent Component
 #[derive(Component)]
 pub struct Opponent;
+
+#[derive(Component)]
+pub struct DamageCollector(pub Vec<Damage>);
 
 /// update system to manage opponent entity
 pub fn update_system(
@@ -47,6 +50,7 @@ pub fn update_system(
             info.player.angular,
             info.player.linear,
             Opponent,
+            DamageCollector(info.player.damages),
             CollisionEventsEnabled,
         ))
         // Gun
