@@ -13,7 +13,7 @@ impl Plugin for TitlePlugin {
     }
 }
 
-pub fn setup_system(mut commands: Commands) {
+fn setup_system(mut commands: Commands) {
     commands.spawn((StateScoped(GameMode::Title), Camera2d));
 
     commands
@@ -37,7 +37,7 @@ pub fn setup_system(mut commands: Commands) {
         .with_child(TextSpan::new("Press escape key => Exit...\n".to_string()));
 }
 
-pub fn input_detection_system(
+fn input_detection_system(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut gamemode: ResMut<NextState<GameMode>>,
     mut exit: EventWriter<AppExit>,
