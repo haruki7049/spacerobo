@@ -5,12 +5,13 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
+use spacerobo_title_plugin::TitlePlugin;
 use spacerobo::{
     GameMode,
     cli::CLIArgs,
     configs::GameConfigs,
     scenes::{
-        shooting_range::ShootingRangePlugin, title::TitlePlugin, versus_guest::VersusGuestPlugin,
+        shooting_range::ShootingRangePlugin, versus_guest::VersusGuestPlugin,
         versus_master::VersusMasterPlugin,
     },
 };

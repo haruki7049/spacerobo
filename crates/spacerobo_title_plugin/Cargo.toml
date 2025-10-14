@@ -1,0 +1,8 @@
+[package]
+name = "spacerobo_title_plugin"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true }
+spacerobo_commons = { workspace = true }

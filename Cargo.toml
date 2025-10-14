@@ -10,7 +10,16 @@ repository = "https://github.com/haruki7049/spacerobo"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = ["crates/spacerobo_commons", "crates/spacerobo_title_plugin"]
+
+[workspace.dependencies]
+bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
+spacerobo_commons = { path = "crates/spacerobo_commons" }
+serde = { version = "1.0.219", features = ["derive"] }
+
 [dependencies]
+spacerobo_title_plugin = { path = "crates/spacerobo_title_plugin" }
 aeronet = "0.16.1"
 aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
 avian3d = { version = "0.3.1", features = ["serialize"] }

@@ -5347,9 +5347,25 @@ dependencies = [
  "directories",
  "serde",
  "serde_json",
+ "spacerobo_title_plugin",
  "toml 0.9.7",
  "url",
  "wtransport",
+]
+
+[[package]]
+name = "spacerobo_commons"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
+name = "spacerobo_title_plugin"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "spacerobo_commons",
 ]
 
 [[package]]
