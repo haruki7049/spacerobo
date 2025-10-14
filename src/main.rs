@@ -18,7 +18,7 @@ use spacerobo::{
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
 
-    let configs: GameConfigs = confy::load_path(&args.config_file()).unwrap_or_else(|_| {
+    let configs: GameConfigs = confy::load_path(args.config_file()).unwrap_or_else(|_| {
         info!("Running Spacerobo with default GameConfigs...");
         GameConfigs::default()
     });
