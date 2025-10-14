@@ -1,6 +1,6 @@
-use crate::{GameMode, Hp, Information, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::{GameMode, Hp, Information, OpponentResource};
 
 /// Bullet Component
 #[derive(Component)]

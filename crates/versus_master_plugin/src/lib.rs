@@ -2,9 +2,9 @@ mod entities;
 mod health;
 mod server;
 
-use crate::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 
 pub struct VersusMasterPlugin;
 
@@ -102,16 +102,16 @@ fn collision_detection_system(
                 let (ref mut obj1_hp, _obj1_linear, _obj1_mass) = obj1;
                 let (ref mut obj2_hp, _obj2_linear, _obj2_mass) = obj2;
 
-                obj1_hp.rest -= damage;
-                obj2_hp.rest -= damage;
+                obj1_hp.decrease(damage);
+                obj2_hp.decrease(damage);
 
                 debug!("The first object's Hp: {:?}", &obj1_hp);
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
-                if obj1_hp.rest <= 0. {
+                if obj1_hp.rest() <= 0. {
                     event_writer.write(DeathEvent::new(*entity1));
                 }
-                if obj2_hp.rest <= 0. {
+                if obj2_hp.rest() <= 0. {
                     event_writer.write(DeathEvent::new(*entity2));
                 }
             }

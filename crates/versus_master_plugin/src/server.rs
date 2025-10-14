@@ -2,10 +2,6 @@ use super::entities::{
     opponent::{DamageCollector, Opponent},
     player::{Player, gun::bullet::Bullet},
 };
-use crate::{
-    BulletInformation, Damage, Information, OpponentResource, PlayerInformation,
-    configs::GameConfigs,
-};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -18,6 +14,10 @@ use aeronet_webtransport::{
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
+use spacerobo_commons::{
+    BulletInformation, Damage, Information, OpponentResource, PlayerInformation,
+    configs::GameConfigs,
+};
 use std::{net::IpAddr, time::Duration};
 
 pub fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {
