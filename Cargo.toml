@@ -12,7 +12,7 @@ repository = "https://github.com/haruki7049/spacerobo"
 
 [workspace]
 members = [
-  "crates/spacerobo_commons",
+  "crates/commons",
   "crates/shooting_range_plugin",
   "crates/title_plugin",
   "crates/versus_master_plugin",
@@ -23,7 +23,7 @@ bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
 avian3d = { version = "0.3.1", features = ["serialize"] }
 aeronet = "0.16.1"
 aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
-spacerobo_commons = { path = "crates/spacerobo_commons" }
+spacerobo_commons = { path = "crates/commons" }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.145"
 chrono = { version = "0.4.42", features = ["serde"] }
