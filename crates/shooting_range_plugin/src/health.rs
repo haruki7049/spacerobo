@@ -1,6 +1,6 @@
 use super::{Target, entities::bot::Bot};
-use crate::{DeathEvent, KillCounter};
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, KillCounter};
 
 type WithBotOrTarget = Or<(With<Target>, With<Bot>)>;
 
@@ -12,7 +12,7 @@ pub fn update_system(
     asset_server: Res<AssetServer>,
 ) {
     for death_event in death_reader.read() {
-        if query.get(death_event.entity).is_ok() {
+        if query.get(death_event.entity()).is_ok() {
             kill_counter.increment();
 
             commands.spawn((
@@ -21,7 +21,7 @@ pub fn update_system(
             ));
 
             // Despawn the target
-            commands.entity(death_event.entity).despawn();
+            commands.entity(death_event.entity()).despawn();
         }
     }
 }

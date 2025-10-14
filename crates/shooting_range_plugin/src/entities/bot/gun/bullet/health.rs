@@ -1,6 +1,6 @@
 use super::super::bullet::Bullet;
-use crate::DeathEvent;
 use bevy::prelude::*;
+use spacerobo_commons::DeathEvent;
 
 pub fn update_system(
     mut commands: Commands,
@@ -8,9 +8,9 @@ pub fn update_system(
     query: Query<&Bullet>,
 ) {
     for death_event in death_reader.read() {
-        if query.get(death_event.entity).is_ok() {
+        if query.get(death_event.entity()).is_ok() {
             // Despawn the bullet
-            commands.entity(death_event.entity).despawn();
+            commands.entity(death_event.entity()).despawn();
         }
     }
 }

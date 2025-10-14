@@ -2,9 +2,9 @@ use super::super::{
     Bot,
     gun::{BULLET_SIZE, Gun, Muzzle, bullet::Bullet},
 };
-use crate::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::Hp;
 
 /// Full auto
 pub fn full_auto_system(

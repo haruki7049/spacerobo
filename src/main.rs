@@ -9,11 +9,9 @@ use spacerobo::{
     GameMode,
     cli::CLIArgs,
     configs::GameConfigs,
-    scenes::{
-        shooting_range::ShootingRangePlugin, versus_guest::VersusGuestPlugin,
-        versus_master::VersusMasterPlugin,
-    },
+    scenes::{versus_guest::VersusGuestPlugin, versus_master::VersusMasterPlugin},
 };
+use spacerobo_shooting_range_plugin::ShootingRangePlugin;
 use spacerobo_title_plugin::TitlePlugin;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
