@@ -33,6 +33,7 @@ wtransport = "0.6.1"
 
 [dependencies]
 spacerobo_title_plugin = { path = "crates/title_plugin" }
+spacerobo_commons = { path = "crates/commons" }
 spacerobo_shooting_range_plugin = { path = "crates/shooting_range_plugin" }
 spacerobo_versus_master_plugin = { path = "crates/versus_master_plugin" }
 spacerobo_versus_guest_plugin = { path = "crates/versus_guest_plugin" }

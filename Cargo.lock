@@ -5347,6 +5347,7 @@ dependencies = [
  "directories",
  "serde",
  "serde_json",
+ "spacerobo_commons",
  "spacerobo_shooting_range_plugin",
  "spacerobo_title_plugin",
  "spacerobo_versus_guest_plugin",
