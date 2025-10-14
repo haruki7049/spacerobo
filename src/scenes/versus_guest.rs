@@ -67,7 +67,7 @@ impl Plugin for VersusGuestPlugin {
 #[derive(Component)]
 pub struct Target;
 
-pub fn setup_system(mut commands: Commands) {
+fn setup_system(mut commands: Commands) {
     // Light
     commands.spawn((
         PointLight {
@@ -81,7 +81,7 @@ pub fn setup_system(mut commands: Commands) {
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
 /// This system is created to decrease the hp at contacted objects.
-pub fn collision_detection_system(
+fn collision_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
     mut event_writer: EventWriter<DeathEvent>,
