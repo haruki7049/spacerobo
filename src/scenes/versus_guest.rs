@@ -65,7 +65,7 @@ impl Plugin for VersusGuestPlugin {
 }
 
 #[derive(Component)]
-pub struct Target;
+struct Target;
 
 fn setup_system(mut commands: Commands) {
     // Light
