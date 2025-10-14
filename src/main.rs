@@ -5,7 +5,6 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo_title_plugin::TitlePlugin;
 use spacerobo::{
     GameMode,
     cli::CLIArgs,
@@ -15,6 +14,7 @@ use spacerobo::{
         versus_master::VersusMasterPlugin,
     },
 };
+use spacerobo_title_plugin::TitlePlugin;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
