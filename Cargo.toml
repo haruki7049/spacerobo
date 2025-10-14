@@ -37,16 +37,9 @@ spacerobo_commons = { path = "crates/commons" }
 spacerobo_shooting_range_plugin = { path = "crates/shooting_range_plugin" }
 spacerobo_versus_master_plugin = { path = "crates/versus_master_plugin" }
 spacerobo_versus_guest_plugin = { path = "crates/versus_guest_plugin" }
-aeronet = "0.16.1"
 aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
 avian3d = { version = "0.3.1", features = ["serialize"] }
 bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
-chrono = { version = "0.4.42", features = ["serde"] }
 clap = { version = "4.5.40", features = ["derive", "string"] }
 confy = "1.0.0"
 directories = "6.0.0"
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.145"
-toml = "0.9.2"
-url = { version = "2.5.7", features = ["serde"] }
-wtransport = "0.6.1"
