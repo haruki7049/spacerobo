@@ -5349,6 +5349,7 @@ dependencies = [
  "serde_json",
  "spacerobo_shooting_range_plugin",
  "spacerobo_title_plugin",
+ "spacerobo_versus_guest_plugin",
  "spacerobo_versus_master_plugin",
  "toml 0.9.7",
  "url",
@@ -5381,6 +5382,20 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "spacerobo_commons",
+]
+
+[[package]]
+name = "spacerobo_versus_guest_plugin"
+version = "0.1.0"
+dependencies = [
+ "aeronet",
+ "aeronet_webtransport",
+ "avian3d",
+ "bevy",
+ "chrono",
+ "serde_json",
+ "spacerobo_commons",
+ "url",
 ]
 
 [[package]]

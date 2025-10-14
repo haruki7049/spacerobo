@@ -7,10 +7,10 @@ pub mod health;
 pub mod movement;
 pub mod ui;
 
-use crate::{GameMode, Hp, KillCounter, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_commons::{GameMode, Hp, KillCounter, configs::GameConfigs};
 
 /// Player Component
 #[derive(Component)]

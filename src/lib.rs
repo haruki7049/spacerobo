@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 
 pub mod cli;
 pub mod configs;
-pub mod scenes;
 
 #[derive(Debug, Event)]
 pub struct DeathEvent {
