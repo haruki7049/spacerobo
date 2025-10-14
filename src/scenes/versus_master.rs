@@ -67,7 +67,7 @@ impl Plugin for VersusMasterPlugin {
 }
 
 #[derive(Component)]
-pub struct Target;
+struct Target;
 
 fn setup_system(mut commands: Commands) {
     // Light
