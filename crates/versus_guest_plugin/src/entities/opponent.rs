@@ -5,15 +5,12 @@ pub mod health;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{Damage, GameMode, Information, OpponentResource};
+use spacerobo_commons::{GameMode, Information, OpponentResource, PlayerInformation};
 //use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
 
 /// Opponent Component
 #[derive(Component)]
 pub struct Opponent;
-
-#[derive(Component)]
-pub struct DamageCollector(pub Vec<Damage>);
 
 /// update system to manage opponent entity
 pub fn update_system(
@@ -33,6 +30,10 @@ pub fn update_system(
         }
     }
 
+    let Some(player_info): Option<PlayerInformation> = info.player else {
+        return;
+    };
+
     // Camera
     commands
         .spawn((
@@ -42,16 +43,15 @@ pub fn update_system(
                 base_color: Color::WHITE,
                 ..Default::default()
             })),
-            info.player.transform,
             RigidBody::Kinematic,
             GravityScale(0.2),
             Collider::sphere(1.0),
             Mass(5.0),
-            info.player.angular,
-            info.player.linear,
             Opponent,
-            DamageCollector(info.player.damages),
             CollisionEventsEnabled,
+            player_info.transform,
+            player_info.angular,
+            player_info.linear,
         ))
         // Gun
         .with_children(|parent| {

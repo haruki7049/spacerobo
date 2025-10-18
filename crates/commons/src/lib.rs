@@ -120,13 +120,8 @@ impl Hp {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Information {
-    pub player: PlayerInformation,
+    pub player: Option<PlayerInformation>,
     pub bullets: Vec<BulletInformation>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Damage {
-    pub inner: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -135,7 +130,6 @@ pub struct PlayerInformation {
     pub angular: AngularVelocity,
     pub linear: LinearVelocity,
     pub timestamp: DateTime<Utc>,
-    pub damages: Vec<Damage>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

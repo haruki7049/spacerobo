@@ -1,7 +1,4 @@
-use super::entities::{
-    opponent::{DamageCollector, Opponent},
-    player::{Player, gun::bullet::Bullet},
-};
+use super::entities::player::{Player, gun::bullet::Bullet};
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
     cert,
@@ -11,8 +8,7 @@ use avian3d::prelude::*;
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
 use spacerobo_commons::{
-    BulletInformation, Damage, Information, OpponentResource, PlayerInformation,
-    configs::GameConfigs,
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
 };
 use url::Url;
 
@@ -90,9 +86,8 @@ pub fn on_disconnected(trigger: Trigger<Disconnected>) {
 pub fn update_system(
     mut sessions: Query<(Entity, &mut Session)>,
     mut opponent_resource: ResMut<OpponentResource>,
-    player: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
+    players_query: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Player>>,
     bullets_query: Query<(&Transform, &AngularVelocity, &LinearVelocity), With<Bullet>>,
-    damage_collector_query: Query<&DamageCollector, With<Opponent>>,
 ) {
     for (server, mut session) in sessions.iter_mut() {
         let session = &mut *session;
@@ -109,33 +104,38 @@ pub fn update_system(
             bullets.push(b);
         }
 
-        let mut damages: Vec<Damage> = Vec::new();
-        for damage_collector in damage_collector_query.iter() {
-            for inner in &damage_collector.0 {
-                damages.push(inner.clone());
-            }
-        }
-
         // Player
-        for (transform, angular, linear) in player.iter() {
+        let mut player: Option<PlayerInformation> = None;
+        for (transform, angular, linear) in players_query.iter() {
             let timestamp: DateTime<Utc> = Utc::now();
-            let information: Information = Information {
-                bullets: bullets.clone(),
-                player: PlayerInformation {
-                    damages: damages.clone(),
-                    transform: *transform,
-                    angular: *angular,
-                    linear: *linear,
-                    timestamp,
-                },
+
+            if player.is_some() {
+                panic!(
+                    "Failed to create PlayerInformation for one player entity. There are two player entities"
+                );
             };
 
-            let reply: String = serde_json::to_string(&information)
-                .expect("Failed to parse Information to Json data");
-            info!("{server} < {reply}");
-            session.send.push(reply.into());
+            player = Some(PlayerInformation {
+                transform: *transform,
+                angular: *angular,
+                linear: *linear,
+                timestamp,
+            });
         }
 
+        // Create Information
+        let information: Information = Information {
+            bullets: bullets.clone(),
+            player,
+        };
+
+        // Sending...
+        let reply: String =
+            serde_json::to_string(&information).expect("Failed to parse Information to Json data");
+        info!("{server} < {reply}");
+        session.send.push(reply.into());
+
+        // Receiving...
         for packet in session.recv.drain(..) {
             let received: String =
                 String::from_utf8(packet.payload.into()).unwrap_or_else(|_| "(not UTF-8)".into());
