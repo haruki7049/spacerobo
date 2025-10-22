@@ -9,10 +9,7 @@ pub struct EntitiesPlugin;
 
 impl Plugin for EntitiesPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((
-            bot::BotPlugin,
-            target::TargetPlugin,
-        ));
+        app.add_plugins((bot::BotPlugin, target::TargetPlugin));
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(
