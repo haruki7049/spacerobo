@@ -8,11 +8,49 @@ pub mod ui;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
-use spacerobo_commons::{GameMode, Hp, KillCounter, configs::GameConfigs};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
 
 /// Player Component
 #[derive(Component)]
 pub struct Player;
+
+pub struct PlayerPlugin;
+
+impl Plugin for PlayerPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_event::<DeathEvent>();
+        app.insert_resource(KillCounter::default());
+        app.add_systems(
+            OnEnter(GameMode::ShootingRange),
+            (setup_system, ui::setup_system),
+        );
+        app.add_systems(
+            Update,
+            (
+                respawn_system,
+                ui::update_system,
+                gun::select_fire::full_auto_system,
+                gun::select_fire::semi_auto_system,
+                gun::select_fire::toggle_select_fire_system,
+                gun::bullet::health::update_system,
+                health::update_system,
+            )
+                .run_if(in_state(GameMode::ShootingRange)),
+        );
+        app.add_systems(
+            FixedUpdate,
+            (
+                // movement systems
+                movement::keyboard::update_system,
+                movement::mouse::update_system,
+                movement::controller::update_system,
+                // gun systems
+                gun::gun_cooling_system,
+            )
+                .run_if(in_state(GameMode::ShootingRange)),
+        );
+    }
+}
 
 /// setup system to spawn player entity
 pub fn setup_system(
