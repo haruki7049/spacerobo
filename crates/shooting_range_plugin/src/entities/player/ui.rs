@@ -1,5 +1,7 @@
 //! # UI systems, components & etc...
 
+#![allow(clippy::type_complexity)]
+
 use super::Player;
 use bevy::prelude::*;
 use spacerobo_commons::{GameMode, Hp, KillCounter};

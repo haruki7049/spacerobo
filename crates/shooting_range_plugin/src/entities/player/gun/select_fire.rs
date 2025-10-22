@@ -1,3 +1,5 @@
+#![allow(clippy::type_complexity)]
+
 use super::super::{
     Muzzle, Player,
     gun::{BULLET_SIZE, Gun, bullet::Bullet},

@@ -1,3 +1,5 @@
+#![allow(clippy::type_complexity)]
+
 use super::super::{
     Bot,
     gun::{BULLET_SIZE, Gun, Muzzle, bullet::Bullet},

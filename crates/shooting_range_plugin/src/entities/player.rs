@@ -1,7 +1,5 @@
 //! # Player systems, Compoments & etc...
 
-#![allow(clippy::type_complexity)]
-
 pub mod gun;
 pub mod health;
 pub mod movement;

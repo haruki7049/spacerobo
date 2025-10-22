@@ -1,5 +1,4 @@
 mod entities;
-mod health;
 
 use avian3d::prelude::*;
 use bevy::{
@@ -38,8 +37,9 @@ impl Plugin for ShootingRangePlugin {
                 entities::bot::gun::select_fire::full_auto_system,
                 entities::bot::gun::bullet::health::update_system,
                 entities::bot::health::update_system,
+                // Target
+                entities::target::health::update_system,
                 // Systems
-                health::update_system,
                 collision_detection_system,
                 when_going_outside_system,
             )
@@ -61,9 +61,6 @@ impl Plugin for ShootingRangePlugin {
         );
     }
 }
-
-#[derive(Component)]
-pub struct Target;
 
 fn setup_system(
     mut commands: Commands,
@@ -147,7 +144,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -163,7 +160,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -179,7 +176,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -195,7 +192,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -211,7 +208,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -227,7 +224,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -243,7 +240,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
 
@@ -259,7 +256,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    Target,
+                    entities::target::Target,
                     Hp::target(),
                 ));
             }

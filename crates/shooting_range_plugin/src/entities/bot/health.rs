@@ -11,7 +11,7 @@ pub fn update_system(
         if query.get(death_event.entity()).is_ok() {
             commands.entity(death_event.entity()).despawn();
 
-            info!("Bot is dead!!");
+            debug!("Bot is dead!!");
         }
     }
 }
