@@ -7,19 +7,29 @@ use url::Url;
 /// Configuration struct
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct Config {
-    pub server: ServerConfig,
-    pub client: ClientConfig,
+    server: ServerConfig,
+    client: ClientConfig,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+impl Config {
+    pub fn server(&self) -> ServerConfig {
+        self.server.clone()
+    }
+
+    pub fn client(&self) -> ClientConfig {
+        self.client.clone()
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ServerConfig {
-    pub ipaddr: Vec<IpAddr>,
+    ipaddr: Vec<IpAddr>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ClientConfig {
-    pub cert_hash: String,
-    pub domain: Url,
+impl ServerConfig {
+    pub fn ipaddr(&self) -> Vec<IpAddr> {
+        self.ipaddr.clone()
+    }
 }
 
 impl std::default::Default for ServerConfig {
@@ -30,6 +40,22 @@ impl std::default::Default for ServerConfig {
                 IpAddr::V6(Ipv6Addr::LOCALHOST),
             ],
         }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ClientConfig {
+    cert_hash: String,
+    domain: Url,
+}
+
+impl ClientConfig {
+    pub fn cert_hash(&self) -> String {
+        self.cert_hash.clone()
+    }
+
+    pub fn domain(&self) -> Url {
+        self.domain.clone()
     }
 }
 
