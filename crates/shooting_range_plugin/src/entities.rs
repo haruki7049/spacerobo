@@ -9,7 +9,10 @@ pub struct EntitiesPlugin;
 
 impl Plugin for EntitiesPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(target::TargetPlugin);
+        app.add_plugins((
+            bot::BotPlugin,
+            target::TargetPlugin,
+        ));
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(
@@ -27,10 +30,6 @@ impl Plugin for EntitiesPlugin {
                 player::gun::select_fire::toggle_select_fire_system,
                 player::gun::bullet::health::update_system,
                 player::health::update_system,
-                // Bot
-                bot::gun::select_fire::full_auto_system,
-                bot::gun::bullet::health::update_system,
-                bot::health::update_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         );
@@ -43,8 +42,6 @@ impl Plugin for EntitiesPlugin {
                 player::movement::controller::update_system,
                 // Player gun systems
                 player::gun::gun_cooling_system,
-                // Bot gun systems
-                bot::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         );
