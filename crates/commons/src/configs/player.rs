@@ -6,35 +6,87 @@ use serde::{Deserialize, Serialize};
 /// Configuration struct
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Config {
-    pub keyboard: KeyboardConfig,
-    pub mouse: MouseConfig,
-    pub controller: ControllerConfig,
-    pub robo: RoboConfig,
+    keyboard: KeyboardConfig,
+    mouse: MouseConfig,
+    controller: ControllerConfig,
+    robo: RoboConfig,
+}
+
+impl Config {
+    pub fn keyboard(&self) -> KeyboardConfig {
+        self.keyboard.clone()
+    }
+
+    pub fn mouse(&self) -> MouseConfig {
+        self.mouse.clone()
+    }
+
+    pub fn controller(&self) -> ControllerConfig {
+        self.controller.clone()
+    }
+
+    pub fn robo(&self) -> RoboConfig {
+        self.robo.clone()
+    }
 }
 
 // Configurations about robo
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct RoboConfig {
-    pub thruster: ThrusterConfig,
+    thruster: ThrusterConfig,
+}
+
+impl RoboConfig {
+    pub fn thruster(&self) -> ThrusterConfig {
+        self.thruster.clone()
+    }
 }
 
 // Configurations about thrusters
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct ThrusterConfig {
-    pub force: ForceConfig,
+    force: ForceConfig,
+}
+
+impl ThrusterConfig {
+    pub fn force(&self) -> ForceConfig {
+        self.force.clone()
+    }
 }
 
 // Configuration about force by thrusters
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ForceConfig {
     // Keyboard
-    pub accelerate: f32,
-    pub dash: f32,
-    pub boost: f32,
+    accelerate: f32,
+    dash: f32,
+    boost: f32,
 
     // Mouse
-    pub pitch: f32,
-    pub yaw: f32,
+    pitch: f32,
+    yaw: f32,
+}
+
+impl ForceConfig {
+    pub fn accelerate(&self) -> f32 {
+        self.accelerate
+    }
+
+    pub fn dash(&self) -> f32 {
+        self.dash
+    }
+
+    pub fn boost(&self) -> f32 {
+        self.boost
+    }
+
+    pub fn pitch(&self) -> f32 {
+        self.pitch
+    }
+
+    pub fn yaw(&self) -> f32 {
+        self.yaw
+    }
 }
 
 impl std::default::Default for ForceConfig {
@@ -50,29 +102,75 @@ impl std::default::Default for ForceConfig {
 }
 
 /// Keyboard Configurations. This structure usually contains keymappings.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct KeyboardConfig {
     // Movements
-    pub forward: KeyCode,
-    pub back: KeyCode,
-    pub left: KeyCode,
-    pub right: KeyCode,
-    pub roll_left: KeyCode,
-    pub roll_right: KeyCode,
+    forward: KeyCode,
+    back: KeyCode,
+    left: KeyCode,
+    right: KeyCode,
+    roll_left: KeyCode,
+    roll_right: KeyCode,
 
-    pub dash: KeyCode,
+    dash: KeyCode,
 
     // Hovering
-    pub hover: KeyCode,
+    hover: KeyCode,
 
     // Gun
-    pub toggle_firemode: KeyCode,
+    toggle_firemode: KeyCode,
 
     // Game quit key
-    pub quit: KeyCode,
+    quit: KeyCode,
 
     // Respawn key
-    pub respawn: KeyCode,
+    respawn: KeyCode,
+}
+
+impl KeyboardConfig {
+    pub fn forward(&self) -> KeyCode {
+        self.forward.clone()
+    }
+
+    pub fn back(&self) -> KeyCode {
+        self.back.clone()
+    }
+
+    pub fn left(&self) -> KeyCode {
+        self.left.clone()
+    }
+
+    pub fn right(&self) -> KeyCode {
+        self.right.clone()
+    }
+
+    pub fn roll_left(&self) -> KeyCode {
+        self.roll_left.clone()
+    }
+
+    pub fn roll_right(&self) -> KeyCode {
+        self.roll_right.clone()
+    }
+
+    pub fn dash(&self) -> KeyCode {
+        self.dash.clone()
+    }
+
+    pub fn hover(&self) -> KeyCode {
+        self.hover.clone()
+    }
+
+    pub fn toggle_firemode(&self) -> KeyCode {
+        self.toggle_firemode.clone()
+    }
+
+    pub fn quit(&self) -> KeyCode {
+        self.quit.clone()
+    }
+
+    pub fn respawn(&self) -> KeyCode {
+        self.respawn.clone()
+    }
 }
 
 impl std::default::Default for KeyboardConfig {
@@ -99,12 +197,22 @@ impl std::default::Default for KeyboardConfig {
 }
 
 /// Mouse Configurations
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct MouseConfig {
-    pub x_reverse: bool,
-    pub y_reverse: bool,
+    x_reverse: bool,
+    y_reverse: bool,
+}
+
+impl MouseConfig {
+    pub fn x_reverse(&self) -> bool {
+        self.x_reverse
+    }
+
+    pub fn y_reverse(&self) -> bool {
+        self.y_reverse
+    }
 }
 
 /// Controller (Gamepad) Configurations
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct ControllerConfig {}
