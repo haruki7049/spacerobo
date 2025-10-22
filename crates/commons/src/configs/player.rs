@@ -129,47 +129,47 @@ pub struct KeyboardConfig {
 
 impl KeyboardConfig {
     pub fn forward(&self) -> KeyCode {
-        self.forward.clone()
+        self.forward
     }
 
     pub fn back(&self) -> KeyCode {
-        self.back.clone()
+        self.back
     }
 
     pub fn left(&self) -> KeyCode {
-        self.left.clone()
+        self.left
     }
 
     pub fn right(&self) -> KeyCode {
-        self.right.clone()
+        self.right
     }
 
     pub fn roll_left(&self) -> KeyCode {
-        self.roll_left.clone()
+        self.roll_left
     }
 
     pub fn roll_right(&self) -> KeyCode {
-        self.roll_right.clone()
+        self.roll_right
     }
 
     pub fn dash(&self) -> KeyCode {
-        self.dash.clone()
+        self.dash
     }
 
     pub fn hover(&self) -> KeyCode {
-        self.hover.clone()
+        self.hover
     }
 
     pub fn toggle_firemode(&self) -> KeyCode {
-        self.toggle_firemode.clone()
+        self.toggle_firemode
     }
 
     pub fn quit(&self) -> KeyCode {
-        self.quit.clone()
+        self.quit
     }
 
     pub fn respawn(&self) -> KeyCode {
-        self.respawn.clone()
+        self.respawn
     }
 }
 
