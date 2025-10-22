@@ -11,51 +11,17 @@ pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(entities::EntitiesPlugin);
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
-        app.add_systems(
-            OnEnter(GameMode::ShootingRange),
-            (
-                setup_system,
-                entities::player::setup_system,
-                entities::player::ui::setup_system,
-            ),
-        );
+        app.add_systems(OnEnter(GameMode::ShootingRange), setup_system);
         app.add_systems(
             Update,
             (
-                // Player
-                entities::player::respawn_system,
-                entities::player::ui::update_system,
-                entities::player::gun::select_fire::full_auto_system,
-                entities::player::gun::select_fire::semi_auto_system,
-                entities::player::gun::select_fire::toggle_select_fire_system,
-                entities::player::gun::bullet::health::update_system,
-                entities::player::health::update_system,
-                // Bot
-                entities::bot::gun::select_fire::full_auto_system,
-                entities::bot::gun::bullet::health::update_system,
-                entities::bot::health::update_system,
-                // Target
-                entities::target::health::update_system,
                 // Systems
                 collision_detection_system,
                 when_going_outside_system,
-            )
-                .run_if(in_state(GameMode::ShootingRange)),
-        );
-        app.add_systems(
-            FixedUpdate,
-            (
-                // Player movement systems
-                entities::player::movement::keyboard::update_system,
-                entities::player::movement::mouse::update_system,
-                entities::player::movement::controller::update_system,
-                // Player gun systems
-                entities::player::gun::gun_cooling_system,
-                // Bot gun systems
-                entities::bot::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::ShootingRange)),
         );
