@@ -18,7 +18,7 @@ use std::{net::IpAddr, time::Duration};
 
 pub fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {
     let addresses: Vec<String> = configs
-        .network
+        .network()
         .server()
         .ipaddr()
         .iter()

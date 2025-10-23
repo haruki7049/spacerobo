@@ -23,7 +23,7 @@ pub fn update_system(
 
             // Mouse X
             {
-                let direction: Vec3 = if game_configs.player.mouse().x_reverse() {
+                let direction: Vec3 = if game_configs.player().mouse().x_reverse() {
                     rotation * Vec3::NEG_Y
                 } else {
                     rotation * Vec3::Y
@@ -35,12 +35,12 @@ pub fn update_system(
                 let result: Vec3 = Vec3::new(x, y, z);
 
                 // Add yaw thruster's info
-                velocity += result * game_configs.player.robo().thruster().force().yaw();
+                velocity += result * game_configs.player().robo().thruster().force().yaw();
             }
 
             // Mouse Y
             {
-                let direction: Vec3 = if game_configs.player.mouse().y_reverse() {
+                let direction: Vec3 = if game_configs.player().mouse().y_reverse() {
                     rotation * Vec3::NEG_X
                 } else {
                     rotation * Vec3::X
@@ -52,7 +52,7 @@ pub fn update_system(
                 let result: Vec3 = Vec3::new(x, y, z);
 
                 // Add pitch thruster's info
-                velocity += result * game_configs.player.robo().thruster().force().pitch();
+                velocity += result * game_configs.player().robo().thruster().force().pitch();
             }
 
             angular.0 += velocity;

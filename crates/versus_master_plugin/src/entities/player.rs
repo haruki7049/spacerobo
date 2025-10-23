@@ -92,7 +92,7 @@ pub fn respawn_system(
         return;
     }
 
-    if keyboard.just_pressed(game_configs.player.keyboard().respawn()) {
+    if keyboard.just_pressed(game_configs.player().keyboard().respawn()) {
         info!("Respawning player...");
 
         // Reset KillCounter

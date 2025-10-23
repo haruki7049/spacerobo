@@ -17,11 +17,11 @@ pub fn setup_system(
     configs: Res<GameConfigs>,
     mut session_id: Local<usize>,
 ) {
-    let target: Url = configs.network.client().domain().clone();
+    let target: Url = configs.network().client().domain().clone();
     *session_id += 1;
     let name: String = format!("{}. {}", *session_id, target);
 
-    let cert_hash: String = configs.network.client().cert_hash().clone();
+    let cert_hash: String = configs.network().client().cert_hash().clone();
     let config: ClientConfig = match client_config(cert_hash) {
         Ok(config) => config,
         Err(err) => {
