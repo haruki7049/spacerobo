@@ -12,7 +12,13 @@ use std::{
 #[clap(version, author, about = env!("CARGO_PKG_DESCRIPTION"))]
 pub struct CLIArgs {
     #[arg(short, long, default_value = DEFAULT_CONFIG_PATH.lock().unwrap().display().to_string())]
-    pub config_file: PathBuf,
+    config_file: PathBuf,
+}
+
+impl CLIArgs {
+    pub fn config_file(&self) -> PathBuf {
+        self.config_file.clone()
+    }
 }
 
 /// Default Configuration Path, using directories crate to calculate ProjectDirs (~/.config/spacerobo)
