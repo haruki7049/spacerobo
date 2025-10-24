@@ -7,16 +7,12 @@ use serde::{Deserialize, Serialize};
 
 pub mod configs;
 
-#[derive(Debug, Event)]
+#[derive(Debug, Event, Deref)]
 pub struct DeathEvent {
     entity: Entity,
 }
 
 impl DeathEvent {
-    pub fn entity(&self) -> Entity {
-        self.entity
-    }
-
     pub fn new(entity: Entity) -> Self {
         Self { entity }
     }
@@ -219,6 +215,30 @@ mod tests {
         fn default() {
             let default: GameMode = GameMode::default();
             assert_eq!(default, GameMode::Title);
+        }
+    }
+
+    /// DeathEvent's unit tests
+    mod death_event {
+        use crate::DeathEvent;
+        use bevy::prelude::*;
+
+        /// new method's unit test
+        #[test]
+        fn new() {
+            let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
+            let event: DeathEvent = DeathEvent::new(entity);
+            assert_eq!(event.entity, entity);
+        }
+
+        /// A test to check Deref trait's implementation for DeathEvent
+        #[test]
+        fn deref() {
+            let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
+            let event: DeathEvent = DeathEvent {
+                entity: entity,
+            };
+            assert_eq!(*event, entity);
         }
     }
 }
