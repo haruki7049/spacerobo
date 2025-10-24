@@ -28,12 +28,13 @@ pub enum GameMode {
     VersusGuest,
 }
 
-#[derive(Debug, Resource, Default)]
+#[derive(Debug, Resource, Default, Deref)]
 pub struct KillCounter {
     inner: usize,
 }
 
 impl KillCounter {
+    #[deprecated(note = "Deref trait implemented. Use dereferencing")]
     pub fn get(&self) -> usize {
         self.inner
     }
@@ -235,10 +236,65 @@ mod tests {
         #[test]
         fn deref() {
             let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
-            let event: DeathEvent = DeathEvent {
-                entity: entity,
-            };
+            let event: DeathEvent = DeathEvent { entity: entity };
             assert_eq!(*event, entity);
+        }
+    }
+
+    /// KillCounter's unit tests
+    mod kill_counter {
+        use crate::KillCounter;
+
+        /// A test to check Default trait's implementation for KillCounter
+        #[test]
+        fn default() {
+            let default: KillCounter = KillCounter::default();
+            assert_eq!(default.inner, 0);
+        }
+
+        /// A test to check Deref trait's implementation for KillCounter
+        #[test]
+        fn deref() {
+            let counter: KillCounter = KillCounter::default();
+            assert_eq!(*counter, 0);
+        }
+
+        /// get method's unit test
+        #[test]
+        fn get() {
+            let counter: KillCounter = KillCounter::default();
+            assert_eq!(counter.get(), 0);
+        }
+
+        /// increment method's unit test
+        #[test]
+        fn increment() {
+            let mut counter: KillCounter = KillCounter::default();
+            counter.increment();
+            assert_eq!(*counter, 1);
+        }
+
+        /// decrement method's unit test
+        #[test]
+        fn decrement() {
+            let mut counter: KillCounter = KillCounter::default();
+
+            // Three times imcrementing
+            counter.increment();
+            counter.increment();
+            counter.increment();
+
+            // A decrementing
+            counter.decrement();
+            assert_eq!(*counter, 2);
+        }
+
+        /// decrement method's unit test when the inner value is overflow
+        #[test]
+        #[should_panic(expected = "attempt to subtract with overflow")]
+        fn decrement_overflow() {
+            let mut counter: KillCounter = KillCounter::default();
+            counter.decrement();
         }
     }
 }
