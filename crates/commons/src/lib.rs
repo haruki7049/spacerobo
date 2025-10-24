@@ -160,10 +160,12 @@ impl OpponentResource {
 
 #[cfg(test)]
 mod tests {
+    /// OpponentResource's unit tests
     mod opponent_resource {
         use crate::{Information, OpponentResource};
         use bevy::prelude::*;
 
+        /// get method's unit test
         #[test]
         fn get() {
             let mut app = App::new();
@@ -174,6 +176,7 @@ mod tests {
             assert!(app.world().resource::<OpponentResource>().get().is_none());
         }
 
+        /// set method's unit test
         #[test]
         fn set() {
             let mut app = App::new();
@@ -189,6 +192,7 @@ mod tests {
             assert!(app.world().resource::<OpponentResource>().get().is_some());
         }
 
+        /// reset method's unit test
         #[test]
         fn reset() {
             let mut app = App::new();
@@ -203,6 +207,18 @@ mod tests {
             app.insert_resource(opponent_resource);
 
             assert!(app.world().resource::<OpponentResource>().get().is_none());
+        }
+    }
+
+    /// GameMode's unit tests
+    mod game_mode {
+        use crate::GameMode;
+
+        /// A test to check Default trait's implementation for GameMode
+        #[test]
+        fn default() {
+            let default: GameMode = GameMode::default();
+            assert_eq!(default, GameMode::Title);
         }
     }
 }
