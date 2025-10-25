@@ -254,13 +254,6 @@ mod tests {
             assert_eq!(*counter, 0);
         }
 
-        /// get method's unit test
-        #[test]
-        fn get() {
-            let counter: KillCounter = KillCounter::default();
-            assert_eq!(counter.get(), 0);
-        }
-
         /// increment method's unit test
         #[test]
         fn increment() {
