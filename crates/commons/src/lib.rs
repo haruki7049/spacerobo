@@ -160,35 +160,26 @@ mod tests {
         /// get method's unit test
         #[test]
         fn get() {
-            let mut app = App::new();
-
             let opponent_resource: OpponentResource = OpponentResource::default();
-            app.insert_resource(opponent_resource);
-
-            assert!(app.world().resource::<OpponentResource>().get().is_none());
+            assert!(opponent_resource.get().is_none());
         }
 
         /// set method's unit test
         #[test]
         fn set() {
-            let mut app = App::new();
-
             let info: Information = Information {
                 player: None,
                 bullets: Vec::new(),
             };
             let mut opponent_resource: OpponentResource = OpponentResource::default();
             opponent_resource.set(info);
-            app.insert_resource(opponent_resource);
 
-            assert!(app.world().resource::<OpponentResource>().get().is_some());
+            assert!(opponent_resource.get().is_some());
         }
 
         /// reset method's unit test
         #[test]
         fn reset() {
-            let mut app = App::new();
-
             let info: Information = Information {
                 player: None,
                 bullets: Vec::new(),
@@ -196,9 +187,8 @@ mod tests {
             let mut opponent_resource: OpponentResource = OpponentResource::default();
             opponent_resource.set(info);
             opponent_resource.reset();
-            app.insert_resource(opponent_resource);
 
-            assert!(app.world().resource::<OpponentResource>().get().is_none());
+            assert!(opponent_resource.get().is_none());
         }
     }
 
