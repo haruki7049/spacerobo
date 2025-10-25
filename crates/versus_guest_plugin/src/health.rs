@@ -10,7 +10,7 @@ pub fn update_system(
     asset_server: Res<AssetServer>,
 ) {
     for death_event in death_reader.read() {
-        if query.get(death_event.entity()).is_ok() {
+        if query.get(**death_event).is_ok() {
             kill_counter.increment();
 
             commands.spawn((
@@ -19,7 +19,7 @@ pub fn update_system(
             ));
 
             // Despawn the target
-            commands.entity(death_event.entity()).despawn();
+            commands.entity(**death_event).despawn();
         }
     }
 }
