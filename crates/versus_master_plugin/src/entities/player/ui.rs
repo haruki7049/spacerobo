@@ -87,6 +87,6 @@ pub fn update_system(
     }
 
     for mut span in &mut spans.p3() {
-        **span = format!("Kill Counter: {:.2}\n", kill_counter.get());
+        **span = format!("Kill Counter: {:.2}\n", **kill_counter);
     }
 }
