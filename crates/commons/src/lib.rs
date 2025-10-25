@@ -34,11 +34,6 @@ pub struct KillCounter {
 }
 
 impl KillCounter {
-    #[deprecated(note = "Deref trait implemented. Use dereferencing")]
-    pub fn get(&self) -> usize {
-        self.inner
-    }
-
     pub fn reset(&mut self) {
         self.inner = 0;
     }
