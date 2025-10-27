@@ -96,7 +96,7 @@ Testing:
   cargo test --workspace --verbose
   ```
 
-  You also can use `nix flake check` command. Please check .#check attribute on [flake.nix](./flake.nix).
+  You also can use `nix flake check` command. Please check `.#check` attribute on [flake.nix](./flake.nix).
   ```sh
   nix flake check
   ```
