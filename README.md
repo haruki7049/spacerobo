@@ -2,7 +2,7 @@
 
 spacerobo: Work-in-progress space robotics
 
-[![CI](https://img.shields.io/github/actions/workflow/status/haruki7049/spacerobo/ci.yml?branch=main)](https://github.com/haruki7049/spacerobo/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/haruki7049/spacerobo/nix-checker.yml?branch=main)](https://github.com/haruki7049/spacerobo/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 Overview
