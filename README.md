@@ -138,4 +138,4 @@ This project is distributed under the terms in the [LICENSE file](./LICENSE) (MI
 
 Maintainers / Contact
 ---------------------
-- @haruki7049 (maintainer)
+- [@haruki7049](https://github.com/haruki7049) (maintainer)
