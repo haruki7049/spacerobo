@@ -15,14 +15,6 @@ This README provides:
 - Developer workflow (formatting, linting, testing)
 - Contribution and release guidance
 
-Features
---------
-- Feature 1 — concise description
-- Feature 2 — concise description
-- Feature 3 — concise description
-
-(Replace these with concrete features of spacerobo.)
-
 Repository layout
 -----------------
 - Cargo workspace root (Cargo.toml)
