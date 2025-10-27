@@ -105,7 +105,7 @@ Contributing
 ------------
 Contributions are welcome!
 
-- Open an issue to talk with [me](https://github.com/haruki7049) about spacerobo's issue or features you want.
+- Open an issue to talk with [@haruki7049](https://github.com/haruki7049) about spacerobo's issue or features you want.
 - Create a Pull request if you create a patch or feature for spacerobo.
 - Use GitHub Discussions when you want to talk with any spacerobo player (I think there are no players lol) about spacerobo.
 
