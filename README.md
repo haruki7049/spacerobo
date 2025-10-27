@@ -5,8 +5,7 @@ spacerobo: Work-in-progress space robotics
 [![CI](https://img.shields.io/github/actions/workflow/status/haruki7049/spacerobo/nix-checker.yml?branch=main)](https://github.com/haruki7049/spacerobo/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-Overview
---------
+## Overview
 spacerobo is a Work-in-progress Rust project to create a simulation game of space robotics. It aims to be fast, reliable, and easy to develop with reproducible builds using Nix flakes.
 
 This README provides:
@@ -15,8 +14,7 @@ This README provides:
 - Developer workflow (formatting, linting, testing)
 - Contribution and release guidance
 
-Repository layout
------------------
+## Repository layout
 - Cargo workspace root (Cargo.toml)
 - crates/ — workspace crates (libraries and binaries)
 - src/ — primary source for the main binary (if present)
@@ -24,8 +22,7 @@ Repository layout
 - docs/ — documentation and examples
 - assets/ — static assets used by the project
 
-Quickstart — using Nix (recommended)
------------------------------------
+## Quickstart — using Nix (recommended)
 If you use Nix (flakes enabled), this repo provides a reproducible development environment.
 
 1. Enter the dev shell (Nix Flake):
@@ -47,8 +44,7 @@ If you use Nix (flakes enabled), this repo provides a reproducible development e
       cargo build --release
       ```
 
-Quickstart — using rustup / cargo
----------------------------------
+## Quickstart — using rustup / cargo
 If you prefer not to use Nix:
 
 1. Install Rust:
@@ -69,8 +65,7 @@ If you prefer not to use Nix:
    cargo run
    ```
 
-Development workflow
---------------------
+## Development workflow
 Follow these steps to keep the repository consistent and CI-compatible.
 
 Formatting:
@@ -101,16 +96,14 @@ Testing:
   nix flake check
   ```
 
-Contributing
-------------
+## Contributing
 Contributions are welcome!
 
 - Open an issue to talk with [@haruki7049](https://github.com/haruki7049) about spacerobo's issue or features you want.
 - Create a Pull request if you create a patch or feature for spacerobo.
 - Use GitHub Discussions when you want to talk with any spacerobo player (I think there are no players lol) about spacerobo.
 
-Issues / bug reports
---------------------
+## Issues / bug reports
 When reporting a bug, include:
 - A concise description of the problem
 - Steps to reproduce
@@ -118,24 +111,19 @@ When reporting a bug, include:
 - `cargo test` output or relevant logs and backtraces
 - Your OS and Rust toolchain
 
-Examples & docs
----------------
+## Examples & docs
 - Add short example programs under `examples/` or `docs/` to show common usage patterns.
 - Consider documenting API usage for any library crates and publishing to docs.rs if crates are published.
 
-Release & versioning
---------------------
+## Release & versioning
 - I use semantic versioning for spacerobo publishing.
 - If you want to discuss about spacerobo versioning, please create an issue.
 
-Acknowledgements
-----------------
+## Acknowledgements
 - Thank contributors and list dependent libraries if appropriate.
 
-License
--------
+## License
 This project is distributed under the terms in the [LICENSE file](./LICENSE) (MIT compatible). See LICENSE for details.
 
-Maintainers / Contact
----------------------
+## Maintainers / Contact
 - [@haruki7049](https://github.com/haruki7049) (maintainer)
