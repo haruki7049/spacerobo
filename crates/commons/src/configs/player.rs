@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 /// Configuration struct
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
 pub struct Config {
     keyboard: KeyboardConfig,
     mouse: MouseConfig,
@@ -31,7 +31,7 @@ impl Config {
 }
 
 // Configurations about robo
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
 pub struct RoboConfig {
     thruster: ThrusterConfig,
 }
@@ -43,7 +43,7 @@ impl RoboConfig {
 }
 
 // Configurations about thrusters
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
 pub struct ThrusterConfig {
     force: ForceConfig,
 }
@@ -55,7 +55,7 @@ impl ThrusterConfig {
 }
 
 // Configuration about force by thrusters
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ForceConfig {
     // Keyboard
     accelerate: f32,
@@ -102,7 +102,7 @@ impl std::default::Default for ForceConfig {
 }
 
 /// Keyboard Configurations. This structure usually contains keymappings.
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct KeyboardConfig {
     // Movements
     forward: KeyCode,
@@ -197,7 +197,7 @@ impl std::default::Default for KeyboardConfig {
 }
 
 /// Mouse Configurations
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
 pub struct MouseConfig {
     x_reverse: bool,
     y_reverse: bool,
@@ -214,5 +214,5 @@ impl MouseConfig {
 }
 
 /// Controller (Gamepad) Configurations
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
 pub struct ControllerConfig {}

@@ -5,7 +5,7 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use url::Url;
 
 /// Configuration struct
-#[derive(Serialize, Deserialize, Default, Debug, Clone)]
+#[derive(Serialize, Deserialize, Default, Debug, Clone, PartialEq, Eq)]
 pub struct Config {
     server: ServerConfig,
     client: ClientConfig,
@@ -21,7 +21,7 @@ impl Config {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ServerConfig {
     ipaddr: Vec<IpAddr>,
 }
@@ -43,7 +43,7 @@ impl std::default::Default for ServerConfig {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ClientConfig {
     cert_hash: String,
     domain: Url,
