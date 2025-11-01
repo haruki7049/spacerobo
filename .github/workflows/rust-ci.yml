@@ -37,7 +37,7 @@ jobs:
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
       - name: Setup rustup
-        uses: dtolnay/rust-toolchain@master
+        uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921 # On master (default branch)
         with:
           toolchain: 1.89.0
           components: clippy, rust-analyzer, rust-src
