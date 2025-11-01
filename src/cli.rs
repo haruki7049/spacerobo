@@ -31,3 +31,20 @@ static DEFAULT_CONFIG_PATH: LazyLock<Mutex<PathBuf>> = LazyLock::new(|| {
     config_path.push(filename);
     Mutex::new(config_path)
 });
+
+#[cfg(test)]
+mod tests {
+    mod cli_args {
+        use crate::cli::CLIArgs;
+        use std::path::PathBuf;
+
+        #[test]
+        fn config_file() {
+            let cli_args: CLIArgs = CLIArgs {
+                config_file: PathBuf::new(),
+            };
+
+            assert_eq!(cli_args.config_file(), PathBuf::new());
+        }
+    }
+}
