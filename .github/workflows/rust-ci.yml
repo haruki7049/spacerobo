@@ -1,0 +1,53 @@
+name: Rust
+
+on:
+  push:
+
+jobs:
+  ci-on-Unix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31.6.0
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      # cargo-build, cargo-test, cargo-check, and cargo-clippy
+      - name: Run build
+        run: nix develop -L --command sh -c 'cargo build --workspace'
+      - name: Run tests
+        run: nix develop -L --command sh -c 'cargo test --workspace'
+      - name: Run check
+        run: nix develop -L --command sh -c 'cargo check --workspace'
+      - name: Run clippy
+        run: nix develop -L --command sh -c 'cargo clippy --workspace'
+
+  ci-on-Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+      - name: Setup rustup
+        uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921 # On master (default branch)
+        with:
+          toolchain: 1.89.0
+          components: clippy, rust-analyzer, rust-src
+
+      # cargo-build, cargo-test, cargo-check, and cargo-clippy
+      - name: Run build
+        run: cargo build --workspace
+      - name: Run tests
+        run: cargo test --workspace
+      - name: Run check
+        run: cargo check --workspace
+      - name: Run clippy
+        run: cargo clippy --workspace
