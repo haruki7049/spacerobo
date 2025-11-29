@@ -273,7 +273,6 @@ mod tests {
         fn decrement_overflow() {
             let mut counter: KillCounter = KillCounter::default();
             counter.decrement();
-            dbg!(*counter);
         }
     }
 }
