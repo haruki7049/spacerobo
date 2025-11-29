@@ -38,6 +38,7 @@
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
           overlays = [ inputs.rust-overlay.overlays.default ];
+
           src = lib.cleanSource ./.;
           buildInputs =
             lib.optionals pkgs.stdenv.isLinux [
@@ -70,6 +71,7 @@
             pkgs.llvmPackages.clang
             pkgs.llvmPackages.lld
           ];
+
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
 
