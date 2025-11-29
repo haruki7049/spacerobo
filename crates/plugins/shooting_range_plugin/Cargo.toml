@@ -1,9 +1,14 @@
 [package]
 name = "spacerobo_shooting_range_plugin"
-version = "0.1.0"
-edition = "2024"
+authors.workspace = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+publish.workspace = true
 
 [dependencies]
-spacerobo_commons = { workspace = true }
-avian3d = { workspace = true }
-bevy = { workspace = true }
+spacerobo_commons.workspace = true
+avian3d.workspace = true
+bevy.workspace = true
