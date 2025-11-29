@@ -21,6 +21,9 @@ readme = "README.md"
 repository = "https://github.com/haruki7049/spacerobo"
 publish = false
 
+[workspace.metadata.crane]
+name = "spacerobo"
+
 [workspace.dependencies]
 spacerobo_commons = { path = "crates/plugins/commons" }
 spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
