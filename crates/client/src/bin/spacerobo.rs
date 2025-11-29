@@ -5,7 +5,7 @@ use bevy::{
     window::{CursorGrabMode, CursorOptions},
 };
 use clap::Parser;
-use spacerobo::cli::CLIArgs;
+use spacerobo_client::cli::CLIArgs;
 use spacerobo_commons::{GameMode, configs::GameConfigs};
 use spacerobo_shooting_range_plugin::ShootingRangePlugin;
 use spacerobo_title_plugin::TitlePlugin;

@@ -1,45 +1,42 @@
-[package]
-name = "spacerobo"
+[workspace]
+resolver = "3"
+members = [
+  # Plugins
+  "crates/plugins/commons",
+  "crates/plugins/shooting_range_plugin",
+  "crates/plugins/title_plugin",
+  "crates/plugins/versus_guest_plugin",
+  "crates/plugins/versus_master_plugin",
+
+  # Client
+  "crates/client",
+]
+
+[workspace.package]
 authors = ["haruki7049 <tontonkirikiri@gmail.com>"]
 version = "0.1.0"
-description = "A game to simulate a robo's moving in space"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/haruki7049/spacerobo"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[workspace]
-members = [
-  "crates/commons",
-  "crates/shooting_range_plugin",
-  "crates/title_plugin",
-  "crates/versus_guest_plugin",
-  "crates/versus_master_plugin",
-]
-
 [workspace.dependencies]
+spacerobo_commons = { path = "crates/plugins/commons" }
+spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
+spacerobo_title_plugin = { path = "crates/plugins/title_plugin" }
+spacerobo_versus_guest_plugin = { path = "crates/plugins/versus_guest_plugin" }
+spacerobo_versus_master_plugin = { path = "crates/plugins/versus_master_plugin" }
 bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
 avian3d = { version = "0.3.1", features = ["serialize"] }
 aeronet = "0.16.1"
 aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
-spacerobo_commons = { path = "crates/commons" }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.145"
 chrono = { version = "0.4.42", features = ["serde"] }
 url = { version = "2.5.7", features = ["serde"] }
 wtransport = "0.6.1"
-
-[dependencies]
-spacerobo_title_plugin = { path = "crates/title_plugin" }
-spacerobo_commons = { path = "crates/commons" }
-spacerobo_shooting_range_plugin = { path = "crates/shooting_range_plugin" }
-spacerobo_versus_master_plugin = { path = "crates/versus_master_plugin" }
-spacerobo_versus_guest_plugin = { path = "crates/versus_guest_plugin" }
-aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
-avian3d = { version = "0.3.1", features = ["serialize"] }
-bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
 clap = { version = "4.5.40", features = ["derive", "string"] }
 confy = "1.0.0"
 directories = "6.0.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
