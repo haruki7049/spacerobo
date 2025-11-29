@@ -77,6 +77,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
           spacerobo = craneLib.buildPackage {
             inherit
@@ -90,6 +91,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
 
             installPhaseCommand = ''
               echo "actually installing contents of $postBuildInstallFromCargoBuildLogOut to $out"
@@ -119,6 +121,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
           cargo-doc = craneLib.cargoDoc {
             inherit
@@ -130,6 +133,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
         in
         {
