@@ -6,11 +6,10 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
-use spacerobo_commons::{GameMode, configs::GameConfigs};
-use spacerobo_shooting_range_plugin::ShootingRangePlugin;
-use spacerobo_title_plugin::TitlePlugin;
-use spacerobo_versus_guest_plugin::VersusGuestPlugin;
-use spacerobo_versus_master_plugin::VersusMasterPlugin;
+use spacerobo_client::plugins::{
+    GameMode, ShootingRangePlugin, TitlePlugin, VersusGuestPlugin, VersusMasterPlugin,
+    configs::GameConfigs,
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
