@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::commons::GameMode;
+use bevy::prelude::*;
 
 pub struct TitlePlugin;
 

@@ -3,8 +3,8 @@
 pub mod gun;
 pub mod health;
 
-use bevy::prelude::*;
 use crate::plugins::commons::{DeathEvent, GameMode};
+use bevy::prelude::*;
 
 /// Bot Component
 #[derive(Component)]

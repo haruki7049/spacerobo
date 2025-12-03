@@ -1,6 +1,6 @@
 use super::super::bullet::Bullet;
-use bevy::prelude::*;
 use crate::plugins::commons::DeathEvent;
+use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,

@@ -1,4 +1,7 @@
 use super::entities::player::{Player, gun::bullet::Bullet};
+use crate::plugins::commons::{
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
+};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},
@@ -11,9 +14,6 @@ use aeronet_webtransport::{
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
-use crate::plugins::commons::{
-    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
-};
 use std::{net::IpAddr, time::Duration};
 
 pub fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {

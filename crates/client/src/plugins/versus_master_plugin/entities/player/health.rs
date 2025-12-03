@@ -1,6 +1,6 @@
 use super::Player;
-use bevy::prelude::*;
 use crate::plugins::commons::DeathEvent;
+use bevy::prelude::*;
 
 pub fn update_system(
     mut commands: Commands,

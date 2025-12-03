@@ -4,9 +4,9 @@ use super::super::{
     Bot,
     gun::{BULLET_SIZE, Gun, Muzzle, bullet::Bullet},
 };
+use crate::plugins::commons::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use crate::plugins::commons::Hp;
 
 /// Full auto
 pub fn full_auto_system(

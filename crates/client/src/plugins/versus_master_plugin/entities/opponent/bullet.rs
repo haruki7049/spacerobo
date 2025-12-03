@@ -1,6 +1,6 @@
+use crate::plugins::commons::{GameMode, Hp, Information, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use crate::plugins::commons::{GameMode, Hp, Information, OpponentResource};
 
 /// Bullet Component
 #[derive(Component)]

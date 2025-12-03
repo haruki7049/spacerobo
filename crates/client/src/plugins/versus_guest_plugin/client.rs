@@ -1,4 +1,7 @@
 use super::entities::player::{Player, gun::bullet::Bullet};
+use crate::plugins::commons::{
+    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
+};
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};
 use aeronet_webtransport::{
     cert,
@@ -7,9 +10,6 @@ use aeronet_webtransport::{
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use chrono::{DateTime, Utc};
-use crate::plugins::commons::{
-    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
-};
 use url::Url;
 
 pub fn setup_system(

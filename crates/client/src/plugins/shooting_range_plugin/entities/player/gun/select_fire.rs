@@ -4,9 +4,9 @@ use super::super::{
     Muzzle, Player,
     gun::{BULLET_SIZE, Gun, bullet::Bullet},
 };
+use crate::plugins::commons::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use crate::plugins::commons::Hp;
 
 /// Select fire setting for Gun component
 #[derive(Clone, Copy, Default, PartialEq, Eq)]

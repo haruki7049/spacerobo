@@ -1,8 +1,8 @@
 //! # UI systems, components & etc...
 
 use super::Player;
-use bevy::prelude::*;
 use crate::plugins::commons::{GameMode, Hp, KillCounter};
+use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct HeadingIndicator;

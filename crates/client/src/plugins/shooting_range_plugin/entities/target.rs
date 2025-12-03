@@ -2,8 +2,8 @@
 
 mod health;
 
-use bevy::prelude::*;
 use crate::plugins::commons::{DeathEvent, GameMode};
+use bevy::prelude::*;
 
 /// Target Component
 #[derive(Component)]
