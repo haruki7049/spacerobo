@@ -1,6 +1,9 @@
 [workspace]
 resolver = "3"
 members = [
+  # Commons, contains data types and Bevy components for Spacerobo
+  "crates/commons",
+
   # Client
   "crates/client",
 

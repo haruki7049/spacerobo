@@ -5343,6 +5343,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_commons"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "chrono",
+ "serde",
+ "url",
+]
+
+[[package]]
 name = "spacerobo_server"
 version = "0.1.0"
 
