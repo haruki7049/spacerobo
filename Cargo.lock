@@ -5360,6 +5360,7 @@ version = "0.1.0"
 dependencies = [
  "aeronet",
  "aeronet_webtransport",
+ "avian3d",
  "bevy",
  "chrono",
  "serde_json",
