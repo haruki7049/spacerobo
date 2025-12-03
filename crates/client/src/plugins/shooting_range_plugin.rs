@@ -1,6 +1,6 @@
 mod entities;
 
-use super::commons::{DeathEvent, GameMode, Hp, KillCounter};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},

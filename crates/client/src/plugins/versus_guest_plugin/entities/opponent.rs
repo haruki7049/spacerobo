@@ -3,7 +3,7 @@
 pub mod bullet;
 pub mod health;
 
-use crate::plugins::commons::{GameMode, Information, OpponentResource, PlayerInformation};
+use spacerobo_commons::{GameMode, Information, OpponentResource, PlayerInformation};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 //use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};

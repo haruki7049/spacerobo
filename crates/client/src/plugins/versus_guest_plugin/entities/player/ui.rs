@@ -1,7 +1,7 @@
 //! # UI systems, components & etc...
 
 use super::Player;
-use crate::plugins::commons::{GameMode, Hp, KillCounter};
+use spacerobo_commons::{GameMode, Hp, KillCounter};
 use bevy::prelude::*;
 
 #[derive(Component)]

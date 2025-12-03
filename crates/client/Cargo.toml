@@ -9,6 +9,7 @@ repository.workspace = true
 publish.workspace = true
 
 [dependencies]
+spacerobo_commons.workspace = true
 bevy.workspace = true
 avian3d.workspace = true
 aeronet.workspace = true

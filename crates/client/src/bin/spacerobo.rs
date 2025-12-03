@@ -7,7 +7,10 @@ use bevy::{
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
 use spacerobo_client::plugins::{
-    GameMode, ShootingRangePlugin, TitlePlugin, VersusGuestPlugin, VersusMasterPlugin,
+    ShootingRangePlugin, TitlePlugin, VersusGuestPlugin, VersusMasterPlugin,
+};
+use spacerobo_commons::{
+    GameMode,
     configs::GameConfigs,
 };
 

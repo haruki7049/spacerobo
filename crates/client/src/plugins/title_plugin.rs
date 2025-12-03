@@ -1,4 +1,4 @@
-use super::commons::GameMode;
+use spacerobo_commons::GameMode;
 use bevy::prelude::*;
 
 pub struct TitlePlugin;

@@ -2,7 +2,7 @@
 
 mod health;
 
-use crate::plugins::commons::{DeathEvent, GameMode};
+use spacerobo_commons::{DeathEvent, GameMode};
 use bevy::prelude::*;
 
 /// Target Component

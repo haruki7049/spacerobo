@@ -24,6 +24,7 @@ publish = false
 name = "spacerobo"
 
 [workspace.dependencies]
+spacerobo_commons = { path = "crates/commons" }
 bevy = { version = "0.16.1", features = ["serialize", "wayland"] }
 avian3d = { version = "0.3.1", features = ["serialize"] }
 aeronet = "0.16.1"

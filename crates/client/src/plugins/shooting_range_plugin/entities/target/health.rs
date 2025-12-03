@@ -1,5 +1,5 @@
 use super::Target;
-use crate::plugins::commons::DeathEvent;
+use spacerobo_commons::DeathEvent;
 use bevy::prelude::*;
 
 pub fn update_system(

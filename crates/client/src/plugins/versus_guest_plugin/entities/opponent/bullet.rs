@@ -1,4 +1,4 @@
-use crate::plugins::commons::{GameMode, Hp, Information, OpponentResource};
+use spacerobo_commons::{GameMode, Hp, Information, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 

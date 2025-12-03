@@ -2,7 +2,7 @@ mod entities;
 mod health;
 mod server;
 
-use crate::plugins::commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 

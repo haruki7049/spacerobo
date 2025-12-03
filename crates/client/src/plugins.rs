@@ -1,12 +1,10 @@
 //! Spacerobo plugins
 
-pub mod commons;
 pub mod shooting_range_plugin;
 pub mod title_plugin;
 pub mod versus_guest_plugin;
 pub mod versus_master_plugin;
 
-pub use commons::*;
 pub use shooting_range_plugin::ShootingRangePlugin;
 pub use title_plugin::TitlePlugin;
 pub use versus_guest_plugin::VersusGuestPlugin;

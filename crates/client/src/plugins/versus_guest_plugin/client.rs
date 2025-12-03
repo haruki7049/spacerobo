@@ -1,5 +1,5 @@
 use super::entities::player::{Player, gun::bullet::Bullet};
-use crate::plugins::commons::{
+use spacerobo_commons::{
     BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
 };
 use aeronet::io::{Session, SessionEndpoint, connection::Disconnected};

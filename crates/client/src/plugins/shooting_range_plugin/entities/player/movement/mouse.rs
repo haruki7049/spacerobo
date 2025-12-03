@@ -1,5 +1,5 @@
 use super::super::Player;
-use crate::plugins::commons::configs::GameConfigs;
+use spacerobo_commons::configs::GameConfigs;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 
