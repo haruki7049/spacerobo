@@ -5,9 +5,7 @@ use aeronet::io::{
 };
 use aeronet_webtransport::{
     cert,
-    server::{
-        SessionRequest, SessionResponse, WebTransportServer, WebTransportServerPlugin,
-    },
+    server::{SessionRequest, SessionResponse, WebTransportServer, WebTransportServerPlugin},
 };
 use bevy::{log::LogPlugin, prelude::*};
 use spacerobo_commons::configs::GameConfigs;
