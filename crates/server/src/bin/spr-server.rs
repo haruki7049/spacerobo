@@ -1,8 +1,8 @@
+use aeronet_webtransport::cert;
+use aeronet_webtransport::server::WebTransportServer;
 use aeronet_webtransport::server::WebTransportServerPlugin;
 use bevy::{log::LogPlugin, prelude::*};
 use spacerobo_commons::configs::GameConfigs;
-use aeronet_webtransport::server::WebTransportServer;
-use aeronet_webtransport::cert;
 use std::{net::IpAddr, time::Duration};
 
 fn main() {
