@@ -5328,78 +5328,23 @@ dependencies = [
 name = "spacerobo_client"
 version = "0.1.0"
 dependencies = [
+ "aeronet",
  "aeronet_webtransport",
  "avian3d",
  "bevy",
+ "chrono",
  "clap",
  "confy",
  "directories",
- "spacerobo_commons",
- "spacerobo_shooting_range_plugin",
- "spacerobo_title_plugin",
- "spacerobo_versus_guest_plugin",
- "spacerobo_versus_master_plugin",
-]
-
-[[package]]
-name = "spacerobo_commons"
-version = "0.1.0"
-dependencies = [
- "avian3d",
- "bevy",
- "chrono",
  "serde",
+ "serde_json",
  "url",
+ "wtransport",
 ]
 
 [[package]]
 name = "spacerobo_server"
 version = "0.1.0"
-
-[[package]]
-name = "spacerobo_shooting_range_plugin"
-version = "0.1.0"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
-]
-
-[[package]]
-name = "spacerobo_title_plugin"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "spacerobo_commons",
-]
-
-[[package]]
-name = "spacerobo_versus_guest_plugin"
-version = "0.1.0"
-dependencies = [
- "aeronet",
- "aeronet_webtransport",
- "avian3d",
- "bevy",
- "chrono",
- "serde_json",
- "spacerobo_commons",
- "url",
-]
-
-[[package]]
-name = "spacerobo_versus_master_plugin"
-version = "0.1.0"
-dependencies = [
- "aeronet",
- "aeronet_webtransport",
- "avian3d",
- "bevy",
- "chrono",
- "serde_json",
- "spacerobo_commons",
- "wtransport",
-]
 
 [[package]]
 name = "spade"
