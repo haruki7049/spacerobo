@@ -2,9 +2,9 @@ mod client;
 mod entities;
 mod health;
 
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 
 pub struct VersusGuestPlugin;
 

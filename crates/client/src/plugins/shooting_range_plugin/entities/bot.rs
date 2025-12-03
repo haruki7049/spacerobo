@@ -3,8 +3,8 @@
 pub mod gun;
 pub mod health;
 
-use spacerobo_commons::{DeathEvent, GameMode};
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, GameMode};
 
 /// Bot Component
 #[derive(Component)]

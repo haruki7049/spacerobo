@@ -2,9 +2,9 @@ use super::super::{
     Muzzle, Player,
     gun::{BULLET_SIZE, Gun, bullet::Bullet},
 };
-use spacerobo_commons::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::Hp;
 
 /// Select fire setting for Gun component
 #[derive(Clone, Copy, Default, PartialEq, Eq)]

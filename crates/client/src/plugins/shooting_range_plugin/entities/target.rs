@@ -2,8 +2,8 @@
 
 mod health;
 
-use spacerobo_commons::{DeathEvent, GameMode};
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, GameMode};
 
 /// Target Component
 #[derive(Component)]

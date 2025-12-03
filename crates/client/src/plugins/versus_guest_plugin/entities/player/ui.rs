@@ -1,8 +1,8 @@
 //! # UI systems, components & etc...
 
 use super::Player;
-use spacerobo_commons::{GameMode, Hp, KillCounter};
 use bevy::prelude::*;
+use spacerobo_commons::{GameMode, Hp, KillCounter};
 
 #[derive(Component)]
 pub struct HeadingIndicator;

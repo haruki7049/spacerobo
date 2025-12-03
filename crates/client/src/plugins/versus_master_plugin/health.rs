@@ -1,6 +1,6 @@
 use super::Target;
-use spacerobo_commons::{DeathEvent, KillCounter};
 use bevy::prelude::*;
+use spacerobo_commons::{DeathEvent, KillCounter};
 
 pub fn update_system(
     mut commands: Commands,
