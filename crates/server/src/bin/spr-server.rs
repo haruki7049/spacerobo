@@ -6,15 +6,11 @@ use aeronet::io::{
 use aeronet_webtransport::{
     cert,
     server::{
-        ServerConfig, SessionRequest, SessionResponse, WebTransportServer, WebTransportServerPlugin,
+        SessionRequest, SessionResponse, WebTransportServer, WebTransportServerPlugin,
     },
 };
-use avian3d::prelude::*;
 use bevy::{log::LogPlugin, prelude::*};
-use chrono::{DateTime, Utc};
-use spacerobo_commons::{
-    BulletInformation, Information, OpponentResource, PlayerInformation, configs::GameConfigs,
-};
+use spacerobo_commons::configs::GameConfigs;
 use std::{net::IpAddr, time::Duration};
 
 fn main() {
@@ -69,16 +65,6 @@ fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
     commands
         .spawn_empty()
         .queue(WebTransportServer::open(config));
-}
-
-fn server_config(identity: wtransport::Identity) -> ServerConfig {
-    wtransport::ServerConfig::builder()
-        .with_bind_default(25571)
-        .with_identity(identity)
-        .keep_alive_interval(Some(Duration::from_secs(5)))
-        .max_idle_timeout(Some(Duration::from_secs(5)))
-        .expect("should be a valid idle timeout")
-        .build()
 }
 
 pub fn on_opened(trigger: Trigger<OnAdd, Server>, servers: Query<&LocalAddr>) {
