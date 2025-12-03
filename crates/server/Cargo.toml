@@ -9,3 +9,7 @@ repository.workspace = true
 publish.workspace = true
 
 [dependencies]
+bevy.workspace = true
+aeronet.workspace = true
+aeronet_webtransport.workspace = true
+wtransport.workspace = true

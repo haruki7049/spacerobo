@@ -5345,6 +5345,12 @@ dependencies = [
 [[package]]
 name = "spacerobo_server"
 version = "0.1.0"
+dependencies = [
+ "aeronet",
+ "aeronet_webtransport",
+ "bevy",
+ "wtransport",
+]
 
 [[package]]
 name = "spade"
