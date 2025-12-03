@@ -20,9 +20,9 @@ fn main() {
 }
 
 // Logic migrated from client/src/plugins/versus_master_plugin/server.rs
-fn setup_system(mut commands: Commands, configs: Res<GameConfigs>) {
+fn setup_system(mut commands: Commands, game_configs: Res<GameConfigs>) {
     // Get IP addresses from config
-    let addresses: Vec<String> = configs
+    let addresses: Vec<String> = game_configs
         .network()
         .server()
         .ipaddr()
