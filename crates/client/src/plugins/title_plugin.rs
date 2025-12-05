@@ -32,8 +32,7 @@ fn setup_system(mut commands: Commands) {
         .with_child(TextSpan::new(
             "Press space key => Shooting Range\n".to_string(),
         ))
-        .with_child(TextSpan::new("Press M key => Versus Master\n".to_string()))
-        .with_child(TextSpan::new("Press G key => Versus Guest\n".to_string()))
+        .with_child(TextSpan::new("Press V key => Versus Mode\n".to_string()))
         .with_child(TextSpan::new("Press escape key => Exit...\n".to_string()));
 }
 
@@ -46,12 +45,8 @@ fn input_detection_system(
         gamemode.set(GameMode::ShootingRange);
     }
 
-    if keyboard.just_pressed(KeyCode::KeyM) {
-        gamemode.set(GameMode::VersusMaster);
-    }
-
-    if keyboard.just_pressed(KeyCode::KeyG) {
-        gamemode.set(GameMode::VersusGuest);
+    if keyboard.just_pressed(KeyCode::KeyV) {
+        gamemode.set(GameMode::Versus);
     }
 
     if keyboard.just_pressed(KeyCode::Escape) {

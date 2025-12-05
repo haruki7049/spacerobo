@@ -7,7 +7,7 @@ use bevy::{
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
 use spacerobo_client::plugins::{
-    ShootingRangePlugin, TitlePlugin, VersusGuestPlugin, VersusMasterPlugin,
+    ShootingRangePlugin, TitlePlugin, VersusPlugin,
 };
 use spacerobo_commons::{GameMode, configs::GameConfigs};
 
@@ -40,8 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             WebTransportServerPlugin,
             TitlePlugin,
             ShootingRangePlugin,
-            VersusMasterPlugin,
-            VersusGuestPlugin,
+            VersusPlugin,
         ))
         .init_state::<GameMode>()
         .insert_resource(configs)

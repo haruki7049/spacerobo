@@ -37,7 +37,7 @@ pub fn update_system(
     // Camera
     commands
         .spawn((
-            StateScoped(GameMode::VersusMaster),
+            StateScoped(GameMode::Versus),
             Mesh3d(meshes.add(Sphere::new(1.).mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::WHITE,

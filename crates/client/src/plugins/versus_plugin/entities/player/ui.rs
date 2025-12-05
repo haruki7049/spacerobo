@@ -19,7 +19,7 @@ pub struct HpUI;
 pub fn setup_system(mut commands: Commands) {
     // Heading Indicator
     commands
-        .spawn((Text::default(), StateScoped(GameMode::VersusMaster)))
+        .spawn((Text::default(), StateScoped(GameMode::Versus)))
         .with_child((
             TextSpan::default(),
             (TextFont {

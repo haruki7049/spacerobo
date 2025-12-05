@@ -31,7 +31,7 @@ pub fn setup_system(
     // Camera
     commands
         .spawn((
-            StateScoped(GameMode::VersusMaster),
+            StateScoped(GameMode::Versus),
             Camera3d::default(),
             Transform::from_xyz(0., 0., 0.),
             RigidBody::Dynamic,
@@ -103,7 +103,7 @@ pub fn respawn_system(
         // Camera
         commands
             .spawn((
-                StateScoped(GameMode::VersusMaster),
+                StateScoped(GameMode::Versus),
                 Camera3d::default(),
                 Transform::from_xyz(0., 0., 0.),
                 RigidBody::Dynamic,

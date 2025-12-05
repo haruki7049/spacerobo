@@ -1,26 +1,26 @@
+mod client;
 mod entities;
 mod health;
-mod server;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, OpponentResource};
 
-pub struct VersusMasterPlugin;
+pub struct VersusPlugin;
 
-impl Plugin for VersusMasterPlugin {
+impl Plugin for VersusPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
         app.insert_resource(OpponentResource::default());
         app.add_systems(
-            OnEnter(GameMode::VersusMaster),
+            OnEnter(GameMode::Versus),
             (
                 setup_system,
                 entities::player::setup_system,
                 entities::player::ui::setup_system,
-                server::setup_system,
+                client::setup_system,
             ),
         );
         app.add_systems(
@@ -41,10 +41,10 @@ impl Plugin for VersusMasterPlugin {
                 entities::opponent::bullet::update_system,
                 // Systems
                 health::update_system,
-                server::update_system,
+                client::update_system,
                 collision_detection_system,
             )
-                .run_if(in_state(GameMode::VersusMaster)),
+                .run_if(in_state(GameMode::Versus)),
         );
         app.add_systems(
             FixedUpdate,
@@ -56,13 +56,11 @@ impl Plugin for VersusMasterPlugin {
                 // Player gun systems
                 entities::player::gun::gun_cooling_system,
             )
-                .run_if(in_state(GameMode::VersusMaster)),
+                .run_if(in_state(GameMode::Versus)),
         );
-        app.add_observer(server::on_opened);
-        app.add_observer(server::on_closed);
-        app.add_observer(server::on_session_request);
-        app.add_observer(server::on_connected);
-        app.add_observer(server::on_disconnected);
+        app.add_observer(client::on_connecting);
+        app.add_observer(client::on_connected);
+        app.add_observer(client::on_disconnected);
     }
 }
 

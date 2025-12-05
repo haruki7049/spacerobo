@@ -27,7 +27,7 @@ pub fn update_system(
     // Bullet
     for bullet in info.bullets {
         commands.spawn((
-            StateScoped(GameMode::VersusMaster),
+            StateScoped(GameMode::Versus),
             Mesh3d(meshes.add(Sphere::new(1.0 / 8.0).mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::WHITE,
