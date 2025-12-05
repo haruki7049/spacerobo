@@ -24,7 +24,7 @@ impl GameConfigs {
 #[cfg(test)]
 mod tests {
     mod game_configs {
-        use crate::configs::{GameConfigs, network, player};
+        use super::super::{GameConfigs, network, player};
 
         #[test]
         fn player() {

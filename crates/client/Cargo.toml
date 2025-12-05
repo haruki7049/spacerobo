@@ -1,5 +1,5 @@
 [package]
-name = "spacerobo_commons"
+name = "spacerobo_client"
 authors.workspace = true
 version.workspace = true
 edition.workspace = true
@@ -9,8 +9,16 @@ repository.workspace = true
 publish.workspace = true
 
 [dependencies]
+spacerobo_commons.workspace = true
 bevy.workspace = true
 avian3d.workspace = true
+aeronet.workspace = true
+aeronet_webtransport.workspace = true
+clap.workspace = true
+directories.workspace = true
+confy.workspace = true
 chrono.workspace = true
 serde.workspace = true
+serde_json.workspace = true
 url.workspace = true
+wtransport.workspace = true

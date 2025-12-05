@@ -24,8 +24,7 @@ pub enum GameMode {
     #[default]
     Title,
     ShootingRange,
-    VersusMaster,
-    VersusGuest,
+    Versus,
 }
 
 #[derive(Debug, Resource, Default, Deref)]
@@ -43,7 +42,7 @@ impl KillCounter {
     }
 
     pub fn decrement(&mut self) {
-        self.inner -= 1;
+        self.inner = self.inner.saturating_sub(1);
     }
 }
 
@@ -154,7 +153,7 @@ impl OpponentResource {
 mod tests {
     /// OpponentResource's unit tests
     mod opponent_resource {
-        use crate::{Information, OpponentResource};
+        use super::super::{Information, OpponentResource};
         use bevy::prelude::*;
 
         /// get method's unit test
@@ -194,7 +193,7 @@ mod tests {
 
     /// GameMode's unit tests
     mod game_mode {
-        use crate::GameMode;
+        use super::super::GameMode;
 
         /// A test to check Default trait's implementation for GameMode
         #[test]
@@ -206,7 +205,7 @@ mod tests {
 
     /// DeathEvent's unit tests
     mod death_event {
-        use crate::DeathEvent;
+        use super::super::DeathEvent;
         use bevy::prelude::*;
 
         /// new method's unit test
@@ -228,7 +227,7 @@ mod tests {
 
     /// KillCounter's unit tests
     mod kill_counter {
-        use crate::KillCounter;
+        use super::super::KillCounter;
 
         /// A test to check Default trait's implementation for KillCounter
         #[test]
@@ -267,12 +266,27 @@ mod tests {
             assert_eq!(*counter, 2);
         }
 
+        // ENGLISH: This test is commented out because it relied on the panic behavior of standard subtraction (usize - 1)
+        // which changes between debug (panic) and release (wrap) profiles.
+        // The main `decrement` logic has been changed to use `saturating_sub` (safe, saturates at 0)
+        // for better robustness in a release environment, making the panic check obsolete.
+        /*
         /// decrement method's unit test when the inner value is overflow
         #[test]
         #[should_panic(expected = "attempt to subtract with overflow")]
         fn decrement_overflow() {
             let mut counter: KillCounter = KillCounter::default();
             counter.decrement();
+        }
+        */
+
+        /// decrement method's unit test when the inner value tries to underflow (saturates at 0)
+        #[test]
+        fn decrement_saturating() {
+            let mut counter: KillCounter = KillCounter::default();
+            counter.decrement();
+            // ENGLISH: Should saturate at 0, not wrap around or panic.
+            assert_eq!(*counter, 0);
         }
     }
 }

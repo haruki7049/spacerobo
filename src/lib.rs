@@ -1,3 +1,0 @@
-//! Spacerobo
-
-pub mod cli;

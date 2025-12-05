@@ -38,6 +38,7 @@
           rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
           craneLib = (inputs.crane.mkLib pkgs).overrideToolchain rust;
           overlays = [ inputs.rust-overlay.overlays.default ];
+
           src = lib.cleanSource ./.;
           buildInputs =
             lib.optionals pkgs.stdenv.isLinux [
@@ -70,11 +71,13 @@
             pkgs.llvmPackages.clang
             pkgs.llvmPackages.lld
           ];
+
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
           spacerobo = craneLib.buildPackage {
             inherit
@@ -88,6 +91,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
 
             installPhaseCommand = ''
               echo "actually installing contents of $postBuildInstallFromCargoBuildLogOut to $out"
@@ -95,7 +99,7 @@
               find "$postBuildInstallFromCargoBuildLogOut" -mindepth 1 -maxdepth 1 | xargs -r mv -t $out
 
               echo "Copy assets"
-              cp -r assets $out/bin
+              cp -r crates/client/assets $out/bin
 
               wrapProgram $out/bin/spacerobo \
                 --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
@@ -117,6 +121,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
           cargo-doc = craneLib.cargoDoc {
             inherit
@@ -128,6 +133,7 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            RUST_BACKTRACE = "full";
           };
         in
         {
