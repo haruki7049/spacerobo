@@ -6,9 +6,7 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
-use spacerobo_client::plugins::{
-    ShootingRangePlugin, TitlePlugin, VersusPlugin,
-};
+use spacerobo_client::plugins::{ShootingRangePlugin, TitlePlugin, VersusPlugin};
 use spacerobo_commons::{GameMode, configs::GameConfigs};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
