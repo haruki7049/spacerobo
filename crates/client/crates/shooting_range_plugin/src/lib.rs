@@ -3,13 +3,13 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, entities};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, entity};
 
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(entities::EntitiesPlugin);
+        app.add_plugins(entity::EntityPlugins);
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
@@ -55,7 +55,7 @@ fn setup_system(
             Collider::sphere(1.0),
             CollisionEventsEnabled,
             Mass(1.0),
-            entities::bot::Bot,
+            entity::bot::Bot,
             Hp::target(),
         ))
         // Gun
@@ -65,8 +65,8 @@ fn setup_system(
                     Transform::from_xyz(0., 0., -0.5),
                     Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
                     MeshMaterial3d(materials.add(Color::BLACK)),
-                    (entities::bot::gun::Gun {
-                        interval: entities::bot::gun::Interval {
+                    (entity::bot::gun::Gun {
+                        interval: entity::bot::gun::Interval {
                             limit: 0.1,
                             rest: 0.0,
                             amount: 0.005,
@@ -87,7 +87,7 @@ fn setup_system(
                 // Muzzle
                 .with_child((
                     Transform::from_xyz(0., 0., -1.),
-                    entities::bot::gun::Muzzle,
+                    entity::bot::gun::Muzzle,
                     RigidBody::Static,
                 ));
         });
@@ -108,7 +108,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -124,7 +124,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -140,7 +140,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -156,7 +156,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -172,7 +172,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -188,7 +188,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -204,7 +204,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
 
@@ -220,7 +220,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    entities::target::Target,
+                    entity::target::Target,
                     Hp::target(),
                 ));
             }

@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 pub mod configs;
-pub mod entities;
+pub mod entity;
 
 #[derive(Debug, Event, Deref)]
 pub struct DeathEvent {
