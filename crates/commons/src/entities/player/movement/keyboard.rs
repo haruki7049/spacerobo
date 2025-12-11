@@ -1,7 +1,7 @@
 use super::super::Player;
+use crate::{GameMode, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use crate::{GameMode, configs::GameConfigs};
 
 pub fn update_system(
     mut commands: Commands,
