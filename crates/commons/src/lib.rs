@@ -44,7 +44,7 @@ impl KillCounter {
     }
 
     pub fn decrement(&mut self) {
-        self.inner -= 1;
+        self.inner = self.inner.saturating_sub(1);
     }
 }
 
