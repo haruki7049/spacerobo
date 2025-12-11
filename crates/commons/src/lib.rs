@@ -268,12 +268,27 @@ mod tests {
             assert_eq!(*counter, 2);
         }
 
+        // This test is commented out because it relied on the panic behavior of standard subtraction (usize - 1)
+        // which changes between debug (panic) and release (wrap) profiles.
+        // The main `decrement` logic has been changed to use `saturating_sub` (safe, saturates at 0)
+        // for better robustness in a release environment, making the panic check obsolete.
+        /*
         /// decrement method's unit test when the inner value is overflow
         #[test]
         #[should_panic(expected = "attempt to subtract with overflow")]
         fn decrement_overflow() {
             let mut counter: KillCounter = KillCounter::default();
             counter.decrement();
+        }
+        */
+
+        /// decrement method's unit test when the inner value tries to underflow (saturates at 0)
+        #[test]
+        fn decrement_saturating() {
+            let mut counter: KillCounter = KillCounter::default();
+            counter.decrement();
+            // Should saturate at 0, not wrap around or panic.
+            assert_eq!(*counter, 0);
         }
     }
 }
