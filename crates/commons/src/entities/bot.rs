@@ -4,7 +4,7 @@ pub mod gun;
 pub mod health;
 
 use bevy::prelude::*;
-use spacerobo_commons::{DeathEvent, GameMode};
+use crate::{DeathEvent, GameMode};
 
 /// Bot Component
 #[derive(Component)]

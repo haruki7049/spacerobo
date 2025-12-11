@@ -8,7 +8,7 @@ pub mod ui;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
+use crate::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
 
 /// Player Component
 #[derive(Component)]

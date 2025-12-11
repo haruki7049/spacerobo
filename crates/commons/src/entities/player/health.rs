@@ -1,6 +1,6 @@
 use super::Player;
 use bevy::prelude::*;
-use spacerobo_commons::DeathEvent;
+use crate::DeathEvent;
 
 pub fn update_system(
     mut commands: Commands,

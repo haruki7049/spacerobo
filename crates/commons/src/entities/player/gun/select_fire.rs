@@ -6,7 +6,7 @@ use super::super::{
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Hp;
+use crate::Hp;
 
 /// Select fire setting for Gun component
 #[derive(Clone, Copy, Default, PartialEq, Eq)]

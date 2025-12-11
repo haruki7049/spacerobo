@@ -6,7 +6,7 @@ use super::super::{
 };
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Hp;
+use crate::Hp;
 
 /// Full auto
 pub fn full_auto_system(

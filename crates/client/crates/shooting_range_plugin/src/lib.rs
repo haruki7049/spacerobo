@@ -1,11 +1,9 @@
-mod entities;
-
 use avian3d::prelude::*;
 use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, entities};
 
 pub struct ShootingRangePlugin;
 

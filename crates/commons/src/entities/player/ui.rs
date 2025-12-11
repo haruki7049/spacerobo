@@ -4,7 +4,7 @@
 
 use super::Player;
 use bevy::prelude::*;
-use spacerobo_commons::{GameMode, Hp, KillCounter};
+use crate::{GameMode, Hp, KillCounter};
 
 #[derive(Component)]
 pub struct HeadingIndicator;

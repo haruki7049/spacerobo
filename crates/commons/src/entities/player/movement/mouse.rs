@@ -1,7 +1,7 @@
 use super::super::Player;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
-use spacerobo_commons::configs::GameConfigs;
+use crate::configs::GameConfigs;
 
 pub fn update_system(
     mut query: Query<(&mut Transform, &mut AngularVelocity), With<Player>>,

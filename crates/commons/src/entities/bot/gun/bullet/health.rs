@@ -1,6 +1,6 @@
 use super::super::bullet::Bullet;
 use bevy::prelude::*;
-use spacerobo_commons::DeathEvent;
+use crate::DeathEvent;
 
 pub fn update_system(
     mut commands: Commands,
