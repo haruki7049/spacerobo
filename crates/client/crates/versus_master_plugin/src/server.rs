@@ -1,4 +1,4 @@
-use super::entities::player::{Player, gun::bullet::Bullet};
+use super::entity::player::{Player, gun::bullet::Bullet};
 use aeronet::io::{
     Session,
     connection::{Disconnected, LocalAddr},

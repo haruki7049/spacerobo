@@ -1,4 +1,4 @@
-mod entities;
+mod entity;
 mod health;
 mod server;
 
@@ -18,8 +18,8 @@ impl Plugin for VersusMasterPlugin {
             OnEnter(GameMode::VersusMaster),
             (
                 setup_system,
-                entities::player::setup_system,
-                entities::player::ui::setup_system,
+                entity::player::setup_system,
+                entity::player::ui::setup_system,
                 server::setup_system,
             ),
         );
@@ -27,18 +27,18 @@ impl Plugin for VersusMasterPlugin {
             Update,
             (
                 // Player
-                entities::player::respawn_system,
-                entities::player::ui::update_system,
-                entities::player::gun::select_fire::full_auto_system,
-                entities::player::gun::select_fire::semi_auto_system,
-                entities::player::gun::select_fire::toggle_select_fire_system,
-                entities::player::gun::select_fire::timer_system,
-                entities::player::gun::bullet::health::update_system,
-                entities::player::health::update_system,
+                entity::player::respawn_system,
+                entity::player::ui::update_system,
+                entity::player::gun::select_fire::full_auto_system,
+                entity::player::gun::select_fire::semi_auto_system,
+                entity::player::gun::select_fire::toggle_select_fire_system,
+                entity::player::gun::select_fire::timer_system,
+                entity::player::gun::bullet::health::update_system,
+                entity::player::health::update_system,
                 // Opponent
-                entities::opponent::update_system,
-                entities::opponent::health::update_system,
-                entities::opponent::bullet::update_system,
+                entity::opponent::update_system,
+                entity::opponent::health::update_system,
+                entity::opponent::bullet::update_system,
                 // Systems
                 health::update_system,
                 server::update_system,
@@ -50,11 +50,11 @@ impl Plugin for VersusMasterPlugin {
             FixedUpdate,
             (
                 // Player movement systems
-                entities::player::movement::keyboard::update_system,
-                entities::player::movement::mouse::update_system,
-                entities::player::movement::controller::update_system,
+                entity::player::movement::keyboard::update_system,
+                entity::player::movement::mouse::update_system,
+                entity::player::movement::controller::update_system,
                 // Player gun systems
-                entities::player::gun::gun_cooling_system,
+                entity::player::gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::VersusMaster)),
         );
