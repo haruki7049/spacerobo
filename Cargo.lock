@@ -5321,7 +5321,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "spacerobo"
+name = "spacerobo_client"
 version = "0.1.0"
 dependencies = [
  "aeronet_webtransport",
