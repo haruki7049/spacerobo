@@ -88,17 +88,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
-name = "aeronet"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08253bb5bf7d46014ca6848acee2f1737cda7a39643808e31dcd6a8ca7241229"
-dependencies = [
- "aeronet_io",
- "aeronet_transport",
- "bevy_app",
-]
-
-[[package]]
 name = "aeronet_io"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -112,27 +101,6 @@ dependencies = [
  "bytes",
  "derive_more 2.1.0",
  "log",
-]
-
-[[package]]
-name = "aeronet_transport"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb575d236f7567ad43a8995e0a8bd0a296697227a74b63a50598fc1b7ae3de43"
-dependencies = [
- "aeronet_io",
- "bevy_app",
- "bevy_ecs",
- "bevy_platform",
- "bevy_reflect",
- "bevy_time",
- "bit-vec 0.8.0",
- "derive_more 2.1.0",
- "either",
- "log",
- "octs",
- "ringbuf",
- "typesize",
 ]
 
 [[package]]
@@ -4115,15 +4083,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ba5d98c13e549f6f26f7d70808688ab85c6b42eb350ba2524d96c24ebde27e9"
 
 [[package]]
-name = "octs"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3beef54705459f4a421ff43b6c9b8381f5b84769e4ae69942783dd8918837b7"
-dependencies = [
- "bytes",
-]
-
-[[package]]
 name = "offset-allocator"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4837,17 +4796,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ringbuf"
-version = "0.4.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe47b720588c8702e34b5979cb3271a8b1842c7cb6f57408efa70c779363488c"
-dependencies = [
- "crossbeam-utils",
- "portable-atomic",
- "portable-atomic-util",
-]
-
-[[package]]
 name = "robust"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5333,8 +5281,6 @@ dependencies = [
  "spacerobo_commons",
  "spacerobo_shooting_range_plugin",
  "spacerobo_title_plugin",
- "spacerobo_versus_guest_plugin",
- "spacerobo_versus_master_plugin",
 ]
 
 [[package]]
@@ -5363,34 +5309,6 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "spacerobo_commons",
-]
-
-[[package]]
-name = "spacerobo_versus_guest_plugin"
-version = "0.1.0"
-dependencies = [
- "aeronet",
- "aeronet_webtransport",
- "avian3d",
- "bevy",
- "chrono",
- "serde_json",
- "spacerobo_commons",
- "url",
-]
-
-[[package]]
-name = "spacerobo_versus_master_plugin"
-version = "0.1.0"
-dependencies = [
- "aeronet",
- "aeronet_webtransport",
- "avian3d",
- "bevy",
- "chrono",
- "serde_json",
- "spacerobo_commons",
- "wtransport",
 ]
 
 [[package]]
@@ -5947,26 +5865,6 @@ name = "typenum"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "562d481066bde0658276a35467c4af00bdc6ee726305698a55b86e61d7ad82bb"
-
-[[package]]
-name = "typesize"
-version = "0.1.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7da66c62c5b7017a2787e77373c03e6a5aafde77a73bff1ff96e91cd2e128179"
-dependencies = [
- "typesize-derive",
-]
-
-[[package]]
-name = "typesize-derive"
-version = "0.1.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "536b6812192bda8551cfa0e52524e328c6a951b48e66529ee4522d6c721243d6"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "typewit"
