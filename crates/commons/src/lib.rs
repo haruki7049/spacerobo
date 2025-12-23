@@ -25,8 +25,6 @@ pub enum GameMode {
     #[default]
     Title,
     ShootingRange,
-    VersusMaster,
-    VersusGuest,
 }
 
 #[derive(Debug, Resource, Default, Deref)]
