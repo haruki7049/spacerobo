@@ -8,8 +8,6 @@ members = [
   "crates/commons",
   "crates/client/crates/shooting_range_plugin",
   "crates/client/crates/title_plugin",
-  "crates/client/crates/versus_guest_plugin",
-  "crates/client/crates/versus_master_plugin",
 ]
 
 [workspace.package]
