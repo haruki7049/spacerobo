@@ -3,7 +3,7 @@
 #![allow(clippy::type_complexity)]
 
 use super::Player;
-use crate::{GameMode, Hp, KillCounter};
+use spacerobo_commons::{GameMode, Hp, KillCounter};
 use bevy::prelude::*;
 
 #[derive(Component)]

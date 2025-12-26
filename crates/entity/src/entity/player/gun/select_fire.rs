@@ -4,7 +4,7 @@ use super::super::{
     Muzzle, Player,
     gun::{BULLET_SIZE, Gun, bullet::Bullet},
 };
-use crate::Hp;
+use spacerobo_commons::Hp;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 

@@ -1,5 +1,5 @@
 use super::super::Player;
-use crate::{GameMode, configs::GameConfigs};
+use spacerobo_commons::{GameMode, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 

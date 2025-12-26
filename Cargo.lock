@@ -5295,12 +5295,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_entity"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
 name = "spacerobo_shooting_range_plugin"
 version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
  "spacerobo_commons",
+ "spacerobo_entity",
 ]
 
 [[package]]
