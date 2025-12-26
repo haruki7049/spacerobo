@@ -20,10 +20,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
-        app.add_systems(
-            OnEnter(GameMode::InGame),
-            (setup_system, ui::setup_system),
-        );
+        app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
             Update,
             (
