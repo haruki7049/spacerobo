@@ -21,7 +21,7 @@ impl Plugin for PlayerPlugin {
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(
-            OnEnter(GameMode::ShootingRange),
+            OnEnter(GameMode::InGame),
             (setup_system, ui::setup_system),
         );
         app.add_systems(
@@ -35,7 +35,7 @@ impl Plugin for PlayerPlugin {
                 gun::bullet::health::update_system,
                 health::update_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             FixedUpdate,
@@ -47,7 +47,7 @@ impl Plugin for PlayerPlugin {
                 // gun systems
                 gun::gun_cooling_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
     }
 }
@@ -67,7 +67,7 @@ pub fn setup_system(
     // Camera
     commands
         .spawn((
-            StateScoped(GameMode::ShootingRange),
+            StateScoped(GameMode::InGame),
             Camera3d::default(),
             Transform::from_xyz(0., 0., 0.),
             RigidBody::Dynamic,
@@ -139,7 +139,7 @@ pub fn respawn_system(
         // Camera
         commands
             .spawn((
-                StateScoped(GameMode::ShootingRange),
+                StateScoped(GameMode::InGame),
                 Camera3d::default(),
                 Transform::from_xyz(0., 0., 0.),
                 RigidBody::Dynamic,

@@ -41,7 +41,7 @@ fn input_detection_system(
     mut exit: EventWriter<AppExit>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
-        gamemode.set(GameMode::ShootingRange);
+        gamemode.set(GameMode::InGame);
     }
 
     if keyboard.just_pressed(KeyCode::Escape) {

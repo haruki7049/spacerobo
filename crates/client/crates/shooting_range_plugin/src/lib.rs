@@ -14,7 +14,7 @@ impl Plugin for ShootingRangePlugin {
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
-        app.add_systems(OnEnter(GameMode::ShootingRange), setup_system);
+        app.add_systems(OnEnter(GameMode::InGame), setup_system);
         app.add_systems(
             Update,
             (
@@ -22,7 +22,7 @@ impl Plugin for ShootingRangePlugin {
                 collision_detection_system,
                 when_going_outside_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
     }
 }
@@ -45,7 +45,7 @@ fn setup_system(
     // Bots
     commands
         .spawn((
-            StateScoped(GameMode::ShootingRange),
+            StateScoped(GameMode::InGame),
             Mesh3d(meshes.add(Sphere::default().mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: RED.into(),
@@ -98,7 +98,7 @@ fn setup_system(
         for j in 1..5 {
             for k in 1..5 {
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: RED.into(),
@@ -114,7 +114,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: WHITE.into(),
@@ -130,7 +130,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: WHITE.into(),
@@ -146,7 +146,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: GREEN.into(),
@@ -162,7 +162,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: WHITE.into(),
@@ -178,7 +178,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: YELLOW.into(),
@@ -194,7 +194,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: BLUE.into(),
@@ -210,7 +210,7 @@ fn setup_system(
                 ));
 
                 commands.spawn((
-                    StateScoped(GameMode::ShootingRange),
+                    StateScoped(GameMode::InGame),
                     Mesh3d(meshes.add(Sphere::default().mesh())),
                     MeshMaterial3d(materials.add(StandardMaterial {
                         base_color: WHITE.into(),

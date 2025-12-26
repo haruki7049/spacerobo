@@ -20,7 +20,7 @@ impl Plugin for TargetPlugin {
                 // Target
                 health::update_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
     }
 }

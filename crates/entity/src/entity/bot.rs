@@ -24,7 +24,7 @@ impl Plugin for BotPlugin {
                 // health system
                 health::update_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             FixedUpdate,
@@ -32,7 +32,7 @@ impl Plugin for BotPlugin {
                 // gun systems
                 gun::gun_cooling_system,
             )
-                .run_if(in_state(GameMode::ShootingRange)),
+                .run_if(in_state(GameMode::InGame)),
         );
     }
 }

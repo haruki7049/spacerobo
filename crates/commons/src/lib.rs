@@ -23,7 +23,7 @@ impl DeathEvent {
 pub enum GameMode {
     #[default]
     Title,
-    ShootingRange,
+    InGame,
 }
 
 #[derive(Debug, Resource, Default, Deref)]
