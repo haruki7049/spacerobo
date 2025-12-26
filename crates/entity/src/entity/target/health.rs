@@ -11,9 +11,7 @@ pub fn update_system(
     for death_event in event_reader.read() {
         if query.get(**death_event).is_ok() {
             commands.entity(**death_event).despawn();
-            commands.spawn(AudioPlayer::new(
-                asset_server.load("SE/kill.ogg"),
-            ));
+            commands.spawn(AudioPlayer::new(asset_server.load("SE/kill.ogg")));
 
             debug!("Target is dead!!");
         }
