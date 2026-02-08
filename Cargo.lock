@@ -5301,6 +5301,7 @@ dependencies = [
  "avian3d",
  "bevy",
  "spacerobo_commons",
+ "spacerobo_player",
 ]
 
 [[package]]
@@ -5315,6 +5316,12 @@ dependencies = [
 [[package]]
 name = "spacerobo_player"
 version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+ "spacerobo_gun",
+]
 
 [[package]]
 name = "spacerobo_shooting_range_plugin"
