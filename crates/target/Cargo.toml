@@ -1,5 +1,5 @@
 [package]
-name = "spacerobo_player"
+name = "spacerobo_target"
 authors.workspace = true
 version.workspace = true
 description.workspace = true
