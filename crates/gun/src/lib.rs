@@ -6,7 +6,7 @@ use spacerobo_commons::GameMode;
 pub struct GunPlugin {
     pub is_bot: bool,
 }
-pub use gun::{bullet, gun_cooling_system, select_fire, Gun, Interval, Muzzle, Ownable, Owner};
+pub use gun::{Gun, Interval, Muzzle, Ownable, Owner, bullet, gun_cooling_system, select_fire};
 
 impl std::default::Default for GunPlugin {
     fn default() -> Self {
