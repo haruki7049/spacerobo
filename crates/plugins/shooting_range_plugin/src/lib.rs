@@ -4,7 +4,8 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_entity::entity::{EntityPlugins, bot, target};
+use spacerobo_entity::entity::{EntityPlugins, bot};
+use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
 
@@ -109,7 +110,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -125,7 +126,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -141,7 +142,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -157,7 +158,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -173,7 +174,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -189,7 +190,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -205,7 +206,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
 
@@ -221,7 +222,7 @@ fn setup_system(
                     Collider::sphere(1.0),
                     CollisionEventsEnabled,
                     Mass(1.0),
-                    target::Target,
+                    Target,
                     Hp::target(),
                 ));
             }

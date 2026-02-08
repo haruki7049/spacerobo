@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 spacerobo_commons.workspace = true
+spacerobo_target.workspace = true
 spacerobo_entity.workspace = true
 avian3d.workspace = true
 bevy.workspace = true

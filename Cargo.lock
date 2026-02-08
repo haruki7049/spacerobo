@@ -5302,6 +5302,7 @@ dependencies = [
  "bevy",
  "spacerobo_commons",
  "spacerobo_player",
+ "spacerobo_target",
 ]
 
 [[package]]
@@ -5331,6 +5332,7 @@ dependencies = [
  "bevy",
  "spacerobo_commons",
  "spacerobo_entity",
+ "spacerobo_target",
 ]
 
 [[package]]

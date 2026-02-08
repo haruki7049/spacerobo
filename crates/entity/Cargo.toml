@@ -12,5 +12,6 @@ publish.workspace = true
 [dependencies]
 spacerobo_commons.workspace = true
 spacerobo_player.workspace = true
+spacerobo_target.workspace = true
 bevy.workspace = true
 avian3d.workspace = true
