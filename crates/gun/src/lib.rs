@@ -1,9 +1,10 @@
-pub mod gun;
+mod gun;
 
 use bevy::prelude::*;
 use spacerobo_commons::GameMode;
 
 pub struct GunPlugin;
+pub use gun::{Gun, Interval, Muzzle, Ownable, Owner, bullet, gun_cooling_system, select_fire};
 
 impl Plugin for GunPlugin {
     fn build(&self, app: &mut App) {

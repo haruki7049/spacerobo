@@ -16,6 +16,7 @@ members = [
   "crates/player",
   "crates/gun",
   "crates/target",
+  "crates/bot",
 ]
 
 [workspace.package]
