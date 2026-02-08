@@ -13,6 +13,8 @@ members = [
   # Library crates
   "crates/commons",
   "crates/entity",
+  "crates/player",
+  "crates/gun",
 ]
 
 [workspace.package]
