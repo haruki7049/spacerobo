@@ -33,6 +33,7 @@ name = "spacerobo"
 [workspace.dependencies]
 spacerobo_commons = { path = "crates/commons" }
 spacerobo_entity = { path = "crates/entity" }
+spacerobo_gun.path = "crates/gun"
 spacerobo_title_plugin = { path = "crates/plugins/title_plugin" }
 spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
 bevy = { version = "0.16.1", features = ["serialize", "wayland"] }

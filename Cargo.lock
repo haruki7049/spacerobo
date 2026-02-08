@@ -2977,10 +2977,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gun"
-version = "0.1.0"
-
-[[package]]
 name = "half"
 version = "2.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5300,6 +5296,15 @@ dependencies = [
 
 [[package]]
 name = "spacerobo_entity"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
+name = "spacerobo_gun"
 version = "0.1.0"
 dependencies = [
  "avian3d",
