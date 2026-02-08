@@ -6,8 +6,8 @@ pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{configs::GameConfigs, DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_gun::{select_fire::SelectFire, Gun, GunPlugin, Interval, Muzzle};
+use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
+use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Component
 #[derive(Component)]
@@ -17,7 +17,7 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(GunPlugin);
+        app.add_plugins(GunPlugin { is_bot: false });
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
