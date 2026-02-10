@@ -34,7 +34,6 @@ impl Plugin for GunPlugin {
                     gun::select_fire::full_auto_system,
                     gun::select_fire::semi_auto_system,
                     gun::select_fire::toggle_select_fire_system,
-                    gun::bullet::health::update_system,
                 )
                     .run_if(in_state(GameMode::InGame)),
             );

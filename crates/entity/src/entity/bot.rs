@@ -1,7 +1,6 @@
 //! # Bot systems, Compoments & etc...
 
 pub mod gun;
-pub mod health;
 
 use bevy::prelude::*;
 use spacerobo_commons::{DeathEvent, GameMode};
@@ -20,9 +19,6 @@ impl Plugin for BotPlugin {
             (
                 // Gun
                 gun::select_fire::full_auto_system,
-                gun::bullet::health::update_system,
-                // health system
-                health::update_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );

@@ -22,6 +22,7 @@ impl Plugin for ShootingRangePlugin {
                 // Systems
                 collision_detection_system,
                 when_going_outside_system,
+                death_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );
@@ -297,6 +298,22 @@ fn when_going_outside_system(
         {
             debug!("Creating DeathEvent by area outside...");
             event_writer.write(DeathEvent::new(entity));
+        }
+    }
+}
+
+pub fn death_system(
+    mut commands: Commands,
+    mut event_reader: EventReader<DeathEvent>,
+    asset_server: Res<AssetServer>,
+    query: Query<&Hp>,
+) {
+    for death_event in event_reader.read() {
+        if query.get(**death_event).is_ok() {
+            commands.entity(**death_event).despawn();
+            commands.spawn(AudioPlayer::new(asset_server.load("SE/kill.ogg")));
+
+            debug!("{:?} which has Hp component is dead!!", **death_event);
         }
     }
 }

@@ -1,6 +1,5 @@
 //! # Player systems, Compoments & etc...
 
-pub mod health;
 pub mod movement;
 pub mod ui;
 
@@ -23,7 +22,7 @@ impl Plugin for PlayerPlugin {
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
             Update,
-            (respawn_system, ui::update_system, health::update_system)
+            (respawn_system, ui::update_system)
                 .run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
