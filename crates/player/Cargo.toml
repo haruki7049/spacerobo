@@ -13,4 +13,4 @@ publish.workspace = true
 bevy.workspace = true
 avian3d.workspace = true
 spacerobo_commons.workspace = true
-spacerobo_gun.workspace = true
+spacerobo_player_gun.workspace = true

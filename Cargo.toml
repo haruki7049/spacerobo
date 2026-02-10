@@ -14,9 +14,10 @@ members = [
   "crates/commons",
   "crates/entity",
   "crates/player",
-  "crates/gun",
+  "crates/player/gun",
   "crates/target",
   "crates/bot",
+  "crates/bot/gun",
 ]
 
 [workspace.package]
@@ -35,9 +36,11 @@ name = "spacerobo"
 [workspace.dependencies]
 spacerobo_commons = { path = "crates/commons" }
 spacerobo_entity = { path = "crates/entity" }
-spacerobo_gun.path = "crates/gun"
 spacerobo_player.path = "crates/player"
+spacerobo_player_gun.path = "crates/player/gun"
 spacerobo_target.path = "crates/target"
+spacerobo_bot.path = "crates/bot"
+spacerobo_bot_gun.path = "crates/bot/gun"
 spacerobo_title_plugin = { path = "crates/plugins/title_plugin" }
 spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
 bevy = { version = "0.16.1", features = [

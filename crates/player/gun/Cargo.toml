@@ -1,5 +1,5 @@
 [package]
-name = "bot"
+name = "spacerobo_player_gun"
 authors.workspace = true
 version.workspace = true
 description.workspace = true
@@ -13,4 +13,3 @@ publish.workspace = true
 bevy.workspace = true
 avian3d.workspace = true
 spacerobo_commons.workspace = true
-spacerobo_bot_gun.workspace = true

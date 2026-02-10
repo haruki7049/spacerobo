@@ -1,7 +1,7 @@
 //! # Bot systems, Compoments & etc...
 
 use bevy::prelude::*;
-use spacerobo_gun::GunPlugin;
+use spacerobo_bot_gun::GunPlugin;
 
 /// Bot Component
 #[derive(Component)]
