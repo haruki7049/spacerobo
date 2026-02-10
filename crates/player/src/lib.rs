@@ -22,8 +22,7 @@ impl Plugin for PlayerPlugin {
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
             Update,
-            (respawn_system, ui::update_system)
-                .run_if(in_state(GameMode::InGame)),
+            (respawn_system, ui::update_system).run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             FixedUpdate,

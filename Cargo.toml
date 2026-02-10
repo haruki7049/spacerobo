@@ -40,7 +40,11 @@ spacerobo_player.path = "crates/player"
 spacerobo_target.path = "crates/target"
 spacerobo_title_plugin = { path = "crates/plugins/title_plugin" }
 spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
-bevy = { version = "0.16.1", features = ["serialize", "wayland", "track_location"] }
+bevy = { version = "0.16.1", features = [
+  "serialize",
+  "wayland",
+  "track_location",
+] }
 avian3d = { version = "0.3.1", features = ["serialize"] }
 aeronet = "0.16.1"
 aeronet_webtransport = { version = "0.16.1", features = ["client", "server"] }
