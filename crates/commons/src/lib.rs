@@ -200,7 +200,7 @@ mod tests {
         #[test]
         fn new() {
             let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
-            let event: DeathEvent = DeathEvent::new(entity, None);
+            let event: DeathEvent = DeathEvent::new(entity);
             assert_eq!(event.entity, entity);
         }
     }
