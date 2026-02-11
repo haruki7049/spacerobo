@@ -4,7 +4,7 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_entity::entity::{bot, EntityPlugins};
+use spacerobo_entity::entity::{EntityPlugins, bot};
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
