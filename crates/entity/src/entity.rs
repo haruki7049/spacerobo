@@ -1,6 +1,5 @@
-pub mod bot;
-
 use bevy::{app::PluginGroupBuilder, prelude::*};
+use spacerobo_bot::BotPlugin;
 use spacerobo_player::PlayerPlugin;
 
 pub struct EntityPlugins;
@@ -8,7 +7,7 @@ pub struct EntityPlugins;
 impl PluginGroup for EntityPlugins {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
-            .add(bot::BotPlugin)
+            .add(BotPlugin)
             .add(PlayerPlugin)
     }
 }

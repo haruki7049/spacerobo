@@ -3,8 +3,10 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
+use spacerobo_bot::Bot;
+use spacerobo_bot_gun::{Interval, Gun, Muzzle, select_fire::SelectFire};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_entity::entity::{EntityPlugins, bot};
+use spacerobo_entity::entity::EntityPlugins;
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
@@ -59,7 +61,7 @@ fn setup_system(
             Collider::sphere(1.0),
             CollisionEventsEnabled,
             Mass(1.0),
-            bot::Bot,
+            Bot,
             Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
         ))
         // Gun
@@ -69,8 +71,10 @@ fn setup_system(
                     Transform::from_xyz(0., 0., -0.5),
                     Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
                     MeshMaterial3d(materials.add(Color::BLACK)),
-                    (bot::gun::Gun {
-                        interval: bot::gun::Interval {
+                    (Gun {
+                        owner: parent.target_entity(),
+                        select_fire: SelectFire::Full,
+                        interval: Interval {
                             limit: 0.1,
                             rest: 0.0,
                             amount: 0.005,
@@ -89,11 +93,7 @@ fn setup_system(
                     Transform::from_xyz(0., 0., -1.).looking_to(Vec3::NEG_Z, Vec3::ZERO),
                 ))
                 // Muzzle
-                .with_child((
-                    Transform::from_xyz(0., 0., -1.),
-                    bot::gun::Muzzle,
-                    RigidBody::Static,
-                ));
+                .with_child((Transform::from_xyz(0., 0., -1.), Muzzle, RigidBody::Static));
         });
 
     // Targets

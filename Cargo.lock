@@ -5319,6 +5319,8 @@ version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
+ "spacerobo_bot",
+ "spacerobo_bot_gun",
  "spacerobo_commons",
  "spacerobo_player",
  "spacerobo_target",
@@ -5349,6 +5351,8 @@ version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
+ "spacerobo_bot",
+ "spacerobo_bot_gun",
  "spacerobo_commons",
  "spacerobo_entity",
  "spacerobo_target",
