@@ -260,10 +260,16 @@ fn collision_detection_system(
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
                 if obj1_hp.rest() <= 0. {
-                    event_writer.write(DeathEvent::new(*entity1, Some(asset_server.load("SE/kill.ogg"))));
+                    event_writer.write(DeathEvent::new(
+                        *entity1,
+                        Some(asset_server.load("SE/kill.ogg")),
+                    ));
                 }
                 if obj2_hp.rest() <= 0. {
-                    event_writer.write(DeathEvent::new(*entity2, Some(asset_server.load("SE/kill.ogg"))));
+                    event_writer.write(DeathEvent::new(
+                        *entity2,
+                        Some(asset_server.load("SE/kill.ogg")),
+                    ));
                 }
             }
             _ => debug!(
@@ -299,7 +305,10 @@ fn when_going_outside_system(
             || transform.translation.z < -2000.0
         {
             debug!("Creating DeathEvent by area outside...");
-            event_writer.write(DeathEvent::new(entity, Some(asset_server.load("SE/kill.ogg"))));
+            event_writer.write(DeathEvent::new(
+                entity,
+                Some(asset_server.load("SE/kill.ogg")),
+            ));
         }
     }
 }
@@ -316,7 +325,10 @@ pub fn death_system(
                 commands.spawn(AudioPlayer::new(handle));
             }
 
-            debug!("{:?} which has Hp component is dead!!", death_event.entity());
+            debug!(
+                "{:?} which has Hp component is dead!!",
+                death_event.entity()
+            );
         }
     }
 }
