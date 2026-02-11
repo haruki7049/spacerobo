@@ -319,15 +319,15 @@ pub fn death_system(
     query: Query<&Hp>,
 ) {
     for death_event in event_reader.read() {
-        if query.get(death_event.entity()).is_ok() {
-            commands.entity(death_event.entity()).despawn();
+        if query.get(death_event.entity).is_ok() {
+            commands.entity(death_event.entity).despawn();
             if let Some(handle) = death_event.sound.clone() {
                 commands.spawn(AudioPlayer::new(handle));
             }
 
             debug!(
                 "{:?} which has Hp component is dead!!",
-                death_event.entity()
+                death_event.entity
             );
         }
     }
