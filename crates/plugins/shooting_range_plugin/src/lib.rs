@@ -4,9 +4,9 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_bot::{Bot, BotPlugin};
-use spacerobo_player::PlayerPlugin;
-use spacerobo_bot_gun::{Interval, Gun, Muzzle, select_fire::SelectFire};
+use spacerobo_bot_gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
+use spacerobo_player::PlayerPlugin;
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
