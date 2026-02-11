@@ -3,16 +3,11 @@ mod gun;
 use bevy::prelude::*;
 use spacerobo_commons::GameMode;
 
+#[derive(Default)]
 pub struct GunPlugin {
     pub is_bot: bool,
 }
 pub use gun::{Gun, Interval, Muzzle, Ownable, Owner, bullet, gun_cooling_system, select_fire};
-
-impl std::default::Default for GunPlugin {
-    fn default() -> Self {
-        Self { is_bot: false }
-    }
-}
 
 impl GunPlugin {
     pub fn is_bot(&self) -> bool {
