@@ -10,11 +10,12 @@ pub mod configs;
 #[derive(Debug, Event)]
 pub struct DeathEvent {
     entity: Entity,
+    pub sound: Option<Handle<AudioSource>>,
 }
 
 impl DeathEvent {
-    pub fn new(entity: Entity) -> Self {
-        Self { entity }
+    pub fn new(entity: Entity, sound: Option<Handle<AudioSource>>) -> Self {
+        Self { entity, sound }
     }
 
     pub fn entity(&self) -> Entity {

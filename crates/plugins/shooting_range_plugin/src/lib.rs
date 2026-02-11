@@ -237,6 +237,7 @@ fn collision_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
     mut event_writer: EventWriter<DeathEvent>,
+    asset_server: Res<AssetServer>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
@@ -259,10 +260,10 @@ fn collision_detection_system(
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
                 if obj1_hp.rest() <= 0. {
-                    event_writer.write(DeathEvent::new(*entity1));
+                    event_writer.write(DeathEvent::new(*entity1, Some(asset_server.load("SE/kill.ogg"))));
                 }
                 if obj2_hp.rest() <= 0. {
-                    event_writer.write(DeathEvent::new(*entity2));
+                    event_writer.write(DeathEvent::new(*entity2, Some(asset_server.load("SE/kill.ogg"))));
                 }
             }
             _ => debug!(
@@ -287,6 +288,7 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
 fn when_going_outside_system(
     mut query: Query<(&Transform, Entity), With<Hp>>,
     mut event_writer: EventWriter<DeathEvent>,
+    asset_server: Res<AssetServer>,
 ) {
     for (transform, entity) in query.iter_mut() {
         if transform.translation.x > 2000.0
@@ -297,7 +299,7 @@ fn when_going_outside_system(
             || transform.translation.z < -2000.0
         {
             debug!("Creating DeathEvent by area outside...");
-            event_writer.write(DeathEvent::new(entity));
+            event_writer.write(DeathEvent::new(entity, Some(asset_server.load("SE/kill.ogg"))));
         }
     }
 }
@@ -305,13 +307,14 @@ fn when_going_outside_system(
 pub fn death_system(
     mut commands: Commands,
     mut event_reader: EventReader<DeathEvent>,
-    asset_server: Res<AssetServer>,
     query: Query<&Hp>,
 ) {
     for death_event in event_reader.read() {
         if query.get(death_event.entity()).is_ok() {
             commands.entity(death_event.entity()).despawn();
-            commands.spawn(AudioPlayer::new(asset_server.load("SE/kill.ogg")));
+            if let Some(handle) = death_event.sound.clone() {
+                commands.spawn(AudioPlayer::new(handle));
+            }
 
             debug!("{:?} which has Hp component is dead!!", death_event.entity());
         }
