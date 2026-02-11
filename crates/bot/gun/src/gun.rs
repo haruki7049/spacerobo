@@ -3,15 +3,38 @@
 pub mod bullet;
 pub mod select_fire;
 
+use self::select_fire::SelectFire;
 use bevy::prelude::*;
 
 const BULLET_SIZE: f32 = 1. / 8.;
 
 /// Gun component
-#[derive(Component, Default)]
+#[derive(Component)]
 pub struct Gun {
+    pub owner: Entity,
+
+    /// Select fire setting
+    pub select_fire: SelectFire,
+
     /// A interval settings and values
     pub interval: Interval,
+}
+
+#[derive(Component)]
+pub struct Ownable;
+
+pub trait Owner {}
+
+impl Owner for Ownable {}
+
+impl Gun {
+    fn fullauto(&mut self) {
+        self.select_fire = SelectFire::Full;
+    }
+
+    fn semiauto(&mut self) {
+        self.select_fire = SelectFire::Semi;
+    }
 }
 
 /// A interval settings and values

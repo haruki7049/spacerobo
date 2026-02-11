@@ -1,14 +1,12 @@
 //! # Player systems, Compoments & etc...
 
-pub mod gun;
-pub mod health;
 pub mod movement;
 pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
+use spacerobo_player_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Component
 #[derive(Component)]
@@ -18,21 +16,13 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(GunPlugin { is_bot: false });
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
             Update,
-            (
-                respawn_system,
-                ui::update_system,
-                gun::select_fire::full_auto_system,
-                gun::select_fire::semi_auto_system,
-                gun::select_fire::toggle_select_fire_system,
-                gun::bullet::health::update_system,
-                health::update_system,
-            )
-                .run_if(in_state(GameMode::InGame)),
+            (respawn_system, ui::update_system).run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             FixedUpdate,
@@ -41,8 +31,6 @@ impl Plugin for PlayerPlugin {
                 movement::keyboard::update_system,
                 movement::mouse::update_system,
                 movement::controller::update_system,
-                // gun systems
-                gun::gun_cooling_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );
@@ -55,6 +43,7 @@ pub fn setup_system(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut kill_counter: ResMut<KillCounter>,
+    asset_server: Res<AssetServer>,
 ) {
     // Reset KillCounter
     kill_counter.reset();
@@ -73,7 +62,7 @@ pub fn setup_system(
             Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            Hp::player(),
+            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
             Player,
         ))
         // Gun
@@ -84,6 +73,7 @@ pub fn setup_system(
                     Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
                     MeshMaterial3d(materials.add(Color::BLACK)),
                     (Gun {
+                        owner: parent.target_entity(),
                         select_fire: SelectFire::Full,
                         interval: Interval {
                             limit: 0.1,
@@ -109,9 +99,12 @@ pub fn setup_system(
                     Muzzle,
                     RigidBody::Static,
                 ));
+
+            debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
         });
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn respawn_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -120,6 +113,7 @@ pub fn respawn_system(
     query: Query<&Player>,
     game_configs: Res<GameConfigs>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    asset_server: Res<AssetServer>,
 ) {
     if !query.is_empty() {
         return;
@@ -145,7 +139,7 @@ pub fn respawn_system(
                 Mass(5.0),
                 AngularVelocity(Vec3::ZERO),
                 SpatialListener::new(gap),
-                Hp::player(),
+                Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
                 Player,
             ))
             // Gun
@@ -156,6 +150,7 @@ pub fn respawn_system(
                         Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
                         MeshMaterial3d(materials.add(Color::BLACK)),
                         (Gun {
+                            owner: parent.target_entity(),
                             select_fire: SelectFire::Full,
                             interval: Interval {
                                 limit: 0.1,

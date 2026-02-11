@@ -9,14 +9,23 @@ use bevy::prelude::*;
 const BULLET_SIZE: f32 = 1. / 8.;
 
 /// Gun component
-#[derive(Component, Default)]
+#[derive(Component)]
 pub struct Gun {
+    pub owner: Entity,
+
     /// Select fire setting
     pub select_fire: SelectFire,
 
     /// A interval settings and values
     pub interval: Interval,
 }
+
+#[derive(Component)]
+pub struct Ownable;
+
+pub trait Owner {}
+
+impl Owner for Ownable {}
 
 impl Gun {
     fn fullauto(&mut self) {

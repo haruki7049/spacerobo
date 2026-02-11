@@ -5269,6 +5269,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_bot"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_bot_gun",
+ "spacerobo_commons",
+]
+
+[[package]]
+name = "spacerobo_bot_gun"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
 name = "spacerobo_client"
 version = "0.1.0"
 dependencies = [
@@ -5295,7 +5314,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "spacerobo_entity"
+name = "spacerobo_player"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+ "spacerobo_player_gun",
+]
+
+[[package]]
+name = "spacerobo_player_gun"
 version = "0.1.0"
 dependencies = [
  "avian3d",
@@ -5309,8 +5338,20 @@ version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
+ "spacerobo_bot",
+ "spacerobo_bot_gun",
  "spacerobo_commons",
- "spacerobo_entity",
+ "spacerobo_player",
+ "spacerobo_target",
+]
+
+[[package]]
+name = "spacerobo_target"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
 ]
 
 [[package]]

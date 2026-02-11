@@ -84,7 +84,7 @@ pub fn update_system(
         }
 
         for mut span in &mut spans.p2() {
-            **span = format!("Hp: {:.2}/{:.2}\n", hp.rest(), hp.maximum());
+            **span = format!("Hp: {:.2}/{:.2}\n", hp.rest, hp.maximum);
         }
     }
 
