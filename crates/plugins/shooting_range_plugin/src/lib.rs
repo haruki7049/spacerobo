@@ -325,10 +325,7 @@ pub fn death_system(
                 commands.spawn(AudioPlayer::new(handle));
             }
 
-            debug!(
-                "{:?} which has Hp component is dead!!",
-                death_event.entity
-            );
+            debug!("{:?} which has Hp component is dead!!", death_event.entity);
         }
     }
 }
