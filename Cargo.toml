@@ -12,7 +12,6 @@ members = [
 
   # Library crates
   "crates/commons",
-  "crates/entity",
   "crates/player",
   "crates/player/gun",
   "crates/target",
@@ -35,7 +34,6 @@ name = "spacerobo"
 
 [workspace.dependencies]
 spacerobo_commons = { path = "crates/commons" }
-spacerobo_entity = { path = "crates/entity" }
 spacerobo_player.path = "crates/player"
 spacerobo_player_gun.path = "crates/player/gun"
 spacerobo_target.path = "crates/target"

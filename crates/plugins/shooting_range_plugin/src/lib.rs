@@ -3,17 +3,17 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_bot::Bot;
+use spacerobo_bot::{Bot, BotPlugin};
+use spacerobo_player::PlayerPlugin;
 use spacerobo_bot_gun::{Interval, Gun, Muzzle, select_fire::SelectFire};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_entity::entity::EntityPlugins;
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(EntityPlugins);
+        app.add_plugins((BotPlugin, PlayerPlugin));
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());

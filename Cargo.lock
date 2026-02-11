@@ -5314,19 +5314,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "spacerobo_entity"
-version = "0.1.0"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_bot",
- "spacerobo_bot_gun",
- "spacerobo_commons",
- "spacerobo_player",
- "spacerobo_target",
-]
-
-[[package]]
 name = "spacerobo_player"
 version = "0.1.0"
 dependencies = [
@@ -5354,7 +5341,7 @@ dependencies = [
  "spacerobo_bot",
  "spacerobo_bot_gun",
  "spacerobo_commons",
- "spacerobo_entity",
+ "spacerobo_player",
  "spacerobo_target",
 ]
 
