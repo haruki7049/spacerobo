@@ -104,6 +104,7 @@ pub fn setup_system(
         });
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn respawn_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,

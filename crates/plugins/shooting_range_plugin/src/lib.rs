@@ -100,64 +100,53 @@ fn setup_system(
     for i in 1..5 {
         for j in 1..5 {
             for k in 1..5 {
-                // OK
+                let i_float = i as f32;
+                let j_float = j as f32;
+                let k_float = k as f32;
+
                 spawn_target(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
                     &mut materials,
                     RED.into(),
-                    10.0 * i as f32,
-                    10.0 * j as f32,
-                    10.0 * k as f32,
+                    Vec3::new(i_float * 10.0, j_float * 10.0, k_float * 10.0),
                 );
 
-                // OK
                 spawn_target(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
                     &mut materials,
                     WHITE.into(),
-                    10.0 * i as f32,
-                    10.0 * j as f32,
-                    -10.0 * k as f32,
+                    Vec3::new(i_float * 10.0, j_float * 10.0, k_float * -10.0),
                 );
 
-                // OK
                 spawn_target(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
                     &mut materials,
                     WHITE.into(),
-                    10.0 * i as f32,
-                    -10.0 * j as f32,
-                    10.0 * k as f32,
+                    Vec3::new(i_float * 10.0, j_float * -10.0, k_float * 10.0),
                 );
 
-                // OK
                 spawn_target(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
                     &mut materials,
                     GREEN.into(),
-                    10.0 * i as f32,
-                    -10.0 * j as f32,
-                    -10.0 * k as f32,
+                    Vec3::new(i_float * 10.0, j_float * -10.0, k_float * -10.0),
                 );
 
-                // OK
                 spawn_target(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
                     &mut materials,
                     WHITE.into(),
-                    -10.0 * i as f32,
-                    10.0 * j as f32,
-                    10.0 * k as f32,
+                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * 10.0),
                 );
 
                 spawn_target(
@@ -166,9 +155,7 @@ fn setup_system(
                     &asset_server,
                     &mut materials,
                     YELLOW.into(),
-                    -10.0 * i as f32,
-                    10.0 * j as f32,
-                    -10.0 * k as f32,
+                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * -10.0),
                 );
 
                 spawn_target(
@@ -177,9 +164,7 @@ fn setup_system(
                     &asset_server,
                     &mut materials,
                     BLUE.into(),
-                    -10.0 * i as f32,
-                    -10.0 * j as f32,
-                    10.0 * k as f32,
+                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * 10.0),
                 );
 
                 spawn_target(
@@ -188,9 +173,7 @@ fn setup_system(
                     &asset_server,
                     &mut materials,
                     WHITE.into(),
-                    -10.0 * i as f32,
-                    -10.0 * j as f32,
-                    -10.0 * k as f32,
+                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * -10.0),
                 );
             }
         }
@@ -203,9 +186,7 @@ fn spawn_target(
     asset_server: &Res<AssetServer>,
     materials: &mut ResMut<Assets<StandardMaterial>>,
     base_color: Color,
-    x: f32,
-    y: f32,
-    z: f32,
+    vec3: Vec3,
 ) {
     commands.spawn((
         StateScoped(GameMode::InGame),
@@ -214,7 +195,7 @@ fn spawn_target(
             base_color,
             ..Default::default()
         })),
-        Transform::from_xyz(x, y, z),
+        Transform::from_translation(vec3),
         RigidBody::Static,
         Collider::sphere(1.0),
         CollisionEventsEnabled,
