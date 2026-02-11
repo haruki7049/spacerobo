@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod configs;
 
-#[derive(Debug, Event, Deref)]
+#[derive(Debug, Event)]
 pub struct DeathEvent {
     entity: Entity,
 }
@@ -15,6 +15,10 @@ pub struct DeathEvent {
 impl DeathEvent {
     pub fn new(entity: Entity) -> Self {
         Self { entity }
+    }
+
+    pub fn entity(&self) -> Entity {
+        self.entity
     }
 }
 
