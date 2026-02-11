@@ -48,8 +48,9 @@ impl KillCounter {
 
 #[derive(Debug, Component)]
 pub struct Hp {
-    rest: f32,
-    maximum: f32,
+    pub rest: f32,
+    pub maximum: f32,
+    pub death_sound: Option<Handle<AudioSource>>,
 }
 
 impl std::default::Default for Hp {
@@ -57,6 +58,7 @@ impl std::default::Default for Hp {
         Self {
             rest: 100.,
             maximum: 100.,
+            death_sound: None,
         }
     }
 }
@@ -66,45 +68,32 @@ impl Hp {
         self.rest -= v;
     }
 
-    pub fn rest(&self) -> f32 {
-        self.rest
-    }
-
-    pub fn maximum(&self) -> f32 {
-        self.maximum
-    }
-
-    pub fn new(hp: f32) -> Self {
+    pub fn new(hp: f32, death_sound: Option<Handle<AudioSource>>) -> Self {
         Self {
             rest: hp,
             maximum: hp,
+            death_sound,
         }
     }
 
     pub fn ammo() -> Self {
         let hp: f32 = 5.;
+        let death_sound = None;
 
         Self {
             rest: hp,
             maximum: hp,
+            death_sound,
         }
     }
 
-    pub fn player() -> Self {
-        let hp: f32 = 100.;
+    pub fn robo(death_sound: Option<Handle<AudioSource>>) -> Self {
+        let hp = 100.;
 
         Self {
             rest: hp,
             maximum: hp,
-        }
-    }
-
-    pub fn target() -> Self {
-        let hp: f32 = 100.;
-
-        Self {
-            rest: hp,
-            maximum: hp,
+            death_sound,
         }
     }
 }

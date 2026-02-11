@@ -4,7 +4,7 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_entity::entity::{EntityPlugins, bot};
+use spacerobo_entity::entity::{bot, EntityPlugins};
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
@@ -33,6 +33,7 @@ fn setup_system(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
+    asset_server: Res<AssetServer>,
 ) {
     // Light
     commands.spawn((
@@ -59,7 +60,7 @@ fn setup_system(
             CollisionEventsEnabled,
             Mass(1.0),
             bot::Bot,
-            Hp::target(),
+            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
         ))
         // Gun
         .with_children(|parent| {
@@ -99,136 +100,128 @@ fn setup_system(
     for i in 1..5 {
         for j in 1..5 {
             for k in 1..5 {
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: RED.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(10.0 * i as f32, 10.0 * j as f32, 10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                // OK
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    RED.into(),
+                    10.0 * i as f32,
+                    10.0 * j as f32,
+                    10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: WHITE.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(10.0 * i as f32, 10.0 * j as f32, -10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                // OK
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    WHITE.into(),
+                    10.0 * i as f32,
+                    10.0 * j as f32,
+                    -10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: WHITE.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(10.0 * i as f32, -10.0 * j as f32, 10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                // OK
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    WHITE.into(),
+                    10.0 * i as f32,
+                    -10.0 * j as f32,
+                    10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: GREEN.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(10.0 * i as f32, -10.0 * j as f32, -10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                // OK
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    GREEN.into(),
+                    10.0 * i as f32,
+                    -10.0 * j as f32,
+                    -10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: WHITE.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(-10.0 * i as f32, 10.0 * j as f32, 10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                // OK
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    WHITE.into(),
+                    -10.0 * i as f32,
+                    10.0 * j as f32,
+                    10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: YELLOW.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(-10.0 * i as f32, 10.0 * j as f32, -10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    YELLOW.into(),
+                    -10.0 * i as f32,
+                    10.0 * j as f32,
+                    -10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: BLUE.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(-10.0 * i as f32, -10.0 * j as f32, 10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    BLUE.into(),
+                    -10.0 * i as f32,
+                    -10.0 * j as f32,
+                    10.0 * k as f32,
+                );
 
-                commands.spawn((
-                    StateScoped(GameMode::InGame),
-                    Mesh3d(meshes.add(Sphere::default().mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: WHITE.into(),
-                        ..Default::default()
-                    })),
-                    Transform::from_xyz(-10.0 * i as f32, -10.0 * j as f32, -10.0 * k as f32),
-                    RigidBody::Static,
-                    Collider::sphere(1.0),
-                    CollisionEventsEnabled,
-                    Mass(1.0),
-                    Target,
-                    Hp::target(),
-                ));
+                spawn_target(
+                    &mut commands,
+                    &mut meshes,
+                    &asset_server,
+                    &mut materials,
+                    WHITE.into(),
+                    -10.0 * i as f32,
+                    -10.0 * j as f32,
+                    -10.0 * k as f32,
+                );
             }
         }
     }
+}
+
+fn spawn_target(
+    commands: &mut Commands,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    asset_server: &Res<AssetServer>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+    base_color: Color,
+    x: f32,
+    y: f32,
+    z: f32,
+) {
+    commands.spawn((
+        StateScoped(GameMode::InGame),
+        Mesh3d(meshes.add(Sphere::default().mesh())),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color,
+            ..Default::default()
+        })),
+        Transform::from_xyz(x, y, z),
+        RigidBody::Static,
+        Collider::sphere(1.0),
+        CollisionEventsEnabled,
+        Mass(1.0),
+        Target,
+        Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
+    ));
 }
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
@@ -259,13 +252,13 @@ fn collision_detection_system(
                 debug!("The first object's Hp: {:?}", &obj1_hp);
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
-                if obj1_hp.rest() <= 0. {
+                if obj1_hp.rest <= 0. {
                     event_writer.write(DeathEvent::new(
                         *entity1,
                         Some(asset_server.load("SE/kill.ogg")),
                     ));
                 }
-                if obj2_hp.rest() <= 0. {
+                if obj2_hp.rest <= 0. {
                     event_writer.write(DeathEvent::new(
                         *entity2,
                         Some(asset_server.load("SE/kill.ogg")),

@@ -5,8 +5,8 @@ pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
-use spacerobo_player_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_commons::{configs::GameConfigs, DeathEvent, GameMode, Hp, KillCounter};
+use spacerobo_player_gun::{select_fire::SelectFire, Gun, GunPlugin, Interval, Muzzle};
 
 /// Player Component
 #[derive(Component)]
@@ -43,6 +43,7 @@ pub fn setup_system(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut kill_counter: ResMut<KillCounter>,
+    asset_server: Res<AssetServer>,
 ) {
     // Reset KillCounter
     kill_counter.reset();
@@ -61,7 +62,7 @@ pub fn setup_system(
             Mass(5.0),
             AngularVelocity(Vec3::ZERO),
             SpatialListener::new(gap),
-            Hp::player(),
+            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
             Player,
         ))
         // Gun
@@ -111,6 +112,7 @@ pub fn respawn_system(
     query: Query<&Player>,
     game_configs: Res<GameConfigs>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    asset_server: Res<AssetServer>,
 ) {
     if !query.is_empty() {
         return;
@@ -136,7 +138,7 @@ pub fn respawn_system(
                 Mass(5.0),
                 AngularVelocity(Vec3::ZERO),
                 SpatialListener::new(gap),
-                Hp::player(),
+                Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
                 Player,
             ))
             // Gun
