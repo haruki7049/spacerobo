@@ -211,7 +211,6 @@ fn collision_detection_system(
     mut collision_event_reader: EventReader<CollisionStarted>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
     mut event_writer: EventWriter<DeathEvent>,
-    asset_server: Res<AssetServer>,
 ) {
     for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
         debug!("Collision!!");
@@ -234,16 +233,10 @@ fn collision_detection_system(
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
                 if obj1_hp.rest <= 0. {
-                    event_writer.write(DeathEvent::new(
-                        *entity1,
-                        Some(asset_server.load("SE/kill.ogg")),
-                    ));
+                    event_writer.write(DeathEvent::new(*entity1));
                 }
                 if obj2_hp.rest <= 0. {
-                    event_writer.write(DeathEvent::new(
-                        *entity2,
-                        Some(asset_server.load("SE/kill.ogg")),
-                    ));
+                    event_writer.write(DeathEvent::new(*entity2));
                 }
             }
             _ => debug!(
@@ -268,7 +261,6 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
 fn when_going_outside_system(
     mut query: Query<(&Transform, Entity), With<Hp>>,
     mut event_writer: EventWriter<DeathEvent>,
-    asset_server: Res<AssetServer>,
 ) {
     for (transform, entity) in query.iter_mut() {
         if transform.translation.x > 2000.0
@@ -279,10 +271,7 @@ fn when_going_outside_system(
             || transform.translation.z < -2000.0
         {
             debug!("Creating DeathEvent by area outside...");
-            event_writer.write(DeathEvent::new(
-                entity,
-                Some(asset_server.load("SE/kill.ogg")),
-            ));
+            event_writer.write(DeathEvent::new(entity));
         }
     }
 }
@@ -290,12 +279,12 @@ fn when_going_outside_system(
 pub fn death_system(
     mut commands: Commands,
     mut event_reader: EventReader<DeathEvent>,
-    query: Query<&Hp>,
+    hp_query: Query<&Hp>,
 ) {
     for death_event in event_reader.read() {
-        if query.get(death_event.entity).is_ok() {
+        if let Ok(hp) = hp_query.get(death_event.entity) {
             commands.entity(death_event.entity).despawn();
-            if let Some(handle) = death_event.sound.clone() {
+            if let Some(handle) = hp.death_sound.clone() {
                 commands.spawn(AudioPlayer::new(handle));
             }
 
