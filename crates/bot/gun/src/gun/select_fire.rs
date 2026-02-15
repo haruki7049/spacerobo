@@ -50,27 +50,15 @@ pub fn semi_auto_system(
                 debug!("bullet_force: {}", bullet_force);
 
                 // ray_origin debugging by spawning a sphere
-                commands.spawn((
-                    Transform::from_translation(bullet_origin),
-                    Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: Color::WHITE,
-                        ..Default::default()
-                    })),
-                    RigidBody::Dynamic,
-                    Collider::sphere(0.015625),
-                    LinearVelocity(bullet_force),
-                    Mass(3.0),
-                    CollisionEventsEnabled,
-                    Bullet,
-                    Hp::ammo(),
-                ));
+                Bullet::shoot(
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                    bullet_origin,
+                    bullet_force,
+                );
 
-                commands.spawn((
-                    Transform::from_translation(global_transform.translation()),
-                    AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-                    PlaybackSettings::ONCE.with_spatial(false),
-                ));
+                Bullet::gunfire(&mut commands, &asset_server, bullet_origin);
             }
         }
     }
