@@ -14,13 +14,6 @@ pub struct Gun {
     pub interval: Interval,
 }
 
-#[derive(Component)]
-pub struct Ownable;
-
-pub trait Owner {}
-
-impl Owner for Ownable {}
-
 /// A interval settings and values
 #[derive(Default)]
 pub struct Interval {

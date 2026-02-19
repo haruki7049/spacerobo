@@ -3,7 +3,7 @@ mod gun;
 use bevy::prelude::*;
 use spacerobo_commons::GameMode;
 
-pub use gun::{Gun, Interval, Muzzle, Ownable, Owner, bullet, gun_cooling_system, select_fire};
+pub use gun::{Gun, Interval, Muzzle, bullet, gun_cooling_system, select_fire};
 
 #[derive(Default)]
 pub struct GunPlugin;
