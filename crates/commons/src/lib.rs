@@ -63,15 +63,15 @@ impl std::default::Default for Hp {
 }
 
 pub trait Bullet {
-    pub fn shoot(
-        commands: &mut Command,
+    fn shoot(
+        commands: &mut Commands,
         meshes: &mut ResMut<Assets<Mesh>>,
         materials: &mut ResMut<Assets<StandardMaterial>>,
         origin: Vec3,
         force: Vec3,
     );
 
-    pub fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
+    fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
 }
 
 impl Hp {
