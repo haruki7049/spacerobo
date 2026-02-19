@@ -1,6 +1,6 @@
 #![allow(clippy::type_complexity)]
 
-use crate::gun::{Gun, Muzzle, Ownable, bullet::Common};
+use crate::gun::{Gun, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::Bullet;
@@ -22,7 +22,7 @@ pub fn semi_auto_system(
     querys: (
         Query<&Gun>,
         Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
-        Query<Entity, With<Ownable>>,
+        Query<Entity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,

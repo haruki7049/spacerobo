@@ -5,7 +5,7 @@ use spacerobo_commons::GameMode;
 
 #[derive(Default)]
 pub struct GunPlugin;
-pub use gun::{Gun, Interval, Muzzle, Ownable, Owner, bullet, gun_cooling_system, select_fire};
+pub use gun::{Gun, Interval, Muzzle, bullet, gun_cooling_system, select_fire};
 
 impl Plugin for GunPlugin {
     fn build(&self, app: &mut App) {

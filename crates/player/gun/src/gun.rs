@@ -18,13 +18,6 @@ pub struct Gun {
     pub interval: Interval,
 }
 
-#[derive(Component)]
-pub struct Ownable;
-
-pub trait Owner {}
-
-impl Owner for Ownable {}
-
 impl Gun {
     fn fullauto(&mut self) {
         self.select_fire = SelectFire::Full;
