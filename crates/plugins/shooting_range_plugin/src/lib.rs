@@ -4,7 +4,7 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_bot::{Bot, BotPlugin};
-use spacerobo_bot_gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_bot_gun::{Gun, Interval, Muzzle};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
 use spacerobo_player::PlayerPlugin;
 use spacerobo_target::Target;
@@ -73,7 +73,6 @@ fn setup_system(
                     MeshMaterial3d(materials.add(Color::BLACK)),
                     (Gun {
                         owner: parent.target_entity(),
-                        select_fire: SelectFire::Full,
                         interval: Interval {
                             limit: 0.1,
                             rest: 0.0,

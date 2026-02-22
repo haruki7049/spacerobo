@@ -62,6 +62,18 @@ impl std::default::Default for Hp {
     }
 }
 
+pub trait Bullet {
+    fn shoot(
+        commands: &mut Commands,
+        meshes: &mut ResMut<Assets<Mesh>>,
+        materials: &mut ResMut<Assets<StandardMaterial>>,
+        origin: Vec3,
+        force: Vec3,
+    );
+
+    fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
+}
+
 impl Hp {
     pub fn decrease(&mut self, v: f32) {
         self.rest -= v;
