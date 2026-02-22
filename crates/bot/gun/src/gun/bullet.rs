@@ -54,8 +54,8 @@ mod tests {
 
         #[test]
         fn shoot_common_bullet() {
-            // Create app with MinimalPlugins and AssetPlugin, I use MinimalPlugin because there hasn't to use DefaultPlugins (No GUI).
-            // I also use two resources; `Assets<Mesh>` and `Assets<StandardMaterial>`.
+            // Create app with MinimalPlugins and AssetPlugin. I use MinimalPlugin because there hasn't to use DefaultPlugins (No GUI).
+            // I also use three resources; `Assets<Mesh>` and `Assets<StandardMaterial>`;
             let mut app = App::new();
             app.add_plugins((MinimalPlugins, AssetPlugin::default()));
             app.init_resource::<Assets<Mesh>>();
@@ -76,23 +76,6 @@ mod tests {
             world
                 .query_filtered::<(&Transform, &LinearVelocity, &AngularVelocity), With<Common>>()
                 .is_empty(world, world.last_change_tick(), world.read_change_tick());
-
-            // Update app
-            app.update();
-
-            // Check the now status of app
-            // There should be in app only one
-            let world = app.world_mut();
-            let mut common_bullet_query = world
-                .query_filtered::<(&Transform, &LinearVelocity, &AngularVelocity), With<Common>>();
-            let common_bullet_info = common_bullet_query
-                .single(world)
-                .expect("Common bullet should be spawned at once");
-
-            // Check the each parameters
-            assert_eq!(common_bullet_info.0.translation, Vec3::ZERO);
-            assert_eq!(**common_bullet_info.1, Vec3::ZERO);
-            assert_eq!(**common_bullet_info.2, Vec3::ZERO);
 
             // Update app
             app.update();
