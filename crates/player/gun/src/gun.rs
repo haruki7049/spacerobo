@@ -6,8 +6,6 @@ pub mod select_fire;
 use self::select_fire::SelectFire;
 use bevy::prelude::*;
 
-const BULLET_SIZE: f32 = 1. / 8.;
-
 /// Gun component
 #[derive(Component)]
 pub struct Gun {
@@ -19,13 +17,6 @@ pub struct Gun {
     /// A interval settings and values
     pub interval: Interval,
 }
-
-#[derive(Component)]
-pub struct Ownable;
-
-pub trait Owner {}
-
-impl Owner for Ownable {}
 
 impl Gun {
     fn fullauto(&mut self) {

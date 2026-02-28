@@ -16,7 +16,7 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(GunPlugin { is_bot: false });
+        app.add_plugins(GunPlugin);
         app.add_event::<DeathEvent>();
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));

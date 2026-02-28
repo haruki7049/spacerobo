@@ -1,9 +1,9 @@
 #![allow(clippy::type_complexity)]
 
-use crate::gun::{BULLET_SIZE, Gun, Muzzle, Ownable, bullet::Bullet};
+use crate::gun::{Gun, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Hp;
+use spacerobo_commons::Bullet;
 
 /// Select fire setting for Gun component
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
@@ -22,7 +22,7 @@ pub fn semi_auto_system(
     querys: (
         Query<&Gun>,
         Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
-        Query<Entity, With<Ownable>>,
+        Query<Entity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -50,7 +50,7 @@ pub fn semi_auto_system(
                 debug!("bullet_force: {}", bullet_force);
 
                 // ray_origin debugging by spawning a sphere
-                Bullet::shoot(
+                Common::shoot(
                     &mut commands,
                     &mut meshes,
                     &mut materials,
@@ -58,7 +58,7 @@ pub fn semi_auto_system(
                     bullet_force,
                 );
 
-                Bullet::gunfire(&mut commands, &asset_server, bullet_origin);
+                Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
             }
         }
     }
@@ -100,27 +100,15 @@ pub fn full_auto_system(
                 debug!("bullet_force: {}", bullet_force);
 
                 // ray_origin debugging by spawning a sphere
-                commands.spawn((
-                    Transform::from_translation(bullet_origin),
-                    Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-                    MeshMaterial3d(materials.add(StandardMaterial {
-                        base_color: Color::WHITE,
-                        ..Default::default()
-                    })),
-                    RigidBody::Dynamic,
-                    Collider::sphere(0.015625),
-                    LinearVelocity(bullet_force),
-                    Mass(3.0),
-                    CollisionEventsEnabled,
-                    Bullet,
-                    Hp::ammo(),
-                ));
+                Common::shoot(
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                    bullet_origin,
+                    bullet_force,
+                );
 
-                commands.spawn((
-                    Transform::from_translation(global_transform.translation()),
-                    AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-                    PlaybackSettings::ONCE.with_spatial(false),
-                ));
+                Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
             }
         }
     }
@@ -135,64 +123,6 @@ pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonI
         match gun.select_fire {
             SelectFire::Semi => gun.fullauto(),
             SelectFire::Full => gun.semiauto(),
-        }
-    }
-}
-
-/// Full auto forever system
-pub fn full_auto_forever_system(
-    mut commands: Commands,
-    mut querys: (
-        Query<&mut Gun, With<Gun>>,
-        Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
-    ),
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    asset_server: Res<AssetServer>,
-) {
-    // Unpacking querys
-    let (ref mut gun_query, muzzle_query) = querys;
-
-    // Get muzzle's GlobalTransform
-    for (global_transform, muzzle_linear) in muzzle_query.iter() {
-        for mut gun in gun_query.iter_mut() {
-            // If the parent entity is not bot, Do nothing and return
-            if gun.interval.rest >= 0. {
-                debug!("Full auto shoot aborted because of the gun's interval");
-                return;
-            }
-
-            // Full auto interval
-            gun.interval.rest = gun.interval.limit;
-
-            // Shoot!!
-            let bullet_origin: Vec3 = global_transform.translation();
-            let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-            let bullet_force: Vec3 = direction * 500.0 + **muzzle_linear;
-            debug!("bullet_force: {}", bullet_force);
-
-            // ray_origin debugging by spawning a sphere
-            commands.spawn((
-                Transform::from_translation(bullet_origin),
-                Mesh3d(meshes.add(Sphere::new(BULLET_SIZE).mesh())),
-                MeshMaterial3d(materials.add(StandardMaterial {
-                    base_color: Color::WHITE,
-                    ..Default::default()
-                })),
-                RigidBody::Dynamic,
-                Collider::sphere(0.015625),
-                LinearVelocity(bullet_force),
-                Mass(3.0),
-                CollisionEventsEnabled,
-                Bullet,
-                Hp::ammo(),
-            ));
-
-            commands.spawn((
-                Transform::from_translation(global_transform.translation()),
-                AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
-                PlaybackSettings::ONCE.with_spatial(false),
-            ));
         }
     }
 }

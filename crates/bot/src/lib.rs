@@ -11,6 +11,6 @@ pub struct BotPlugin;
 
 impl Plugin for BotPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(GunPlugin { is_bot: true });
+        app.add_plugins(GunPlugin);
     }
 }

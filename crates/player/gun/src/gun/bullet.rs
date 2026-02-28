@@ -1,15 +1,15 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Hp;
+use spacerobo_commons::{Bullet, Hp};
 
 const BULLET_SIZE: f32 = 1. / 8.;
 
 /// A marker component for a bullet shot by a Gun
 #[derive(Component)]
-pub struct Bullet;
+pub struct Common;
 
-impl Bullet {
-    pub fn shoot(
+impl Bullet for Common {
+    fn shoot(
         commands: &mut Commands,
         meshes: &mut ResMut<Assets<Mesh>>,
         materials: &mut ResMut<Assets<StandardMaterial>>,
@@ -28,12 +28,12 @@ impl Bullet {
             LinearVelocity(force),
             Mass(3.0),
             CollisionEventsEnabled,
-            Bullet,
+            Common,
             Hp::ammo(),
         ));
     }
 
-    pub fn gunfire(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3) {
+    fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3) {
         commands.spawn((
             Transform::from_translation(place),
             AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
