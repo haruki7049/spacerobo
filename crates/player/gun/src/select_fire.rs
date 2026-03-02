@@ -1,6 +1,6 @@
 #![allow(clippy::type_complexity)]
 
-use super::{Gun, Muzzle, bullet::Common};
+use crate::{Gun, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::Bullet;
