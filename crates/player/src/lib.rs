@@ -8,8 +8,20 @@ use bevy::prelude::*;
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, configs::GameConfigs};
 use spacerobo_player_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
+const LISTENER_GAP: f32 = 4.0;
+
 /// Player Component
 #[derive(Component)]
+#[require(
+    Transform::from_xyz(0.0, 0.0, 0.0),
+    Camera3d::default(),
+    RigidBody::Dynamic,
+    Collider::sphere(1.0),
+    Mass(5.0),
+    AngularVelocity(Vec3::ZERO),
+    SpatialListener::new(LISTENER_GAP),
+    Hp
+)]
 pub struct Player;
 
 pub struct PlayerPlugin;
@@ -48,22 +60,16 @@ pub fn setup_system(
     // Reset KillCounter
     kill_counter.reset();
 
-    let gap = 4.0;
-
     // Camera
     commands
         .spawn((
             StateScoped(GameMode::InGame),
-            Camera3d::default(),
             Transform::from_xyz(0., 0., 0.),
-            RigidBody::Dynamic,
             GravityScale(0.2),
             Collider::sphere(1.0),
             Mass(5.0),
-            AngularVelocity(Vec3::ZERO),
-            SpatialListener::new(gap),
-            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
             Player,
+            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
         ))
         // Gun
         .with_children(|parent| {
