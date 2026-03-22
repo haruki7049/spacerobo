@@ -19,10 +19,10 @@ pub enum SelectFire {
 /// Semi auto
 pub fn semi_auto_system(
     mut commands: Commands,
-    querys: (
-        Query<&Gun>,
+    mut querys: (
+        Query<(&Gun, &ChildOf), With<Gun>>,
         Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
-        Query<Entity>,
+        Query<&LinearVelocity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -30,35 +30,37 @@ pub fn semi_auto_system(
     asset_server: Res<AssetServer>,
 ) {
     // Unpacking querys
-    let (gun_query, muzzle_query, owner_query) = querys;
+    let (ref mut gun_query, muzzle_query, parent_linear_query) = querys;
 
-    for gun in gun_query.iter() {
+    for (gun, child_of) in gun_query.iter() {
         if mouse.just_pressed(MouseButton::Left) && gun.select_fire == SelectFire::Semi {
             debug!("Mouse Left clicked");
 
-            for e in owner_query.iter() {
-                if gun.owner != e {
-                    return;
-                }
+            if child_of.parent() != gun.owner {
+                debug!("Full auto shooting is abandoned");
+                return;
             }
 
-            for (global_transform, muzzle_linear) in muzzle_query.iter() {
-                // Shoot!!
-                let bullet_origin: Vec3 = global_transform.translation();
-                let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                let bullet_force: Vec3 = direction * 500.0 + **muzzle_linear;
-                debug!("bullet_force: {}", bullet_force);
+            if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) {
+                for (global_transform, muzzle_linear) in muzzle_query.iter() {
+                    // Shoot!!
+                    let bullet_origin: Vec3 = global_transform.translation();
+                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                    let bullet_force: Vec3 =
+                        direction * 500.0 + **muzzle_linear + **player_linear_velocity;
+                    debug!("bullet_force: {}", bullet_force);
 
-                // ray_origin debugging by spawning a sphere
-                Common::shoot(
-                    &mut commands,
-                    &mut meshes,
-                    &mut materials,
-                    bullet_origin,
-                    bullet_force,
-                );
+                    // ray_origin debugging by spawning a sphere
+                    Common::shoot(
+                        &mut commands,
+                        &mut meshes,
+                        &mut materials,
+                        bullet_origin,
+                        bullet_force,
+                    );
 
-                Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
+                    Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
+                }
             }
         }
     }
@@ -68,8 +70,9 @@ pub fn semi_auto_system(
 pub fn full_auto_system(
     mut commands: Commands,
     mut querys: (
-        Query<&mut Gun, With<Gun>>,
+        Query<(&mut Gun, &ChildOf), With<Gun>>,
         Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
+        Query<&LinearVelocity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -77,38 +80,46 @@ pub fn full_auto_system(
     asset_server: Res<AssetServer>,
 ) {
     // Unpacking querys
-    let (ref mut gun_query, muzzle_query) = querys;
+    let (ref mut gun_query, muzzle_query, parent_linear_query) = querys;
 
     // Get muzzle's GlobalTransform
     for (global_transform, muzzle_linear) in muzzle_query.iter() {
-        for mut gun in gun_query.iter_mut() {
-            if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
-                debug!("Mouse Left clicked");
+        for (mut gun, child_of) in gun_query.iter_mut() {
+            if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) {
+                if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
+                    debug!("Mouse Left clicked");
 
-                if gun.interval.rest >= 0. {
-                    debug!("Full auto shoot aborted because of the gun's interval");
-                    return;
+                    if child_of.parent() != gun.owner {
+                        debug!("Full auto shooting is abandoned");
+                        return;
+                    }
+
+                    if gun.interval.rest >= 0. {
+                        debug!("Full auto shoot aborted because of the gun's interval");
+                        return;
+                    }
+
+                    // Full auto interval
+                    gun.interval.rest = gun.interval.limit;
+
+                    // Shoot!!
+                    let bullet_origin: Vec3 = global_transform.translation();
+                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                    let bullet_force: Vec3 =
+                        direction * 500.0 + **muzzle_linear + **player_linear_velocity;
+                    debug!("bullet_force: {}", bullet_force);
+
+                    // ray_origin debugging by spawning a sphere
+                    Common::shoot(
+                        &mut commands,
+                        &mut meshes,
+                        &mut materials,
+                        bullet_origin,
+                        bullet_force,
+                    );
+
+                    Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
                 }
-
-                // Full auto interval
-                gun.interval.rest = gun.interval.limit;
-
-                // Shoot!!
-                let bullet_origin: Vec3 = global_transform.translation();
-                let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                let bullet_force: Vec3 = direction * 500.0 + **muzzle_linear;
-                debug!("bullet_force: {}", bullet_force);
-
-                // ray_origin debugging by spawning a sphere
-                Common::shoot(
-                    &mut commands,
-                    &mut meshes,
-                    &mut materials,
-                    bullet_origin,
-                    bullet_force,
-                );
-
-                Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
             }
         }
     }
