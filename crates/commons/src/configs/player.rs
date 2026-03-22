@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     keyboard: KeyboardConfig,
     mouse: MouseConfig,
-    controller: ControllerConfig,
     robo: RoboConfig,
 }
 
@@ -19,10 +18,6 @@ impl Config {
 
     pub fn mouse(&self) -> MouseConfig {
         self.mouse.clone()
-    }
-
-    pub fn controller(&self) -> ControllerConfig {
-        self.controller.clone()
     }
 
     pub fn robo(&self) -> RoboConfig {
@@ -212,7 +207,3 @@ impl MouseConfig {
         self.y_reverse
     }
 }
-
-/// Controller (Gamepad) Configurations
-#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
-pub struct ControllerConfig {}

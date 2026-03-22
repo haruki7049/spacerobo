@@ -16,8 +16,6 @@ toggle_firemode = "KeyT"
 [player.mouse]
 x_reverse = false
 y_reverse = false
-
-[player.controller]
 ```
 
 ### player.keyboard
@@ -67,7 +65,3 @@ TODO: Write a comment
 #### player.mouse.y_reverse
 
 TODO: Write a comment
-
-### player.controller
-
-TODO: Not implemented yet.

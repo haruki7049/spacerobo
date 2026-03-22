@@ -30,7 +30,6 @@ impl Plugin for PlayerPlugin {
                 // movement systems
                 movement::keyboard::update_system,
                 movement::mouse::update_system,
-                movement::controller::update_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );
