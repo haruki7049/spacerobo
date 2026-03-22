@@ -1,3 +1,6 @@
+tasks:
+    @just --list
+
 build:
     cargo build --workspace
     cargo build --release --workspace
@@ -18,4 +21,4 @@ doc:
     cargo doc --workspace
     cargo doc --release --workspace
 
-all: build test check clippy
+all: build test check clippy doc
