@@ -11,21 +11,21 @@ pub fn update_system(
 ) {
     for (transform, mut angular, mut linear) in query.iter_mut() {
         // Hovering
-        if keyboard.pressed(game_configs.player().keyboard().hover()) {
+        if keyboard.pressed(game_configs.player.keyboard.hover) {
             angular.0 *= Vec3::new(0.7, 0.7, 0.7);
             linear.0 *= Vec3::new(0.7, 0.7, 0.7);
         }
 
         // Exit spacerobo
-        if keyboard.just_pressed(game_configs.player().keyboard().quit()) {
+        if keyboard.just_pressed(game_configs.player.keyboard.quit) {
             gamemode.set(GameMode::Title);
         }
 
         // Accelerate
         {
-            if keyboard.pressed(game_configs.player().keyboard().forward()) {
+            if keyboard.pressed(game_configs.player.keyboard.forward) {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -40,9 +40,9 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().left()) {
+            if keyboard.pressed(game_configs.player.keyboard.left) {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_X;
@@ -57,9 +57,9 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().back()) {
+            if keyboard.pressed(game_configs.player.keyboard.back) {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::Z;
@@ -74,9 +74,9 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().right()) {
+            if keyboard.pressed(game_configs.player.keyboard.right) {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::X;
@@ -91,8 +91,8 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().roll_left()) {
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+            if keyboard.pressed(game_configs.player.keyboard.roll_left) {
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -105,8 +105,8 @@ pub fn update_system(
                 angular.0 += result;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().roll_right()) {
-                let force: f32 = game_configs.player().robo().thruster().force().accelerate();
+            if keyboard.pressed(game_configs.player.keyboard.roll_right) {
+                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::Z;
@@ -122,11 +122,11 @@ pub fn update_system(
 
         // Dash
         {
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().forward())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.forward)
             {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -141,11 +141,11 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().left())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.left)
             {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_X;
@@ -160,11 +160,11 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().back())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.back)
             {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::Z;
@@ -179,11 +179,11 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().right())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.right)
             {
                 let mut velocity: Vec3 = Vec3::ZERO;
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::X;
@@ -198,10 +198,10 @@ pub fn update_system(
                 linear.0 += velocity;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().roll_left())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.roll_left)
             {
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::NEG_Z;
@@ -214,10 +214,10 @@ pub fn update_system(
                 angular.0 += result;
             }
 
-            if keyboard.pressed(game_configs.player().keyboard().dash())
-                && keyboard.pressed(game_configs.player().keyboard().roll_right())
+            if keyboard.pressed(game_configs.player.keyboard.dash)
+                && keyboard.pressed(game_configs.player.keyboard.roll_right)
             {
-                let force: f32 = game_configs.player().robo().thruster().force().dash();
+                let force: f32 = game_configs.player.robo.thruster.force.dash;
 
                 let rotation: Quat = transform.rotation;
                 let direction: Vec3 = rotation * Vec3::Z;
