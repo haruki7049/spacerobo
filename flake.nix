@@ -59,6 +59,7 @@
             # Build tools
             pkgs.pkg-config
             pkgs.makeWrapper
+            pkgs.just
 
             # Rust
             rust
