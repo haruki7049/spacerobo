@@ -74,6 +74,16 @@ pub trait Bullet {
     fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
 }
 
+pub trait Player {
+    fn spawn(
+        commands: &mut Commands,
+        meshes: &mut ResMut<Assets<Mesh>>,
+        materials: &mut ResMut<Assets<StandardMaterial>>,
+        kill_counter: &mut ResMut<KillCounter>,
+        asset_server: Res<AssetServer>,
+    );
+}
+
 impl Hp {
     pub fn decrease(&mut self, v: f32) {
         self.rest -= v;

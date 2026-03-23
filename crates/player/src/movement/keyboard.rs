@@ -1,11 +1,11 @@
-use super::super::Player;
+use super::super::Common as PlayerCommon;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{GameMode, configs::GameConfigs};
 
 pub fn update_system(
     mut gamemode: ResMut<NextState<GameMode>>,
-    mut query: Query<(&Transform, &mut AngularVelocity, &mut LinearVelocity), With<Player>>,
+    mut query: Query<(&Transform, &mut AngularVelocity, &mut LinearVelocity), With<PlayerCommon>>,
     keyboard: Res<ButtonInput<KeyCode>>,
     game_configs: Res<GameConfigs>,
 ) {

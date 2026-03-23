@@ -2,7 +2,7 @@
 
 #![allow(clippy::type_complexity)]
 
-use super::Player;
+use super::Common as PlayerCommon;
 use bevy::prelude::*;
 use spacerobo_commons::{GameMode, Hp, KillCounter};
 
@@ -70,7 +70,7 @@ pub fn update_system(
         Query<&mut TextSpan, With<HpUI>>,
         Query<&mut TextSpan, With<KillCounterUI>>,
     )>,
-    player_query: Query<(&Transform, &Hp), With<Player>>,
+    player_query: Query<(&Transform, &Hp), With<PlayerCommon>>,
     kill_counter: Res<KillCounter>,
 ) {
     for (transform, hp) in player_query.iter() {

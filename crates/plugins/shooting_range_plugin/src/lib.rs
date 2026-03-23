@@ -6,14 +6,14 @@ use bevy::{
 use spacerobo_bot::{Bot, BotPlugin};
 use spacerobo_bot_gun::{Gun, Interval, Muzzle};
 use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
-use spacerobo_player::PlayerPlugin;
+use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((BotPlugin, PlayerPlugin));
+        app.add_plugins((BotPlugin, PlayerCommonPlugin));
         app.add_event::<DeathEvent>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
