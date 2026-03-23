@@ -85,41 +85,42 @@ pub fn full_auto_system(
     // Get muzzle's GlobalTransform
     for (global_transform, muzzle_linear) in muzzle_query.iter() {
         for (mut gun, child_of) in gun_query.iter_mut() {
-            if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) {
-                if mouse.pressed(MouseButton::Left) && gun.select_fire == SelectFire::Full {
-                    debug!("Mouse Left clicked");
+            if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent())
+                && mouse.pressed(MouseButton::Left)
+                && gun.select_fire == SelectFire::Full
+            {
+                debug!("Mouse Left clicked");
 
-                    if child_of.parent() != gun.owner {
-                        debug!("Full auto shooting is abandoned");
-                        return;
-                    }
-
-                    if gun.interval.rest >= 0. {
-                        debug!("Full auto shoot aborted because of the gun's interval");
-                        return;
-                    }
-
-                    // Full auto interval
-                    gun.interval.rest = gun.interval.limit;
-
-                    // Shoot!!
-                    let bullet_origin: Vec3 = global_transform.translation();
-                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                    let bullet_force: Vec3 =
-                        direction * 500.0 + **muzzle_linear + **player_linear_velocity;
-                    debug!("bullet_force: {}", bullet_force);
-
-                    // ray_origin debugging by spawning a sphere
-                    Common::shoot(
-                        &mut commands,
-                        &mut meshes,
-                        &mut materials,
-                        bullet_origin,
-                        bullet_force,
-                    );
-
-                    Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
+                if child_of.parent() != gun.owner {
+                    debug!("Full auto shooting is abandoned");
+                    return;
                 }
+
+                if gun.interval.rest >= 0. {
+                    debug!("Full auto shoot aborted because of the gun's interval");
+                    return;
+                }
+
+                // Full auto interval
+                gun.interval.rest = gun.interval.limit;
+
+                // Shoot!!
+                let bullet_origin: Vec3 = global_transform.translation();
+                let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
+                let bullet_force: Vec3 =
+                    direction * 500.0 + **muzzle_linear + **player_linear_velocity;
+                debug!("bullet_force: {}", bullet_force);
+
+                // ray_origin debugging by spawning a sphere
+                Common::shoot(
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                    bullet_origin,
+                    bullet_force,
+                );
+
+                Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
             }
         }
     }
