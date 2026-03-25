@@ -54,8 +54,6 @@ pub struct KeyboardConfig {
     pub back: KeyCode,
     pub left: KeyCode,
     pub right: KeyCode,
-    pub roll_left: KeyCode,
-    pub roll_right: KeyCode,
 
     pub dash: KeyCode,
 
@@ -79,8 +77,6 @@ impl std::default::Default for KeyboardConfig {
             back: KeyCode::KeyS,
             left: KeyCode::KeyA,
             right: KeyCode::KeyD,
-            roll_left: KeyCode::KeyQ,
-            roll_right: KeyCode::KeyE,
 
             dash: KeyCode::ShiftLeft,
 

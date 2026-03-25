@@ -90,34 +90,6 @@ pub fn update_system(
 
                 linear.0 += velocity;
             }
-
-            if keyboard.pressed(game_configs.player.keyboard.roll_left) {
-                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
-
-                let rotation: Quat = transform.rotation;
-                let direction: Vec3 = rotation * Vec3::NEG_Z;
-
-                let x: f32 = force * direction.x;
-                let y: f32 = force * direction.y;
-                let z: f32 = force * direction.z;
-                let result: Vec3 = Vec3::new(x, y, z);
-
-                angular.0 += result;
-            }
-
-            if keyboard.pressed(game_configs.player.keyboard.roll_right) {
-                let force: f32 = game_configs.player.robo.thruster.force.accelerate;
-
-                let rotation: Quat = transform.rotation;
-                let direction: Vec3 = rotation * Vec3::Z;
-
-                let x: f32 = force * direction.x;
-                let y: f32 = force * direction.y;
-                let z: f32 = force * direction.z;
-                let result: Vec3 = Vec3::new(x, y, z);
-
-                angular.0 += result;
-            }
         }
 
         // Dash
@@ -196,38 +168,6 @@ pub fn update_system(
                 velocity += result;
 
                 linear.0 += velocity;
-            }
-
-            if keyboard.pressed(game_configs.player.keyboard.dash)
-                && keyboard.pressed(game_configs.player.keyboard.roll_left)
-            {
-                let force: f32 = game_configs.player.robo.thruster.force.dash;
-
-                let rotation: Quat = transform.rotation;
-                let direction: Vec3 = rotation * Vec3::NEG_Z;
-
-                let x: f32 = force * direction.x;
-                let y: f32 = force * direction.y;
-                let z: f32 = force * direction.z;
-                let result: Vec3 = Vec3::new(x, y, z);
-
-                angular.0 += result;
-            }
-
-            if keyboard.pressed(game_configs.player.keyboard.dash)
-                && keyboard.pressed(game_configs.player.keyboard.roll_right)
-            {
-                let force: f32 = game_configs.player.robo.thruster.force.dash;
-
-                let rotation: Quat = transform.rotation;
-                let direction: Vec3 = rotation * Vec3::Z;
-
-                let x: f32 = force * direction.x;
-                let y: f32 = force * direction.y;
-                let z: f32 = force * direction.z;
-                let result: Vec3 = Vec3::new(x, y, z);
-
-                angular.0 += result;
             }
         }
     }
