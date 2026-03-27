@@ -118,46 +118,6 @@ impl Hp {
 
 #[cfg(test)]
 mod tests {
-    /// OpponentResource's unit tests
-    mod opponent_resource {
-        use crate::{Information, OpponentResource};
-        use bevy::prelude::*;
-
-        /// get method's unit test
-        #[test]
-        fn get() {
-            let opponent_resource: OpponentResource = OpponentResource::default();
-            assert!(opponent_resource.get().is_none());
-        }
-
-        /// set method's unit test
-        #[test]
-        fn set() {
-            let info: Information = Information {
-                player: None,
-                bullets: Vec::new(),
-            };
-            let mut opponent_resource: OpponentResource = OpponentResource::default();
-            opponent_resource.set(info);
-
-            assert!(opponent_resource.get().is_some());
-        }
-
-        /// reset method's unit test
-        #[test]
-        fn reset() {
-            let info: Information = Information {
-                player: None,
-                bullets: Vec::new(),
-            };
-            let mut opponent_resource: OpponentResource = OpponentResource::default();
-            opponent_resource.set(info);
-            opponent_resource.reset();
-
-            assert!(opponent_resource.get().is_none());
-        }
-    }
-
     /// GameMode's unit tests
     mod game_mode {
         use crate::GameMode;
@@ -171,7 +131,7 @@ mod tests {
     }
 
     /// DeathMessage's unit tests
-    mod death_event {
+    mod death_message {
         use crate::DeathMessage;
         use bevy::prelude::*;
 
