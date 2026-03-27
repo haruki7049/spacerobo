@@ -45,12 +45,12 @@ spacerobo_bot.path = "crates/bot"
 spacerobo_bot_gun.path = "crates/bot/gun"
 spacerobo_title_plugin = { path = "crates/plugins/title_plugin" }
 spacerobo_shooting_range_plugin = { path = "crates/plugins/shooting_range_plugin" }
-bevy = { version = "0.17.3", features = [
+bevy = { version = "0.18.1", features = [
   "serialize",
   "wayland",
   "track_location",
 ] }
-avian3d = { version = "0.4.1", features = ["serialize"] }
+avian3d = { version = "0.6.1", features = ["serialize"] }
 serde = { version = "1.0.219", features = ["derive"] }
 clap = { version = "4.5.40", features = ["derive", "string"] }
 confy = "1.0.0"
