@@ -14,11 +14,11 @@ impl Plugin for TitlePlugin {
 }
 
 fn setup_system(mut commands: Commands) {
-    commands.spawn((StateScoped(GameMode::Title), Camera2d));
+    commands.spawn((DespawnOnExit(GameMode::Title), Camera2d));
 
     commands
         .spawn((
-            StateScoped(GameMode::Title),
+            DespawnOnExit(GameMode::Title),
             Node {
                 margin: UiRect::all(Val::Percent(2.)),
                 ..default()
@@ -38,7 +38,7 @@ fn setup_system(mut commands: Commands) {
 fn input_detection_system(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut gamemode: ResMut<NextState<GameMode>>,
-    mut exit: EventWriter<AppExit>,
+    mut exit: MessageWriter<AppExit>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
         gamemode.set(GameMode::InGame);

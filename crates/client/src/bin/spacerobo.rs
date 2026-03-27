@@ -24,12 +24,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
-                    cursor_options: CursorOptions {
-                        visible: false,
-                        grab_mode: CursorGrabMode::Locked,
-                        ..default()
-                    },
                     title: format!("spacerobo {}", env!("CARGO_PKG_VERSION")),
+                    ..default()
+                }),
+                primary_cursor_options: Some(CursorOptions {
+                    visible: false,
+                    grab_mode: CursorGrabMode::Locked,
                     ..default()
                 }),
                 ..default()

@@ -21,7 +21,7 @@ pub struct HpUI;
 pub fn setup_system(mut commands: Commands) {
     // Heading Indicator
     commands
-        .spawn((Text::default(), StateScoped(GameMode::InGame)))
+        .spawn((Text::default(), DespawnOnExit(GameMode::InGame)))
         .with_child((
             TextSpan::default(),
             (TextFont {

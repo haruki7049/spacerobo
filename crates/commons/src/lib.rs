@@ -7,12 +7,12 @@ use serde::{Deserialize, Serialize};
 
 pub mod configs;
 
-#[derive(Debug, Event)]
-pub struct DeathEvent {
+#[derive(Debug, Message)]
+pub struct DeathMessage {
     pub entity: Entity,
 }
 
-impl DeathEvent {
+impl DeathMessage {
     pub fn new(entity: Entity) -> Self {
         Self { entity }
     }
@@ -213,16 +213,16 @@ mod tests {
         }
     }
 
-    /// DeathEvent's unit tests
+    /// DeathMessage's unit tests
     mod death_event {
-        use crate::DeathEvent;
+        use crate::DeathMessage;
         use bevy::prelude::*;
 
         /// new method's unit test
         #[test]
         fn new() {
             let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
-            let event: DeathEvent = DeathEvent::new(entity);
+            let event: DeathMessage = DeathMessage::new(entity);
             assert_eq!(event.entity, entity);
         }
     }

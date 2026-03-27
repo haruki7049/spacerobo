@@ -5,7 +5,7 @@ pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter, Player, configs::GameConfigs};
+use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs};
 use spacerobo_player_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Common Component
@@ -28,7 +28,7 @@ impl Player for Common {
         // Camera
         commands
             .spawn((
-                StateScoped(GameMode::InGame),
+                DespawnOnExit(GameMode::InGame),
                 Camera3d::default(),
                 Transform::from_xyz(0., 0., 0.),
                 RigidBody::Dynamic,
@@ -85,7 +85,7 @@ pub struct PlayerCommonPlugin;
 impl Plugin for PlayerCommonPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(GunPlugin);
-        app.add_event::<DeathEvent>();
+        app.add_message::<DeathMessage>();
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
