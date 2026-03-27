@@ -1,9 +1,6 @@
 //! Spacerobo commons
 
-use avian3d::prelude::*;
 use bevy::prelude::*;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 
 pub mod configs;
 
@@ -116,46 +113,6 @@ impl Hp {
             maximum: hp,
             death_sound,
         }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Information {
-    pub player: Option<PlayerInformation>,
-    pub bullets: Vec<BulletInformation>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct PlayerInformation {
-    pub transform: Transform,
-    pub angular: AngularVelocity,
-    pub linear: LinearVelocity,
-    pub timestamp: DateTime<Utc>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct BulletInformation {
-    pub transform: Transform,
-    pub angular: AngularVelocity,
-    pub linear: LinearVelocity,
-}
-
-#[derive(Debug, Resource, Default)]
-pub struct OpponentResource {
-    pub inner: Option<Information>,
-}
-
-impl OpponentResource {
-    pub fn get(&self) -> Option<Information> {
-        self.inner.clone()
-    }
-
-    pub fn set(&mut self, info: Information) {
-        self.inner = Some(info);
-    }
-
-    pub fn reset(&mut self) {
-        self.inner = None;
     }
 }
 
