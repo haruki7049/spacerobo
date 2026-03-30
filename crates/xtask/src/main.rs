@@ -127,7 +127,7 @@ fn build() -> Result {
         let exit_status = build_release_command.spawn()?.wait()?;
 
         if !exit_status.success() {
-            panic!("cargo build --workspace is failed");
+            panic!("cargo build --release --workspace is failed");
         }
     }
 
@@ -138,6 +138,34 @@ fn build() -> Result {
 #[tracing::instrument]
 fn check() -> Result {
     tracing::info!("Running...");
+
+    // cargo check --workspace
+    {
+        let mut check_command = Command::new(CARGO.lock()?.as_str());
+        check_command.arg("check");
+        check_command.arg("--workspace");
+
+        let exit_status = check_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo check --workspace is failed");
+        }
+    }
+
+    // cargo check --release --workspace
+    {
+        let mut check_release_command = Command::new(CARGO.lock()?.as_str());
+        check_release_command.arg("check");
+        check_release_command.arg("--release");
+        check_release_command.arg("--workspace");
+
+        let exit_status = check_release_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo check --release --workspace is failed");
+        }
+    }
+
     tracing::info!("Finished.");
     Ok(())
 }
