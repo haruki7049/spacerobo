@@ -8,6 +8,11 @@ license.workspace = true
 readme.workspace = true
 repository.workspace = true
 publish.workspace = true
+default-run = "spacerobo"
+
+[[bin]]
+name = "spacerobo"
+path = "src/main.rs"
 
 [dependencies]
 spacerobo_title_plugin.workspace = true

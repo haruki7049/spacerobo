@@ -19,6 +19,7 @@ lto = "thin"
 
 [workspace]
 resolver = "3"
+default-members = ["crates/client"]
 members = [
   # Application crates
   "crates/client",
