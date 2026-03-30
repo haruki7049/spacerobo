@@ -5,7 +5,7 @@ use bevy::{
 };
 use spacerobo_bot::{Bot, BotPlugin};
 use spacerobo_bot_gun::{Gun, Interval, Muzzle};
-use spacerobo_commons::{DeathEvent, GameMode, Hp, KillCounter};
+use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter};
 use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Target;
 
@@ -14,7 +14,7 @@ pub struct ShootingRangePlugin;
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((BotPlugin, PlayerCommonPlugin));
-        app.add_event::<DeathEvent>();
+        app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), setup_system);
@@ -50,7 +50,7 @@ fn setup_system(
     // Bots
     commands
         .spawn((
-            StateScoped(GameMode::InGame),
+            DespawnOnExit(GameMode::InGame),
             Mesh3d(meshes.add(Sphere::default().mesh())),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: RED.into(),
@@ -188,7 +188,7 @@ fn spawn_target(
     vec3: Vec3,
 ) {
     commands.spawn((
-        StateScoped(GameMode::InGame),
+        DespawnOnExit(GameMode::InGame),
         Mesh3d(meshes.add(Sphere::default().mesh())),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color,
@@ -207,14 +207,17 @@ fn spawn_target(
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
 /// This system is created to decrease the hp at contacted objects.
 fn collision_detection_system(
-    mut collision_event_reader: EventReader<CollisionStarted>,
+    mut collision_event_reader: MessageReader<CollisionStart>,
     mut query: Query<(&mut Hp, &LinearVelocity, &Mass)>,
-    mut event_writer: EventWriter<DeathEvent>,
+    mut event_writer: MessageWriter<DeathMessage>,
 ) {
-    for CollisionStarted(entity1, entity2) in collision_event_reader.read() {
+    for event in collision_event_reader.read() {
         debug!("Collision!!");
 
-        let objects = query.get_many_mut([*entity1, *entity2]).ok();
+        let entity1 = event.collider1;
+        let entity2 = event.collider2;
+
+        let objects = query.get_many_mut([entity1, entity2]).ok();
 
         match objects {
             Some([mut obj1, mut obj2]) => {
@@ -232,10 +235,10 @@ fn collision_detection_system(
                 debug!("The second object's Hp: {:?}", &obj2_hp);
 
                 if obj1_hp.rest <= 0. {
-                    event_writer.write(DeathEvent::new(*entity1));
+                    event_writer.write(DeathMessage::new(entity1));
                 }
                 if obj2_hp.rest <= 0. {
-                    event_writer.write(DeathEvent::new(*entity2));
+                    event_writer.write(DeathMessage::new(entity2));
                 }
             }
             _ => debug!(
@@ -259,7 +262,7 @@ fn calc_damage(object: &(Mut<'_, Hp>, &LinearVelocity, &Mass)) -> f32 {
 
 fn when_going_outside_system(
     mut query: Query<(&Transform, Entity), With<Hp>>,
-    mut event_writer: EventWriter<DeathEvent>,
+    mut event_writer: MessageWriter<DeathMessage>,
 ) {
     for (transform, entity) in query.iter_mut() {
         if transform.translation.x > 2000.0
@@ -269,15 +272,15 @@ fn when_going_outside_system(
             || transform.translation.y < -2000.0
             || transform.translation.z < -2000.0
         {
-            debug!("Creating DeathEvent by area outside...");
-            event_writer.write(DeathEvent::new(entity));
+            debug!("Creating DeathMessage by area outside...");
+            event_writer.write(DeathMessage::new(entity));
         }
     }
 }
 
 pub fn death_system(
     mut commands: Commands,
-    mut event_reader: EventReader<DeathEvent>,
+    mut event_reader: MessageReader<DeathMessage>,
     hp_query: Query<&Hp>,
 ) {
     for death_event in event_reader.read() {

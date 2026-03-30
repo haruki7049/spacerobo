@@ -1,18 +1,15 @@
 //! Spacerobo commons
 
-use avian3d::prelude::*;
 use bevy::prelude::*;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 
 pub mod configs;
 
-#[derive(Debug, Event)]
-pub struct DeathEvent {
+#[derive(Debug, Message)]
+pub struct DeathMessage {
     pub entity: Entity,
 }
 
-impl DeathEvent {
+impl DeathMessage {
     pub fn new(entity: Entity) -> Self {
         Self { entity }
     }
@@ -119,88 +116,8 @@ impl Hp {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Information {
-    pub player: Option<PlayerInformation>,
-    pub bullets: Vec<BulletInformation>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct PlayerInformation {
-    pub transform: Transform,
-    pub angular: AngularVelocity,
-    pub linear: LinearVelocity,
-    pub timestamp: DateTime<Utc>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct BulletInformation {
-    pub transform: Transform,
-    pub angular: AngularVelocity,
-    pub linear: LinearVelocity,
-}
-
-#[derive(Debug, Resource, Default)]
-pub struct OpponentResource {
-    pub inner: Option<Information>,
-}
-
-impl OpponentResource {
-    pub fn get(&self) -> Option<Information> {
-        self.inner.clone()
-    }
-
-    pub fn set(&mut self, info: Information) {
-        self.inner = Some(info);
-    }
-
-    pub fn reset(&mut self) {
-        self.inner = None;
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    /// OpponentResource's unit tests
-    mod opponent_resource {
-        use crate::{Information, OpponentResource};
-        use bevy::prelude::*;
-
-        /// get method's unit test
-        #[test]
-        fn get() {
-            let opponent_resource: OpponentResource = OpponentResource::default();
-            assert!(opponent_resource.get().is_none());
-        }
-
-        /// set method's unit test
-        #[test]
-        fn set() {
-            let info: Information = Information {
-                player: None,
-                bullets: Vec::new(),
-            };
-            let mut opponent_resource: OpponentResource = OpponentResource::default();
-            opponent_resource.set(info);
-
-            assert!(opponent_resource.get().is_some());
-        }
-
-        /// reset method's unit test
-        #[test]
-        fn reset() {
-            let info: Information = Information {
-                player: None,
-                bullets: Vec::new(),
-            };
-            let mut opponent_resource: OpponentResource = OpponentResource::default();
-            opponent_resource.set(info);
-            opponent_resource.reset();
-
-            assert!(opponent_resource.get().is_none());
-        }
-    }
-
     /// GameMode's unit tests
     mod game_mode {
         use crate::GameMode;
@@ -213,16 +130,16 @@ mod tests {
         }
     }
 
-    /// DeathEvent's unit tests
-    mod death_event {
-        use crate::DeathEvent;
+    /// DeathMessage's unit tests
+    mod death_message {
+        use crate::DeathMessage;
         use bevy::prelude::*;
 
         /// new method's unit test
         #[test]
         fn new() {
             let entity: Entity = Entity::PLACEHOLDER; // A placeholder value
-            let event: DeathEvent = DeathEvent::new(entity);
+            let event: DeathMessage = DeathMessage::new(entity);
             assert_eq!(event.entity, entity);
         }
     }
