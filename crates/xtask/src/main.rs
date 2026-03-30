@@ -243,6 +243,34 @@ fn test() -> Result {
 #[tracing::instrument]
 fn doc() -> Result {
     tracing::info!("Running...");
+
+    // cargo doc --workspace
+    {
+        let mut doc_command = Command::new(CARGO.lock()?.as_str());
+        doc_command.arg("doc");
+        doc_command.arg("--workspace");
+
+        let exit_status = doc_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo doc --workspace is failed");
+        }
+    }
+
+    // cargo doc --release --workspace
+    {
+        let mut doc_release_command = Command::new(CARGO.lock()?.as_str());
+        doc_release_command.arg("doc");
+        doc_release_command.arg("--release");
+        doc_release_command.arg("--workspace");
+
+        let exit_status = doc_release_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo doc --release --workspace is failed");
+        }
+    }
+
     tracing::info!("Finished.");
     Ok(())
 }
