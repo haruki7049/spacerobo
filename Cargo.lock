@@ -234,6 +234,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.102"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5087,6 +5093,7 @@ dependencies = [
 name = "spacerobo_xtask"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "clap",
  "thiserror 2.0.18",
  "tracing",

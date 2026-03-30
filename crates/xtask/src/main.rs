@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::process::Command;
-use std::sync::{LazyLock, Mutex};
+use std::sync::LazyLock;
 use thiserror::Error;
 
 type Result = std::result::Result<(), Box<dyn std::error::Error>>;
@@ -82,10 +82,8 @@ impl std::fmt::Display for ActionParseError {
     }
 }
 
-static CARGO: LazyLock<Mutex<String>> = LazyLock::new(|| {
-    let cargo = std::env::var("CARGO").unwrap_or_else(|_| "cargo".to_string());
-    Mutex::new(cargo)
-});
+static CARGO: LazyLock<String> =
+    LazyLock::new(|| std::env::var("CARGO").unwrap_or_else(|_| "cargo".to_string()));
 
 #[tracing::instrument]
 fn all() -> Result {
@@ -106,7 +104,7 @@ fn build() -> Result {
 
     // cargo build --workspace
     {
-        let mut build_command = Command::new(CARGO.lock()?.as_str());
+        let mut build_command = Command::new(CARGO.as_str());
         build_command.arg("build");
         build_command.arg("--workspace");
 
@@ -119,7 +117,7 @@ fn build() -> Result {
 
     // cargo build --release --workspace
     {
-        let mut build_release_command = Command::new(CARGO.lock()?.as_str());
+        let mut build_release_command = Command::new(CARGO.as_str());
         build_release_command.arg("build");
         build_release_command.arg("--release");
         build_release_command.arg("--workspace");
@@ -141,7 +139,7 @@ fn check() -> Result {
 
     // cargo check --workspace
     {
-        let mut check_command = Command::new(CARGO.lock()?.as_str());
+        let mut check_command = Command::new(CARGO.as_str());
         check_command.arg("check");
         check_command.arg("--workspace");
 
@@ -154,7 +152,7 @@ fn check() -> Result {
 
     // cargo check --release --workspace
     {
-        let mut check_release_command = Command::new(CARGO.lock()?.as_str());
+        let mut check_release_command = Command::new(CARGO.as_str());
         check_release_command.arg("check");
         check_release_command.arg("--release");
         check_release_command.arg("--workspace");
@@ -176,7 +174,7 @@ fn clippy() -> Result {
 
     // cargo clippy --workspace
     {
-        let mut clippy_command = Command::new(CARGO.lock()?.as_str());
+        let mut clippy_command = Command::new(CARGO.as_str());
         clippy_command.arg("clippy");
         clippy_command.arg("--workspace");
 
@@ -189,7 +187,7 @@ fn clippy() -> Result {
 
     // cargo clippy --release --workspace
     {
-        let mut clippy_release_command = Command::new(CARGO.lock()?.as_str());
+        let mut clippy_release_command = Command::new(CARGO.as_str());
         clippy_release_command.arg("clippy");
         clippy_release_command.arg("--release");
         clippy_release_command.arg("--workspace");
@@ -211,7 +209,7 @@ fn test() -> Result {
 
     // cargo test --workspace
     {
-        let mut test_command = Command::new(CARGO.lock()?.as_str());
+        let mut test_command = Command::new(CARGO.as_str());
         test_command.arg("test");
         test_command.arg("--workspace");
 
@@ -224,7 +222,7 @@ fn test() -> Result {
 
     // cargo test --release --workspace
     {
-        let mut test_release_command = Command::new(CARGO.lock()?.as_str());
+        let mut test_release_command = Command::new(CARGO.as_str());
         test_release_command.arg("test");
         test_release_command.arg("--release");
         test_release_command.arg("--workspace");
@@ -246,7 +244,7 @@ fn doc() -> Result {
 
     // cargo doc --workspace
     {
-        let mut doc_command = Command::new(CARGO.lock()?.as_str());
+        let mut doc_command = Command::new(CARGO.as_str());
         doc_command.arg("doc");
         doc_command.arg("--workspace");
 
@@ -259,7 +257,7 @@ fn doc() -> Result {
 
     // cargo doc --release --workspace
     {
-        let mut doc_release_command = Command::new(CARGO.lock()?.as_str());
+        let mut doc_release_command = Command::new(CARGO.as_str());
         doc_release_command.arg("doc");
         doc_release_command.arg("--release");
         doc_release_command.arg("--workspace");
