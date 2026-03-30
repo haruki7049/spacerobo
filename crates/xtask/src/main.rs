@@ -173,6 +173,34 @@ fn check() -> Result {
 #[tracing::instrument]
 fn clippy() -> Result {
     tracing::info!("Running...");
+
+    // cargo clippy --workspace
+    {
+        let mut clippy_command = Command::new(CARGO.lock()?.as_str());
+        clippy_command.arg("clippy");
+        clippy_command.arg("--workspace");
+
+        let exit_status = clippy_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo clippy --workspace is failed");
+        }
+    }
+
+    // cargo clippy --release --workspace
+    {
+        let mut clippy_release_command = Command::new(CARGO.lock()?.as_str());
+        clippy_release_command.arg("clippy");
+        clippy_release_command.arg("--release");
+        clippy_release_command.arg("--workspace");
+
+        let exit_status = clippy_release_command.spawn()?.wait()?;
+
+        if !exit_status.success() {
+            panic!("cargo clippy --release --workspace is failed");
+        }
+    }
+
     tracing::info!("Finished.");
     Ok(())
 }
