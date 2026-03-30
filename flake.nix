@@ -59,7 +59,6 @@
           nativeBuildInputs = [
             pkgs.pkg-config # pkg-config
             pkgs.makeWrapper # For the Nix packaging
-            pkgs.just # A task runner
             pkgs.nil # Nix LSP
             rust # Rust toolchain
           ];
