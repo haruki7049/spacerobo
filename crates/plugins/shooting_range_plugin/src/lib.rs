@@ -3,8 +3,6 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_bot::{Bot, BotPlugin};
-use spacerobo_bot_gun::{Gun, Interval, Muzzle};
 use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter};
 use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Target;
@@ -13,7 +11,7 @@ pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((BotPlugin, PlayerCommonPlugin));
+        app.add_plugins(PlayerCommonPlugin);
         app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
@@ -46,54 +44,6 @@ fn setup_system(
         },
         Transform::from_xyz(2.0, 8.0, 2.0),
     ));
-
-    // Bots
-    commands
-        .spawn((
-            DespawnOnExit(GameMode::InGame),
-            Mesh3d(meshes.add(Sphere::default().mesh())),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: RED.into(),
-                ..Default::default()
-            })),
-            Transform::from_xyz(100.0, 0.0, 0.0),
-            RigidBody::Static,
-            Collider::sphere(1.0),
-            CollisionEventsEnabled,
-            Mass(1.0),
-            Bot,
-            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
-        ))
-        // Gun
-        .with_children(|parent| {
-            parent
-                .spawn((
-                    Transform::from_xyz(0., 0., -0.5),
-                    Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 1.))),
-                    MeshMaterial3d(materials.add(Color::BLACK)),
-                    (Gun {
-                        owner: parent.target_entity(),
-                        interval: Interval {
-                            limit: 0.1,
-                            rest: 0.0,
-                            amount: 0.005,
-                        },
-                    }),
-                ))
-                // Spot light
-                .with_child((
-                    SpotLight {
-                        intensity: 100_000_000.0,
-                        range: 100_000_000.0,
-                        outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
-                        shadows_enabled: true,
-                        ..default()
-                    },
-                    Transform::from_xyz(0., 0., -1.).looking_to(Vec3::NEG_Z, Vec3::ZERO),
-                ))
-                // Muzzle
-                .with_child((Transform::from_xyz(0., 0., -1.), Muzzle, RigidBody::Static));
-        });
 
     // Targets
     for i in 1..5 {
