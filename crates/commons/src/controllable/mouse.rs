@@ -1,4 +1,4 @@
-use super::super::Controllable;
+use super::Controllable;
 use crate::configs::GameConfigs;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};

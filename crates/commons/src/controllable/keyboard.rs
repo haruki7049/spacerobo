@@ -1,4 +1,4 @@
-use super::super::Controllable;
+use super::Controllable;
 use crate::{GameMode, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
