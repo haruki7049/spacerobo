@@ -49,10 +49,10 @@
               pkgs.udev
               pkgs.alsa-lib
               pkgs.vulkan-loader
-              pkgs.xorg.libX11
-              pkgs.xorg.libXcursor
-              pkgs.xorg.libXi
-              pkgs.xorg.libXrandr
+              pkgs.libX11
+              pkgs.libXcursor
+              pkgs.libXi
+              pkgs.libXrandr
               pkgs.libxkbcommon
               pkgs.wayland
             ]
