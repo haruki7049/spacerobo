@@ -1,10 +1,10 @@
-use super::super::Common as PlayerCommon;
+use super::super::Controllable;
+use crate::configs::GameConfigs;
 use avian3d::prelude::*;
 use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
-use spacerobo_commons::configs::GameConfigs;
 
 pub fn update_system(
-    mut query: Query<(&mut Transform, &mut AngularVelocity), With<PlayerCommon>>,
+    mut query: Query<(&mut Transform, &mut AngularVelocity), With<Controllable>>,
     game_configs: Res<GameConfigs>,
     accumulated_mouse_motion: Res<AccumulatedMouseMotion>,
 ) {

@@ -1,11 +1,12 @@
 //! # Player systems, Compoments & etc...
 
-pub mod movement;
 pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs};
+use spacerobo_commons::{
+    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
+};
 use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Common Component
@@ -38,6 +39,7 @@ impl Player for Common {
                 AngularVelocity(Vec3::ZERO),
                 SpatialListener::new(gap),
                 Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
+                Controllable,
                 Common,
             ))
             // Gun
@@ -91,15 +93,6 @@ impl Plugin for PlayerCommonPlugin {
         app.add_systems(
             Update,
             (respawn_system, ui::update_system).run_if(in_state(GameMode::InGame)),
-        );
-        app.add_systems(
-            FixedUpdate,
-            (
-                // movement systems
-                movement::keyboard::update_system,
-                movement::mouse::update_system,
-            )
-                .run_if(in_state(GameMode::InGame)),
         );
     }
 }

@@ -3,6 +3,9 @@
 use bevy::prelude::*;
 
 pub mod configs;
+mod controllable;
+
+pub use controllable::{Controllable, ControllablePlugin};
 
 #[derive(Debug, Message)]
 pub struct DeathMessage {
