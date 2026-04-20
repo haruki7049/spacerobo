@@ -98,7 +98,7 @@
 
             meta = {
               licenses = [ lib.licenses.mit ];
-              mainProgram = "spacerobo";
+              mainProgram = "spr";
             };
           };
           cargo-clippy = craneLib.cargoClippy {
