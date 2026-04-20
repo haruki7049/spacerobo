@@ -92,7 +92,7 @@
               echo "Copy assets"
               cp -r crates/client/assets $out/bin
 
-              wrapProgram $out/bin/spacerobo \
+              wrapProgram $out/bin/spr \
                 --set LD_LIBRARY_PATH ${lib.makeLibraryPath buildInputs}
             '';
 
