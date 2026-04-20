@@ -8,10 +8,10 @@ license.workspace = true
 readme.workspace = true
 repository.workspace = true
 publish.workspace = true
-default-run = "spacerobo"
+default-run = "spr"
 
 [[bin]]
-name = "spacerobo"
+name = "spr"
 path = "src/main.rs"
 
 [dependencies]
