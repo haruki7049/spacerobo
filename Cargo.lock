@@ -5022,22 +5022,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_gun"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
 name = "spacerobo_player"
 version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
  "spacerobo_commons",
- "spacerobo_player_gun",
-]
-
-[[package]]
-name = "spacerobo_player_gun"
-version = "0.1.0"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
+ "spacerobo_gun",
 ]
 
 [[package]]

@@ -6,7 +6,7 @@ pub mod ui;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs};
-use spacerobo_player_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Common Component
 #[derive(Component)]

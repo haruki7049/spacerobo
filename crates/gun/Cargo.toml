@@ -1,5 +1,5 @@
 [package]
-name = "spacerobo_player_gun"
+name = "spacerobo_gun"
 authors.workspace = true
 version.workspace = true
 description.workspace = true
