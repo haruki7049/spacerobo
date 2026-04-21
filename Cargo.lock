@@ -5070,6 +5070,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_ui"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
 name = "spacerobo_xtask"
 version = "0.1.0"
 dependencies = [

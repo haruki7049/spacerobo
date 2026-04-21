@@ -9,6 +9,14 @@ use spacerobo_commons::{ControllablePlugin, GameMode, configs::GameConfigs};
 use spacerobo_shooting_range_plugin::ShootingRangePlugin;
 use spacerobo_title_plugin::TitlePlugin;
 
+struct SpaceroboPlugin;
+
+impl Plugin for SpaceroboPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins((TitlePlugin, ShootingRangePlugin, ControllablePlugin));
+    }
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
 
@@ -34,9 +42,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ..default()
             }),
             PhysicsPlugins::default(),
-            TitlePlugin,
-            ShootingRangePlugin,
-            ControllablePlugin,
+            SpaceroboPlugin,
         ))
         .init_state::<GameMode>()
         .insert_resource(configs)

@@ -1,100 +1,75 @@
 //! # Player systems, Compoments & etc...
 
-pub mod ui;
-
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{
-    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
-};
-use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_commons::{Controllable, GameMode, Hp, KillCounter, Playable, configs::GameConfigs};
+use spacerobo_gun::{Gun, Interval, Muzzle, select_fire::SelectFire};
 
-/// Player Common Component
-#[derive(Component)]
-pub struct Common;
+pub fn spawn_player(
+    commands: &mut Commands,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+    kill_counter: &mut ResMut<KillCounter>,
+    asset_server: Res<AssetServer>,
+) {
+    // Reset KillCounter
+    kill_counter.reset();
 
-impl Player for Common {
-    fn spawn(
-        commands: &mut Commands,
-        meshes: &mut ResMut<Assets<Mesh>>,
-        materials: &mut ResMut<Assets<StandardMaterial>>,
-        kill_counter: &mut ResMut<KillCounter>,
-        asset_server: Res<AssetServer>,
-    ) {
-        // Reset KillCounter
-        kill_counter.reset();
+    let gap = 4.0;
 
-        let gap = 4.0;
-
-        // Camera
-        commands
-            .spawn((
-                DespawnOnExit(GameMode::InGame),
-                Camera3d::default(),
-                Transform::from_xyz(0., 0., 0.),
-                RigidBody::Dynamic,
-                GravityScale(0.2),
-                Collider::sphere(1.0),
-                Mass(5.0),
-                AngularVelocity(Vec3::ZERO),
-                SpatialListener::new(gap),
-                Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
-                Controllable,
-                Common,
-            ))
-            // Gun
-            .with_children(|parent| {
-                parent
-                    .spawn((
-                        Transform::from_xyz(1., -1., -3.),
-                        Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
-                        MeshMaterial3d(materials.add(Color::BLACK)),
-                        (Gun {
-                            owner: parent.target_entity(),
-                            select_fire: SelectFire::Full,
-                            interval: Interval {
-                                limit: 0.1,
-                                rest: 0.0,
-                                amount: 0.01,
-                            },
-                        }),
-                    ))
-                    // Spot light
-                    .with_child((
-                        SpotLight {
-                            intensity: 100_000_000.0,
-                            range: 100_000_000.0,
-                            outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
-                            shadows_enabled: true,
-                            ..default()
+    // Camera
+    commands
+        .spawn((
+            DespawnOnExit(GameMode::InGame),
+            Camera3d::default(),
+            Transform::from_xyz(0., 0., 0.),
+            RigidBody::Dynamic,
+            GravityScale(0.2),
+            Collider::sphere(1.0),
+            Mass(5.0),
+            AngularVelocity(Vec3::ZERO),
+            SpatialListener::new(gap),
+            Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
+            Controllable,
+            Playable,
+        ))
+        // Gun
+        .with_children(|parent| {
+            parent
+                .spawn((
+                    Transform::from_xyz(1., -1., -3.),
+                    Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
+                    MeshMaterial3d(materials.add(Color::BLACK)),
+                    (Gun {
+                        owner: parent.target_entity(),
+                        select_fire: SelectFire::Full,
+                        interval: Interval {
+                            limit: 0.1,
+                            rest: 0.0,
+                            amount: 0.01,
                         },
-                        Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
-                    ))
-                    // Muzzle
-                    .with_child((
-                        Transform::from_xyz(1., -1., -4.3),
-                        Muzzle,
-                        RigidBody::Static,
-                    ));
+                    }),
+                ))
+                // Spot light
+                .with_child((
+                    SpotLight {
+                        intensity: 100_000_000.0,
+                        range: 100_000_000.0,
+                        outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
+                        shadows_enabled: true,
+                        ..default()
+                    },
+                    Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+                ))
+                // Muzzle
+                .with_child((
+                    Transform::from_xyz(1., -1., -4.3),
+                    Muzzle,
+                    RigidBody::Static,
+                ));
 
-                debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
-            });
-    }
-}
-
-pub struct PlayerCommonPlugin;
-
-impl Plugin for PlayerCommonPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins(GunPlugin);
-        app.add_message::<DeathMessage>();
-        app.insert_resource(KillCounter::default());
-        app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
-        app.add_systems(
-            Update,
-            (respawn_system, ui::update_system).run_if(in_state(GameMode::InGame)),
-        );
-    }
+            debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
+        });
 }
 
 /// setup system to spawn player entity
@@ -105,7 +80,7 @@ pub fn setup_system(
     mut kill_counter: ResMut<KillCounter>,
     asset_server: Res<AssetServer>,
 ) {
-    Common::spawn(
+    spawn_player(
         &mut commands,
         &mut meshes,
         &mut materials,
@@ -120,7 +95,7 @@ pub fn respawn_system(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut kill_counter: ResMut<KillCounter>,
-    query: Query<&Common>,
+    query: Query<&Playable>,
     game_configs: Res<GameConfigs>,
     keyboard: Res<ButtonInput<KeyCode>>,
     asset_server: Res<AssetServer>,
@@ -132,7 +107,7 @@ pub fn respawn_system(
     if keyboard.just_pressed(game_configs.player.keyboard.respawn) {
         info!("Respawning player...");
 
-        Common::spawn(
+        spawn_player(
             &mut commands,
             &mut meshes,
             &mut materials,

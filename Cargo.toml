@@ -33,6 +33,7 @@ members = [
   "crates/player",
   "crates/gun",
   "crates/target",
+  "crates/ui",
 
   # cargo-xtask
   "crates/xtask",

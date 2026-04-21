@@ -4,8 +4,10 @@ use bevy::prelude::*;
 
 pub mod configs;
 mod controllable;
+mod playable;
 
 pub use controllable::{Controllable, ControllablePlugin};
+pub use playable::Playable;
 
 #[derive(Debug, Message)]
 pub struct DeathMessage {
@@ -72,16 +74,6 @@ pub trait Bullet {
     );
 
     fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
-}
-
-pub trait Player {
-    fn spawn(
-        commands: &mut Commands,
-        meshes: &mut ResMut<Assets<Mesh>>,
-        materials: &mut ResMut<Assets<StandardMaterial>>,
-        kill_counter: &mut ResMut<KillCounter>,
-        asset_server: Res<AssetServer>,
-    );
 }
 
 impl Hp {

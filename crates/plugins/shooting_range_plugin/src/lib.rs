@@ -4,14 +4,13 @@ use bevy::{
     prelude::*,
 };
 use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter};
-use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Target;
 
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(PlayerCommonPlugin);
+        // app.add_plugins(PlayerCommonPlugin);
         app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
