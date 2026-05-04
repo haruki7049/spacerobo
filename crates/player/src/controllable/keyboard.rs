@@ -1,7 +1,7 @@
 use super::Controllable;
-use crate::{GameMode, configs::GameConfigs};
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use spacerobo_commons::{GameMode, configs::GameConfigs};
 
 pub fn update_system(
     mut gamemode: ResMut<NextState<GameMode>>,

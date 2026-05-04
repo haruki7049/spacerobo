@@ -1,12 +1,12 @@
 //! # Player systems, Compoments & etc...
 
+pub mod controllable;
 pub mod ui;
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{
-    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
-};
+use controllable::{Controllable, ControllablePlugin};
+use spacerobo_commons::{GameMode, Hp, KillCounter, Player, configs::GameConfigs};
 use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
 
 /// Player Common Component
@@ -86,8 +86,7 @@ pub struct PlayerCommonPlugin;
 
 impl Plugin for PlayerCommonPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(GunPlugin);
-        app.add_message::<DeathMessage>();
+        app.add_plugins((GunPlugin, ControllablePlugin));
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(

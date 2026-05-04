@@ -5017,7 +5017,6 @@ dependencies = [
 name = "spacerobo_commons"
 version = "0.1.0"
 dependencies = [
- "avian3d",
  "bevy",
  "serde",
 ]
