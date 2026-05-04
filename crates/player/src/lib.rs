@@ -1,4 +1,4 @@
-//! # Player systems, Compoments & etc...
+//! # Player systems, Components & etc...
 
 pub mod controllable;
 pub mod ui;
@@ -87,6 +87,8 @@ pub struct PlayerCommonPlugin;
 impl Plugin for PlayerCommonPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((GunPlugin, ControllablePlugin));
+        // Note: DeathMessage is registered by ShootingRangePlugin, which owns the
+        // collision and death systems that write/read it.
         app.insert_resource(KillCounter::default());
         app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
         app.add_systems(
