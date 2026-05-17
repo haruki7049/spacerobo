@@ -179,6 +179,8 @@ impl SpaceroboBuilder {
         build_release_command.arg("build");
         build_release_command.arg("--release");
         build_release_command.arg("--workspace");
+        build_release_command.arg("--exclude");
+        build_release_command.arg("spacerobo_xtask");
 
         let exit_status = build_release_command.spawn()?.wait()?;
 
@@ -198,6 +200,8 @@ impl SpaceroboBuilder {
         let mut build_command = Command::new(self.cargo.as_str());
         build_command.arg("build");
         build_command.arg("--workspace");
+        build_command.arg("--exclude");
+        build_command.arg("spacerobo_xtask");
 
         let exit_status = build_command.spawn()?.wait()?;
 
@@ -218,6 +222,8 @@ impl SpaceroboBuilder {
         check_release_command.arg("check");
         check_release_command.arg("--release");
         check_release_command.arg("--workspace");
+        check_release_command.arg("--exclude");
+        check_release_command.arg("spacerobo_xtask");
 
         let exit_status = check_release_command.spawn()?.wait()?;
 
@@ -237,6 +243,8 @@ impl SpaceroboBuilder {
         let mut check_command = Command::new(self.cargo.as_str());
         check_command.arg("check");
         check_command.arg("--workspace");
+        check_command.arg("--exclude");
+        check_command.arg("spacerobo_xtask");
 
         let exit_status = check_command.spawn()?.wait()?;
 
@@ -257,6 +265,8 @@ impl SpaceroboBuilder {
         clippy_release_command.arg("clippy");
         clippy_release_command.arg("--release");
         clippy_release_command.arg("--workspace");
+        clippy_release_command.arg("--exclude");
+        clippy_release_command.arg("spacerobo_xtask");
 
         let exit_status = clippy_release_command.spawn()?.wait()?;
 
@@ -276,6 +286,8 @@ impl SpaceroboBuilder {
         let mut clippy_command = Command::new(self.cargo.as_str());
         clippy_command.arg("clippy");
         clippy_command.arg("--workspace");
+        clippy_command.arg("--exclude");
+        clippy_command.arg("spacerobo_xtask");
 
         let exit_status = clippy_command.spawn()?.wait()?;
 
@@ -296,6 +308,8 @@ impl SpaceroboBuilder {
         test_release_command.arg("test");
         test_release_command.arg("--release");
         test_release_command.arg("--workspace");
+        test_release_command.arg("--exclude");
+        test_release_command.arg("spacerobo_xtask");
 
         let exit_status = test_release_command.spawn()?.wait()?;
 
@@ -315,6 +329,8 @@ impl SpaceroboBuilder {
         let mut test_command = Command::new(self.cargo.as_str());
         test_command.arg("test");
         test_command.arg("--workspace");
+        test_command.arg("--exclude");
+        test_command.arg("spacerobo_xtask");
 
         let exit_status = test_command.spawn()?.wait()?;
 
@@ -334,6 +350,8 @@ impl SpaceroboBuilder {
         let mut doc_command = Command::new(self.cargo.as_str());
         doc_command.arg("doc");
         doc_command.arg("--workspace");
+        doc_command.arg("--exclude");
+        doc_command.arg("spacerobo_xtask");
 
         let exit_status = doc_command.spawn()?.wait()?;
 
@@ -354,6 +372,8 @@ impl SpaceroboBuilder {
         doc_release_command.arg("doc");
         doc_release_command.arg("--release");
         doc_release_command.arg("--workspace");
+        doc_release_command.arg("--exclude");
+        doc_release_command.arg("spacerobo_xtask");
 
         let exit_status = doc_release_command.spawn()?.wait()?;
 
