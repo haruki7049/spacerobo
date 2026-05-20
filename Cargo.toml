@@ -40,7 +40,7 @@ members = [
 
 [workspace.package]
 authors = ["haruki7049 <tontonkirikiri@gmail.com>"]
-version = "0.1.0"
+version = "0.2.1"
 description = "A game to simulate a robo's moving in space"
 edition = "2024"
 license = "MIT"
