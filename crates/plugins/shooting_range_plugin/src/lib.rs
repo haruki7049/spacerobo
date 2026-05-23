@@ -15,11 +15,15 @@ impl Plugin for ShootingRangePlugin {
         app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
-        app.add_systems(OnEnter(GameMode::InGame), setup_system);
+        app.add_systems(
+            OnEnter(GameMode::InGame),
+            (setup_system, spawn_boundary_walls).run_if(in_state(GameMode::InGame)),
+        );
         app.add_systems(
             Update,
             (
                 // Systems
+                update_boundary_walls_system,
                 collision_detection_system,
                 when_going_outside_system,
                 alert_going_outside_system,
@@ -276,6 +280,93 @@ pub fn death_system(
             }
 
             debug!("{:?} which has Hp component is dead!!", death_event.entity);
+        }
+    }
+}
+
+#[derive(Component)]
+pub struct BoundaryWall;
+
+pub fn spawn_boundary_walls(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let limit = 2000.0;
+    let size = limit * 2.0;
+    let thickness = 1.0;
+
+    let wall_mesh = meshes.add(Cuboid::new(size, size, thickness));
+
+    // Positions and rotations for the 6 walls
+    let positions_and_rotations = [
+        (Vec3::new(0.0, 0.0, limit), Quat::IDENTITY),
+        (Vec3::new(0.0, 0.0, -limit), Quat::IDENTITY),
+        (
+            Vec3::new(limit, 0.0, 0.0),
+            Quat::from_rotation_y(std::f32::consts::FRAC_PI_2),
+        ),
+        (
+            Vec3::new(-limit, 0.0, 0.0),
+            Quat::from_rotation_y(std::f32::consts::FRAC_PI_2),
+        ),
+        (
+            Vec3::new(0.0, limit, 0.0),
+            Quat::from_rotation_x(std::f32::consts::FRAC_PI_2),
+        ),
+        (
+            Vec3::new(0.0, -limit, 0.0),
+            Quat::from_rotation_x(std::f32::consts::FRAC_PI_2),
+        ),
+    ];
+
+    for (pos, rot) in positions_and_rotations {
+        commands.spawn((
+            Mesh3d(wall_mesh.clone()),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgba(1.0, 0.0, 0.0, 0.0),
+                alpha_mode: AlphaMode::Blend,
+                cull_mode: None,
+                unlit: true, // Do not rely on light sources
+                // base_color_texture: Some(asset_server.load("textures/grid.png")),
+                ..default()
+            })),
+            Transform::from_translation(pos).with_rotation(rot),
+            BoundaryWall,
+        ));
+    }
+}
+
+pub fn update_boundary_walls_system(
+    player_query: Query<&Transform, With<Hp>>,
+    wall_query: Query<(&Transform, &MeshMaterial3d<StandardMaterial>), With<BoundaryWall>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let threshold = 100.0;
+
+    for (wall_transform, material_handle) in wall_query.iter() {
+        let mut min_dist = f32::MAX;
+
+        // Wall normal and position
+        let wall_normal = wall_transform.rotation * Vec3::Z;
+        let wall_pos = wall_transform.translation;
+
+        for player_transform in player_query.iter() {
+            // Distance from player to the wall plane
+            let dist = ((player_transform.translation - wall_pos).dot(wall_normal)).abs();
+            if dist < min_dist {
+                min_dist = dist;
+            }
+        }
+
+        let alpha = if min_dist < threshold {
+            (1.0 - (min_dist / threshold).max(0.0)).clamp(0.0, 0.8)
+        } else {
+            0.0
+        };
+
+        if let Some(material) = materials.get_mut(material_handle) {
+            material.base_color.set_alpha(alpha);
         }
     }
 }
