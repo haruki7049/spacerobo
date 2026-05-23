@@ -71,11 +71,7 @@ impl Player for Common {
                         Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
                     ))
                     // Muzzle
-                    .with_child((
-                        Transform::from_xyz(1., -1., -4.3),
-                        Muzzle,
-                        RigidBody::Static,
-                    ));
+                    .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
 
                 debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
             });

@@ -21,7 +21,7 @@ pub fn semi_auto_system(
     mut commands: Commands,
     mut querys: (
         Query<(&Gun, &ChildOf), With<Gun>>,
-        Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
+        Query<&GlobalTransform, With<Muzzle>>,
         Query<&LinearVelocity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
@@ -42,12 +42,11 @@ pub fn semi_auto_system(
             }
 
             if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) {
-                for (global_transform, muzzle_linear) in muzzle_query.iter() {
+                for global_transform in muzzle_query.iter() {
                     // Shoot!!
                     let bullet_origin: Vec3 = global_transform.translation();
-                    let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                    let bullet_force: Vec3 =
-                        direction * 500.0 + **muzzle_linear + **player_linear_velocity;
+                    let direction: Dir3 = global_transform.forward();
+                    let bullet_force: Vec3 = direction * 500.0 + **player_linear_velocity;
                     debug!("bullet_force: {}", bullet_force);
 
                     // ray_origin debugging by spawning a sphere
@@ -71,7 +70,7 @@ pub fn full_auto_system(
     mut commands: Commands,
     mut querys: (
         Query<(&mut Gun, &ChildOf), With<Gun>>,
-        Query<(&GlobalTransform, &LinearVelocity), With<Muzzle>>,
+        Query<&GlobalTransform, With<Muzzle>>,
         Query<&LinearVelocity>,
     ),
     mut meshes: ResMut<Assets<Mesh>>,
@@ -83,7 +82,7 @@ pub fn full_auto_system(
     let (ref mut gun_query, muzzle_query, parent_linear_query) = querys;
 
     // Get muzzle's GlobalTransform
-    for (global_transform, muzzle_linear) in muzzle_query.iter() {
+    for global_transform in muzzle_query.iter() {
         for (mut gun, child_of) in gun_query.iter_mut() {
             if let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent())
                 && mouse.pressed(MouseButton::Left)
@@ -106,9 +105,8 @@ pub fn full_auto_system(
 
                 // Shoot!!
                 let bullet_origin: Vec3 = global_transform.translation();
-                let direction: Vec3 = global_transform.rotation() * Vec3::NEG_Z;
-                let bullet_force: Vec3 =
-                    direction * 500.0 + **muzzle_linear + **player_linear_velocity;
+                let direction: Dir3 = global_transform.forward();
+                let bullet_force: Vec3 = direction * 500.0 + **player_linear_velocity;
                 debug!("bullet_force: {}", bullet_force);
 
                 // ray_origin debugging by spawning a sphere
