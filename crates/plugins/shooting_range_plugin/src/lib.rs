@@ -22,6 +22,7 @@ impl Plugin for ShootingRangePlugin {
                 // Systems
                 collision_detection_system,
                 when_going_outside_system,
+                alert_going_outside_system,
                 death_system,
             )
                 .run_if(in_state(GameMode::InGame)),
@@ -225,6 +226,40 @@ fn when_going_outside_system(
             debug!("Creating DeathMessage by area outside...");
             event_writer.write(DeathMessage::new(entity));
         }
+    }
+}
+
+pub fn alert_going_outside_system(
+    mut commands: Commands,
+    query: Query<(&Transform, &LinearVelocity), With<Hp>>,
+    asset_server: Res<AssetServer>,
+    time: Res<Time>,
+    mut last_played: Local<f32>,
+) {
+    let mut should_alert = false;
+
+    for (transform, velocity) in query.iter() {
+        // Calculate the predicted position after 1 second
+        let predicted_position =
+            transform.translation + Vec3::new(velocity.x, velocity.y, velocity.z);
+
+        // Check if the predicted position is outside the 2000.0 limits
+        if predicted_position.x > 2000.0
+            || predicted_position.y > 2000.0
+            || predicted_position.z > 2000.0
+            || predicted_position.x < -2000.0
+            || predicted_position.y < -2000.0
+            || predicted_position.z < -2000.0
+        {
+            should_alert = true;
+            break;
+        }
+    }
+
+    // Play the alert sound at 0.2 second intervals
+    if should_alert && time.elapsed_secs() - *last_played >= 0.2 {
+        commands.spawn(AudioPlayer::new(asset_server.load("SE/alert.ogg")));
+        *last_played = time.elapsed_secs();
     }
 }
 
