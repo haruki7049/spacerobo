@@ -17,13 +17,13 @@ impl Plugin for ShootingRangePlugin {
         app.insert_resource(KillCounter::default());
         app.add_systems(
             OnEnter(GameMode::InGame),
-            (setup_system, spawn_boundary_walls).run_if(in_state(GameMode::InGame)),
+            (setup_system, spawn_boundary_grid).run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             Update,
             (
                 // Systems
-                update_boundary_walls_system,
+                update_boundary_grid_system,
                 collision_detection_system,
                 when_going_outside_system,
                 alert_going_outside_system,
@@ -285,21 +285,25 @@ pub fn death_system(
 }
 
 #[derive(Component)]
-pub struct BoundaryWall;
+pub struct BoundaryWall {
+    // Hold material handle to update alpha per face
+    pub material: Handle<StandardMaterial>,
+}
 
-pub fn spawn_boundary_walls(
+pub fn spawn_boundary_grid(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let limit = 2000.0;
-    let size = limit * 2.0;
-    let thickness = 1.0;
+    let spacing = 200.0;
+    let thickness = 2.0;
 
-    let wall_mesh = meshes.add(Cuboid::new(size, size, thickness));
+    // Mesh for horizontal and vertical lines
+    let line_mesh_x = meshes.add(Cuboid::new(limit * 2.0, thickness, thickness));
+    let line_mesh_y = meshes.add(Cuboid::new(thickness, limit * 2.0, thickness));
 
-    // Positions and rotations for the 6 walls
-    let positions_and_rotations = [
+    let faces = [
         (Vec3::new(0.0, 0.0, limit), Quat::IDENTITY),
         (Vec3::new(0.0, 0.0, -limit), Quat::IDENTITY),
         (
@@ -320,39 +324,59 @@ pub fn spawn_boundary_walls(
         ),
     ];
 
-    for (pos, rot) in positions_and_rotations {
-        commands.spawn((
-            Mesh3d(wall_mesh.clone()),
-            MeshMaterial3d(materials.add(StandardMaterial {
-                base_color: Color::srgba(1.0, 0.0, 0.0, 0.0),
-                alpha_mode: AlphaMode::Blend,
-                cull_mode: None,
-                unlit: true, // Do not rely on light sources
-                // base_color_texture: Some(asset_server.load("textures/grid.png")),
-                ..default()
-            })),
-            Transform::from_translation(pos).with_rotation(rot),
-            BoundaryWall,
-        ));
+    for (face_pos, face_rot) in faces {
+        // Create a unique material for each face
+        let material = materials.add(StandardMaterial {
+            base_color: Color::srgba(1.0, 0.0, 0.0, 0.0),
+            alpha_mode: AlphaMode::Blend,
+            unlit: true,
+            ..default()
+        });
+
+        commands
+            .spawn((
+                Transform::from_translation(face_pos).with_rotation(face_rot),
+                Visibility::default(),
+                BoundaryWall {
+                    material: material.clone(),
+                },
+            ))
+            .with_children(|parent| {
+                let mut i = -limit;
+                while i <= limit {
+                    // Horizontal line
+                    parent.spawn((
+                        Mesh3d(line_mesh_x.clone()),
+                        MeshMaterial3d(material.clone()),
+                        Transform::from_xyz(0.0, i, 0.0),
+                    ));
+                    // Vertical line
+                    parent.spawn((
+                        Mesh3d(line_mesh_y.clone()),
+                        MeshMaterial3d(material.clone()),
+                        Transform::from_xyz(i, 0.0, 0.0),
+                    ));
+                    i += spacing;
+                }
+            });
     }
 }
 
-pub fn update_boundary_walls_system(
+pub fn update_boundary_grid_system(
     player_query: Query<&Transform, With<Hp>>,
-    wall_query: Query<(&Transform, &MeshMaterial3d<StandardMaterial>), With<BoundaryWall>>,
+    wall_query: Query<(&Transform, &BoundaryWall)>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let threshold = 100.0;
 
-    for (wall_transform, material_handle) in wall_query.iter() {
+    for (wall_transform, wall) in wall_query.iter() {
         let mut min_dist = f32::MAX;
 
-        // Wall normal and position
         let wall_normal = wall_transform.rotation * Vec3::Z;
         let wall_pos = wall_transform.translation;
 
+        // Calculate distance between player and the face
         for player_transform in player_query.iter() {
-            // Distance from player to the wall plane
             let dist = ((player_transform.translation - wall_pos).dot(wall_normal)).abs();
             if dist < min_dist {
                 min_dist = dist;
@@ -365,7 +389,8 @@ pub fn update_boundary_walls_system(
             0.0
         };
 
-        if let Some(material) = materials.get_mut(material_handle) {
+        // Apply alpha to the face's material
+        if let Some(material) = materials.get_mut(&wall.material) {
             material.base_color.set_alpha(alpha);
         }
     }
