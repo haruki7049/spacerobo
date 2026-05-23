@@ -23,10 +23,8 @@ impl Plugin for ShootingRangePlugin {
             Update,
             (
                 // Systems
-                update_boundary_grid_system,
                 collision_detection_system,
                 when_going_outside_system,
-                alert_going_outside_system,
                 death_system,
             )
                 .run_if(in_state(GameMode::InGame)),
@@ -233,40 +231,6 @@ fn when_going_outside_system(
     }
 }
 
-pub fn alert_going_outside_system(
-    mut commands: Commands,
-    query: Query<(&Transform, &LinearVelocity), With<Hp>>,
-    asset_server: Res<AssetServer>,
-    time: Res<Time>,
-    mut last_played: Local<f32>,
-) {
-    let mut should_alert = false;
-
-    for (transform, velocity) in query.iter() {
-        // Calculate the predicted position after 1 second
-        let predicted_position =
-            transform.translation + Vec3::new(velocity.x, velocity.y, velocity.z);
-
-        // Check if the predicted position is outside the 2000.0 limits
-        if predicted_position.x > 2000.0
-            || predicted_position.y > 2000.0
-            || predicted_position.z > 2000.0
-            || predicted_position.x < -2000.0
-            || predicted_position.y < -2000.0
-            || predicted_position.z < -2000.0
-        {
-            should_alert = true;
-            break;
-        }
-    }
-
-    // Play the alert sound at 0.2 second intervals
-    if should_alert && time.elapsed_secs() - *last_played >= 0.2 {
-        commands.spawn(AudioPlayer::new(asset_server.load("SE/alert.ogg")));
-        *last_played = time.elapsed_secs();
-    }
-}
-
 pub fn death_system(
     mut commands: Commands,
     mut event_reader: MessageReader<DeathMessage>,
@@ -282,12 +246,6 @@ pub fn death_system(
             debug!("{:?} which has Hp component is dead!!", death_event.entity);
         }
     }
-}
-
-#[derive(Component)]
-pub struct BoundaryWall {
-    // Hold material handle to update alpha per face
-    pub material: Handle<StandardMaterial>,
 }
 
 pub fn spawn_boundary_grid(
@@ -327,7 +285,7 @@ pub fn spawn_boundary_grid(
     for (face_pos, face_rot) in faces {
         // Create a unique material for each face
         let material = materials.add(StandardMaterial {
-            base_color: Color::srgba(1.0, 0.0, 0.0, 0.0),
+            base_color: Color::srgba(1.0, 0.0, 0.0, 0.8),
             alpha_mode: AlphaMode::Blend,
             unlit: true,
             ..default()
@@ -337,9 +295,6 @@ pub fn spawn_boundary_grid(
             .spawn((
                 Transform::from_translation(face_pos).with_rotation(face_rot),
                 Visibility::default(),
-                BoundaryWall {
-                    material: material.clone(),
-                },
             ))
             .with_children(|parent| {
                 let mut i = -limit;
@@ -359,39 +314,5 @@ pub fn spawn_boundary_grid(
                     i += spacing;
                 }
             });
-    }
-}
-
-pub fn update_boundary_grid_system(
-    player_query: Query<&Transform, With<Hp>>,
-    wall_query: Query<(&Transform, &BoundaryWall)>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    let threshold = 100.0;
-
-    for (wall_transform, wall) in wall_query.iter() {
-        let mut min_dist = f32::MAX;
-
-        let wall_normal = wall_transform.rotation * Vec3::Z;
-        let wall_pos = wall_transform.translation;
-
-        // Calculate distance between player and the face
-        for player_transform in player_query.iter() {
-            let dist = ((player_transform.translation - wall_pos).dot(wall_normal)).abs();
-            if dist < min_dist {
-                min_dist = dist;
-            }
-        }
-
-        let alpha = if min_dist < threshold {
-            (1.0 - (min_dist / threshold).max(0.0)).clamp(0.0, 0.8)
-        } else {
-            0.0
-        };
-
-        // Apply alpha to the face's material
-        if let Some(material) = materials.get_mut(&wall.material) {
-            material.base_color.set_alpha(alpha);
-        }
     }
 }
