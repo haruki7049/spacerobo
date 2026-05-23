@@ -11,12 +11,17 @@ impl Plugin for GunPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
+            (gun::select_fire::toggle_select_fire_system,).run_if(in_state(GameMode::InGame)),
+        );
+
+        app.add_systems(
+            PostUpdate,
             (
                 gun::select_fire::full_auto_system,
                 gun::select_fire::semi_auto_system,
-                gun::select_fire::toggle_select_fire_system,
             )
-                .run_if(in_state(GameMode::InGame)),
+                .run_if(in_state(GameMode::InGame))
+                .after(bevy::transform::TransformSystems::Propagate),
         );
 
         app.add_systems(
