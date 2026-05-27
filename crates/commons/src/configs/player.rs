@@ -33,6 +33,7 @@ pub struct ForceConfig {
     // Mouse
     pub pitch: f32,
     pub yaw: f32,
+    pub roll: f32,
 }
 
 impl std::default::Default for ForceConfig {
@@ -42,6 +43,7 @@ impl std::default::Default for ForceConfig {
             dash: 3.0,
             pitch: 1.0,
             yaw: 1.0,
+            roll: 1.0,
         }
     }
 }
