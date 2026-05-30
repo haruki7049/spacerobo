@@ -5,6 +5,7 @@ pub mod select_fire;
 
 use self::select_fire::SelectFire;
 use bevy::prelude::*;
+use spacerobo_commons::Weapon;
 
 /// Gun component
 #[derive(Component)]
@@ -16,6 +17,46 @@ pub struct Gun {
 
     /// A interval settings and values
     pub interval: Interval,
+}
+
+impl Weapon for Gun {
+    fn spawn_as_child(
+        parent: &mut ChildSpawnerCommands,
+        meshes: &mut ResMut<Assets<Mesh>>,
+        materials: &mut ResMut<Assets<StandardMaterial>>,
+        origin: Vec3,
+    ) {
+        const DEFAULT_FIREMODE: SelectFire = SelectFire::Full;
+
+        parent
+            .spawn((
+                Transform::from_translation(origin),
+                Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
+                MeshMaterial3d(materials.add(Color::BLACK)),
+                (Gun {
+                    owner: parent.target_entity(),
+                    select_fire: DEFAULT_FIREMODE,
+                    interval: Interval {
+                        limit: 0.1,
+                        rest: 0.0,
+                        amount: 0.01,
+                    },
+                }),
+            ))
+            // Spot light
+            .with_child((
+                SpotLight {
+                    intensity: 100_000_000.0,
+                    range: 100_000_000.0,
+                    outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
+                    shadows_enabled: true,
+                    ..default()
+                },
+                Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+            ))
+            // Muzzle
+            .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
+    }
 }
 
 impl Gun {
