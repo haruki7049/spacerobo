@@ -39,7 +39,7 @@ jobs:
       - name: Setup rustup
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # On master (default branch)
         with:
-          toolchain: 1.89.0
+          toolchain: 1.94.1
           components: clippy, rust-analyzer, rust-src
 
       # cargo-build, cargo-test, cargo-check, and cargo-clippy
