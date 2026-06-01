@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
       - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.1
       - name: Install Nix
         uses: cachix/install-nix-action@v31.10.6
         with:
@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
       - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@v2.9.1
       - name: Setup rustup
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # On master (default branch)
         with:
