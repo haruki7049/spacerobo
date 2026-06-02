@@ -5177,6 +5177,7 @@ dependencies = [
  "avian3d",
  "bevy",
  "spacerobo_commons",
+ "spacerobo_target",
 ]
 
 [[package]]
