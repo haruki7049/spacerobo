@@ -18,12 +18,11 @@ impl DeathMessage {
     }
 }
 
-// TODO: Create Weapon trait to merge Gun & Sword
 pub trait Weapon {
     fn spawn_as_child(
         parent: &mut ChildSpawnerCommands,
-        meshes: &mut ResMut<Assets<Mesh>>,
-        materials: &mut ResMut<Assets<StandardMaterial>>,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
         origin: Vec3,
     );
 }

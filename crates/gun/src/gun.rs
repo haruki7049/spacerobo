@@ -24,8 +24,8 @@ pub struct Gun {
 impl Weapon for Gun {
     fn spawn_as_child(
         parent: &mut ChildSpawnerCommands,
-        meshes: &mut ResMut<Assets<Mesh>>,
-        materials: &mut ResMut<Assets<StandardMaterial>>,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
         origin: Vec3,
     ) {
         const DEFAULT_FIREMODE: SelectFire = SelectFire::Full;
