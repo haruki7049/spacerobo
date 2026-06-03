@@ -45,7 +45,7 @@ impl Player for Common {
             // Gun
             .with_children(|parent| {
                 let origin = Vec3::new(1.0, -1.0, -3.0);
-                Gun::spawn_as_child(parent, &mut **meshes, &mut **materials, origin);
+                Gun::spawn_as_child(parent, meshes, materials, origin);
 
                 debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
             });
