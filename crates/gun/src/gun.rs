@@ -56,10 +56,10 @@ impl Weapon for Gun {
                     shadows_enabled: true,
                     ..default()
                 },
-                Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
+                Transform::from_xyz(0.0, 0.0, -1.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
             ))
             // Muzzle
-            .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
+            .with_child((Transform::from_xyz(0.0, 0.0, -1.3), Muzzle));
     }
 }
 
