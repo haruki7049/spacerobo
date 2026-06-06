@@ -78,9 +78,12 @@ pub trait Bullet {
         materials: &mut ResMut<Assets<StandardMaterial>>,
         origin: Vec3,
         force: Vec3,
+        owner: Entity,
     );
 
     fn gunfire_sound(commands: &mut Commands, asset_server: &Res<AssetServer>, place: Vec3);
+    fn owner(&self) -> Entity;
+    fn bounce_count(&self) -> usize;
 }
 
 pub trait Player {

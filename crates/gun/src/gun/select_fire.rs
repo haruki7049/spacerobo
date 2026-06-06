@@ -46,8 +46,9 @@ pub fn semi_auto_system(
                     // Shoot!!
                     let bullet_origin: Vec3 = global_transform.translation();
                     let direction: Dir3 = global_transform.forward();
-                    let bullet_force: Vec3 = direction * 500.0 + **player_linear_velocity;
-                    debug!("bullet_force: {}", bullet_force);
+                    const BULLET_FORCE: f32 = 500.0;
+                    let bullet_vector: Vec3 = direction * BULLET_FORCE + **player_linear_velocity;
+                    let bullet_owner: Entity = gun.owner;
 
                     // ray_origin debugging by spawning a sphere
                     Common::shoot(
@@ -55,7 +56,8 @@ pub fn semi_auto_system(
                         &mut meshes,
                         &mut materials,
                         bullet_origin,
-                        bullet_force,
+                        bullet_vector,
+                        bullet_owner,
                     );
 
                     Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);
@@ -106,8 +108,9 @@ pub fn full_auto_system(
                 // Shoot!!
                 let bullet_origin: Vec3 = global_transform.translation();
                 let direction: Dir3 = global_transform.forward();
-                let bullet_force: Vec3 = direction * 500.0 + **player_linear_velocity;
-                debug!("bullet_force: {}", bullet_force);
+                const BULLET_FORCE: f32 = 500.0;
+                let bullet_vector: Vec3 = direction * BULLET_FORCE + **player_linear_velocity;
+                let bullet_owner: Entity = gun.owner;
 
                 // ray_origin debugging by spawning a sphere
                 Common::shoot(
@@ -115,7 +118,8 @@ pub fn full_auto_system(
                     &mut meshes,
                     &mut materials,
                     bullet_origin,
-                    bullet_force,
+                    bullet_vector,
+                    bullet_owner,
                 );
 
                 Common::gunfire_sound(&mut commands, &asset_server, bullet_origin);

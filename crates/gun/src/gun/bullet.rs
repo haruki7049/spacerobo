@@ -6,7 +6,19 @@ const BULLET_SIZE: f32 = 1. / 8.;
 
 /// A marker component for a bullet shot by a Gun
 #[derive(Component)]
-pub struct Common;
+pub struct Common {
+    owner: Entity,
+    bounce_count: usize,
+}
+
+impl Common {
+    pub fn new(owner: Entity) -> Self {
+        Self {
+            owner,
+            bounce_count: 0,
+        }
+    }
+}
 
 impl Bullet for Common {
     fn shoot(
@@ -15,6 +27,7 @@ impl Bullet for Common {
         materials: &mut ResMut<Assets<StandardMaterial>>,
         origin: Vec3,
         force: Vec3,
+        owner: Entity,
     ) {
         commands.spawn((
             Transform::from_translation(origin),
@@ -25,10 +38,11 @@ impl Bullet for Common {
             })),
             RigidBody::Dynamic,
             Collider::sphere(0.015625),
+            SweptCcd::default(),
             LinearVelocity(force),
             Mass(3.0),
             CollisionEventsEnabled,
-            Common,
+            Common::new(owner),
             Hp::ammo(),
         ));
     }
@@ -39,5 +53,13 @@ impl Bullet for Common {
             AudioPlayer::new(asset_server.load("SE/shoot.ogg")),
             PlaybackSettings::ONCE.with_spatial(false),
         ));
+    }
+
+    fn owner(&self) -> Entity {
+        self.owner
+    }
+
+    fn bounce_count(&self) -> usize {
+        self.bounce_count
     }
 }
