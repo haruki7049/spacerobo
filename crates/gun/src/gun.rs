@@ -44,7 +44,7 @@ impl Weapon for Gun {
                         amount: 0.01,
                     },
                 }),
-                Collider::cylinder(0.125, 2.0),
+                ColliderConstructor::ConvexHullFromMesh,
                 CollisionEventsEnabled,
             ))
             // Spot light
