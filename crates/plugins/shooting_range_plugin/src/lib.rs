@@ -3,9 +3,9 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter};
+use spacerobo_commons::{DeathMessage, GameMode, Hp, KillCounter, Target};
 use spacerobo_player::PlayerCommonPlugin;
-use spacerobo_target::Target;
+use spacerobo_target::Common as CommonTarget;
 
 pub struct ShootingRangePlugin;
 
@@ -56,7 +56,7 @@ fn setup_system(
                 let j_float = j as f32;
                 let k_float = k as f32;
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -65,7 +65,7 @@ fn setup_system(
                     Vec3::new(i_float * 10.0, j_float * 10.0, k_float * 10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -74,7 +74,7 @@ fn setup_system(
                     Vec3::new(i_float * 10.0, j_float * 10.0, k_float * -10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -83,7 +83,7 @@ fn setup_system(
                     Vec3::new(i_float * 10.0, j_float * -10.0, k_float * 10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -92,7 +92,7 @@ fn setup_system(
                     Vec3::new(i_float * 10.0, j_float * -10.0, k_float * -10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -101,7 +101,7 @@ fn setup_system(
                     Vec3::new(i_float * -10.0, j_float * 10.0, k_float * 10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -110,7 +110,7 @@ fn setup_system(
                     Vec3::new(i_float * -10.0, j_float * 10.0, k_float * -10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -119,7 +119,7 @@ fn setup_system(
                     Vec3::new(i_float * -10.0, j_float * -10.0, k_float * 10.0),
                 );
 
-                spawn_target(
+                CommonTarget::spawn(
                     &mut commands,
                     &mut meshes,
                     &asset_server,
@@ -130,31 +130,6 @@ fn setup_system(
             }
         }
     }
-}
-
-fn spawn_target(
-    commands: &mut Commands,
-    meshes: &mut ResMut<Assets<Mesh>>,
-    asset_server: &Res<AssetServer>,
-    materials: &mut ResMut<Assets<StandardMaterial>>,
-    base_color: Color,
-    vec3: Vec3,
-) {
-    commands.spawn((
-        DespawnOnExit(GameMode::InGame),
-        Mesh3d(meshes.add(Sphere::default().mesh())),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color,
-            ..Default::default()
-        })),
-        Transform::from_translation(vec3),
-        RigidBody::Static,
-        Collider::sphere(1.0),
-        CollisionEventsEnabled,
-        Mass(1.0),
-        Target,
-        Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
-    ));
 }
 
 /// This system detects the hits between two objects, having Hp, LinearVelocity and Mass Components.
