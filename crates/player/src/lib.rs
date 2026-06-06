@@ -5,9 +5,9 @@ pub mod ui;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{
-    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
+    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, Weapon, configs::GameConfigs,
 };
-use spacerobo_gun::{Gun, GunPlugin, Interval, Muzzle, select_fire::SelectFire};
+use spacerobo_gun::{Gun, GunPlugin};
 
 /// Player Common Component
 #[derive(Component)]
@@ -44,34 +44,8 @@ impl Player for Common {
             ))
             // Gun
             .with_children(|parent| {
-                parent
-                    .spawn((
-                        Transform::from_xyz(1., -1., -3.),
-                        Mesh3d(meshes.add(Extrusion::new(Circle::new(0.125), 2.))),
-                        MeshMaterial3d(materials.add(Color::BLACK)),
-                        (Gun {
-                            owner: parent.target_entity(),
-                            select_fire: SelectFire::Full,
-                            interval: Interval {
-                                limit: 0.1,
-                                rest: 0.0,
-                                amount: 0.01,
-                            },
-                        }),
-                    ))
-                    // Spot light
-                    .with_child((
-                        SpotLight {
-                            intensity: 100_000_000.0,
-                            range: 100_000_000.0,
-                            outer_angle: std::f32::consts::FRAC_PI_4 / 2.0,
-                            shadows_enabled: true,
-                            ..default()
-                        },
-                        Transform::from_xyz(1., -1., -4.3).looking_to(Vec3::NEG_Z, Vec3::ZERO),
-                    ))
-                    // Muzzle
-                    .with_child((Transform::from_xyz(1., -1., -4.3), Muzzle));
+                let origin = Vec3::new(1.0, -1.0, -3.0);
+                Gun::spawn_as_child(parent, meshes, materials, origin);
 
                 debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
             });

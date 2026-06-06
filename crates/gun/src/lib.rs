@@ -11,7 +11,11 @@ impl Plugin for GunPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (gun::select_fire::toggle_select_fire_system,).run_if(in_state(GameMode::InGame)),
+            (
+                gun::select_fire::toggle_select_fire_system,
+                gun::gun_melee_damage_system,
+            )
+                .run_if(in_state(GameMode::InGame)),
         );
 
         app.add_systems(

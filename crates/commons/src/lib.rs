@@ -18,6 +18,15 @@ impl DeathMessage {
     }
 }
 
+pub trait Weapon {
+    fn spawn_as_child(
+        parent: &mut ChildSpawnerCommands,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
+        origin: Vec3,
+    );
+}
+
 #[derive(Debug, States, Default, Hash, Eq, PartialEq, Clone)]
 #[states(scoped_entities)]
 pub enum GameMode {

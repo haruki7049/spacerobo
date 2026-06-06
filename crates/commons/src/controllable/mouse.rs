@@ -6,7 +6,7 @@ use bevy::{input::mouse::AccumulatedMouseMotion, prelude::*};
 /// Flight camera rotation
 /// Mouse control
 fn flight_camera(
-    game_configs: GameConfigs,
+    game_configs: &GameConfigs,
     accumulated_mouse_motion: &AccumulatedMouseMotion,
     transform: &mut Transform,
     angular: &mut AngularVelocity,
@@ -63,7 +63,7 @@ fn flight_camera(
 /// Normal camera rotation
 /// Mouse control
 fn normal_camera(
-    game_configs: GameConfigs,
+    game_configs: &GameConfigs,
     accumulated_mouse_motion: &AccumulatedMouseMotion,
     transform: &mut Transform,
     angular: &mut AngularVelocity,
@@ -124,18 +124,16 @@ pub fn update_system(
     mouse_button: Res<ButtonInput<MouseButton>>,
 ) {
     for (mut transform, mut angular) in query.iter_mut() {
-        let cfgs: GameConfigs = game_configs.clone();
-
         if !mouse_button.pressed(MouseButton::Right) {
             normal_camera(
-                cfgs,
+                &game_configs,
                 &accumulated_mouse_motion,
                 &mut transform,
                 &mut angular,
             );
         } else {
             flight_camera(
-                cfgs,
+                &game_configs,
                 &accumulated_mouse_motion,
                 &mut transform,
                 &mut angular,
