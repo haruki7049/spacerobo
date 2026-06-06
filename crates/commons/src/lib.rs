@@ -18,6 +18,12 @@ impl DeathMessage {
     }
 }
 
+#[derive(Debug, Event)]
+pub struct Damage {
+    pub target: Entity,
+    pub amount: f32,
+}
+
 pub trait Weapon {
     fn spawn_as_child(
         parent: &mut ChildSpawnerCommands,
