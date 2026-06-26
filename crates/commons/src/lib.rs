@@ -100,7 +100,7 @@ pub trait Target {
         asset_server: &Res<AssetServer>,
         materials: &mut ResMut<Assets<StandardMaterial>>,
         base_color: Color,
-        vec3: Vec3,
+        position: Vec3,
     );
 }
 
