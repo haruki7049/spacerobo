@@ -20,5 +20,5 @@ print
 # Push processes for each packages' caches
 nix build --no-link --print-out-paths '.#spacerobo'
   | cachix push haruki7049
-nix build --no-link --print-out-paths '.#cargo-doc'
+nix build --no-link --print-out-paths '.#doc'
   | cachix push haruki7049
