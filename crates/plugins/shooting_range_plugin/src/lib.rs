@@ -267,6 +267,10 @@ fn apply_damage_system(
     mut event_writer: MessageWriter<DeathMessage>,
 ) {
     if let Ok(mut hp) = query.get_mut(damage.target) {
+        if hp.rest <= 0. {
+            return;
+        }
+
         hp.decrease(damage.amount);
 
         if hp.rest <= 0. {
