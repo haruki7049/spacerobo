@@ -7,7 +7,7 @@ use self::select_fire::SelectFire;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{DeathMessage, Hp, Weapon};
-use spacerobo_target::Target;
+use spacerobo_target::Common as CommonTarget;
 
 /// Gun component
 #[derive(Component)]
@@ -102,7 +102,7 @@ pub fn gun_melee_damage_system(
     mut collision_event_reader: MessageReader<CollisionStart>,
     mut death_message_writer: MessageWriter<DeathMessage>,
     gun_query: Query<(), With<Gun>>,
-    mut target_query: Query<&mut Hp, With<Target>>,
+    mut target_query: Query<&mut Hp, With<CommonTarget>>,
 ) {
     for event in collision_event_reader.read() {
         debug!("Collision!!");
