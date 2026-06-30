@@ -65,6 +65,7 @@
             pkgs.nil # Nix LSP
             rust # Rust toolchain
             pkgs.nushell # Script runner
+            pkgs.cachix # cachix CLI
           ];
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;
