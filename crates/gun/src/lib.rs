@@ -14,6 +14,7 @@ impl Plugin for GunPlugin {
             (
                 gun::select_fire::toggle_select_fire_system,
                 gun::gun_melee_damage_system,
+                gun::bullet::bullet_collision_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );
