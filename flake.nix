@@ -64,6 +64,7 @@
             pkgs.makeWrapper # For the Nix packaging
             pkgs.nil # Nix LSP
             rust # Rust toolchain
+            pkgs.nushell # Script runner
           ];
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit src buildInputs nativeBuildInputs;

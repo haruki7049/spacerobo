@@ -1,0 +1,24 @@
+name: "cachix-push"
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - '*'
+
+jobs:
+  push:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v7.0.0
+    - uses: cachix/install-nix-action@v31.10.6
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - name: Run ./scripts/push-artifacts-to-cachix.nu
+      run: nix-shell --run "./scripts/push-artifacts-to-cachix.nu" --keep CACHIX_AUTH_TOKEN
+      env:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
