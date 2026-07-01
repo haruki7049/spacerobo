@@ -6,7 +6,7 @@ pub mod select_fire;
 use self::select_fire::SelectFire;
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{DeathMessage, Hp, Weapon};
+use spacerobo_commons::{DeathMessage, Hp};
 use spacerobo_target::Common as CommonTarget;
 
 /// Gun component
@@ -21,8 +21,8 @@ pub struct Gun {
     pub interval: Interval,
 }
 
-impl Weapon for Gun {
-    fn spawn_as_child(
+impl Gun {
+    pub fn spawn_as_child(
         parent: &mut ChildSpawnerCommands,
         meshes: &mut Assets<Mesh>,
         materials: &mut Assets<StandardMaterial>,

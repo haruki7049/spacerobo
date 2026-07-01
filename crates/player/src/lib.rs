@@ -5,7 +5,7 @@ pub mod ui;
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{
-    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, Weapon, configs::GameConfigs,
+    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
 };
 use spacerobo_gun::{Gun, GunPlugin};
 
