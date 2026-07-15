@@ -64,6 +64,7 @@
             pkgs.makeWrapper # For the Nix packaging
             pkgs.nil # Nix LSP
             rust # Rust toolchain
+            pkgs.cargo-llvm-cov
             pkgs.nushell # Script runner
             pkgs.cachix # cachix CLI
           ];
@@ -126,6 +127,18 @@
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
           };
+          llvm-cov = craneLib.cargoLlvmCov {
+            inherit
+              src
+              cargoArtifacts
+              buildInputs
+              nativeBuildInputs
+              ;
+
+            LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
+            LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
+            cargoLlvmCovExtraArgs = "test --html --output-dir $out";
+          };
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -157,7 +170,7 @@
           };
 
           packages = {
-            inherit spacerobo;
+            inherit spacerobo llvm-cov;
             default = spacerobo;
             doc = cargo-doc;
           };
