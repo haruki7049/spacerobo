@@ -3,15 +3,16 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, KillCounter, Target};
+use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, KillCounter};
 use spacerobo_player::PlayerCommonPlugin;
-use spacerobo_target::Common as CommonTarget;
+use spacerobo_target::{Target, TargetPlugin};
 
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlayerCommonPlugin);
+        app.add_plugins(TargetPlugin);
         app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
         app.insert_resource(KillCounter::default());
@@ -32,12 +33,7 @@ impl Plugin for ShootingRangePlugin {
     }
 }
 
-fn setup_system(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    asset_server: Res<AssetServer>,
-) {
+fn setup_system(mut commands: Commands) {
     // Light
     commands.spawn((
         PointLight {
@@ -56,76 +52,52 @@ fn setup_system(
                 let j_float = j as f32;
                 let k_float = k as f32;
 
-                CommonTarget::spawn(
+                Target::spawn(
                     &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    RED.into(),
                     Vec3::new(i_float * 10.0, j_float * 10.0, k_float * 10.0),
+                    RED.into(),
                 );
 
-                CommonTarget::spawn(
+                Target::spawn(
                     &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
                     Vec3::new(i_float * 10.0, j_float * 10.0, k_float * -10.0),
+                    WHITE.into(),
                 );
 
-                CommonTarget::spawn(
+                Target::spawn(
                     &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
                     Vec3::new(i_float * 10.0, j_float * -10.0, k_float * 10.0),
+                    WHITE.into(),
                 );
 
-                CommonTarget::spawn(
+                Target::spawn(
                     &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    GREEN.into(),
                     Vec3::new(i_float * 10.0, j_float * -10.0, k_float * -10.0),
+                    GREEN.into(),
                 );
 
-                CommonTarget::spawn(
+                Target::spawn(
                     &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
                     Vec3::new(i_float * -10.0, j_float * 10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    YELLOW.into(),
-                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * -10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    BLUE.into(),
-                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
                     WHITE.into(),
+                );
+
+                Target::spawn(
+                    &mut commands,
+                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * -10.0),
+                    YELLOW.into(),
+                );
+
+                Target::spawn(
+                    &mut commands,
+                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * 10.0),
+                    BLUE.into(),
+                );
+
+                Target::spawn(
+                    &mut commands,
                     Vec3::new(i_float * -10.0, j_float * -10.0, k_float * -10.0),
+                    WHITE.into(),
                 );
             }
         }

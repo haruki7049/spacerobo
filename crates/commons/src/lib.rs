@@ -93,17 +93,6 @@ pub trait Player {
     );
 }
 
-pub trait Target {
-    fn spawn(
-        commands: &mut Commands,
-        meshes: &mut ResMut<Assets<Mesh>>,
-        asset_server: &Res<AssetServer>,
-        materials: &mut ResMut<Assets<StandardMaterial>>,
-        base_color: Color,
-        position: Vec3,
-    );
-}
-
 impl Hp {
     pub fn decrease(&mut self, v: f32) {
         self.rest -= v;
