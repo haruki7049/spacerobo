@@ -5,9 +5,7 @@ use bevy::{
 };
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
-use spacerobo_commons::{ControllablePlugin, GameMode, configs::GameConfigs};
-use spacerobo_shooting_range_plugin::ShootingRangePlugin;
-use spacerobo_title_plugin::TitlePlugin;
+use spacerobo_commons::{GameMode, configs::GameConfigs};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
@@ -34,9 +32,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ..default()
             }),
             PhysicsPlugins::default(),
-            TitlePlugin,
-            ShootingRangePlugin,
-            ControllablePlugin,
         ))
         .init_state::<GameMode>()
         .insert_resource(configs)

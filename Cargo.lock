@@ -5157,8 +5157,6 @@ dependencies = [
  "confy",
  "directories",
  "spacerobo_commons",
- "spacerobo_shooting_range_plugin",
- "spacerobo_title_plugin",
 ]
 
 [[package]]
@@ -5168,54 +5166,6 @@ dependencies = [
  "avian3d",
  "bevy",
  "serde",
-]
-
-[[package]]
-name = "spacerobo_gun"
-version = "0.2.1"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
- "spacerobo_target",
-]
-
-[[package]]
-name = "spacerobo_player"
-version = "0.2.1"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
- "spacerobo_gun",
-]
-
-[[package]]
-name = "spacerobo_shooting_range_plugin"
-version = "0.1.0"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
- "spacerobo_player",
- "spacerobo_target",
-]
-
-[[package]]
-name = "spacerobo_target"
-version = "0.2.1"
-dependencies = [
- "avian3d",
- "bevy",
- "spacerobo_commons",
-]
-
-[[package]]
-name = "spacerobo_title_plugin"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "spacerobo_commons",
 ]
 
 [[package]]

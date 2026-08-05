@@ -24,15 +24,8 @@ members = [
   # Application crates
   "crates/client",
 
-  # Plugins
-  "crates/plugins/shooting_range_plugin",
-  "crates/plugins/title_plugin",
-
   # Library crates
   "crates/commons",
-  "crates/player",
-  "crates/gun",
-  "crates/target",
 
   # cargo-xtask
   "crates/xtask",
@@ -53,11 +46,6 @@ name = "spacerobo"
 
 [workspace.dependencies]
 spacerobo_commons.path = "crates/commons"
-spacerobo_gun.path = "crates/gun"
-spacerobo_player.path = "crates/player"
-spacerobo_target.path = "crates/target"
-spacerobo_title_plugin.path = "crates/plugins/title_plugin"
-spacerobo_shooting_range_plugin.path = "crates/plugins/shooting_range_plugin"
 bevy = { version = "0.18.1", features = [
   "debug",
   "serialize",
