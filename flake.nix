@@ -45,7 +45,6 @@
 
           buildInputs =
             lib.optionals pkgs.stdenv.isLinux [
-              pkgs.pkg-config
               pkgs.udev
               pkgs.alsa-lib
               pkgs.vulkan-loader
@@ -184,10 +183,6 @@
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
-
-            shellHook = ''
-              export PS1="\n[nix-shell:\w]$ "
-            '';
           };
         };
     };
