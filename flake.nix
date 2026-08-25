@@ -44,7 +44,7 @@
           src = lib.cleanSource ./.;
 
           buildInputs =
-            lib.optionals pkgs.stdenv.isLinux [
+            lib.optionals pkgs.stdenv.hostPlatform.isLinux [
               pkgs.pkg-config
               pkgs.udev
               pkgs.alsa-lib
