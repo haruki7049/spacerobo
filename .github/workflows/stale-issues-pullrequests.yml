@@ -22,5 +22,5 @@ jobs:
           close-pr-message: "This pull request was closed because it has been inactive for 14 days since being marked as stale."
           stale-issue-label: "stale"
           stale-pr-label: "stale"
-          exempt-issue-labels: "bug,enhancement,feat,fix"
+          exempt-issue-labels: "feat,fix"
           exempt-pr-labels: "feat,fix"
