@@ -163,6 +163,8 @@
 
             # Markdown
             programs.mdformat.enable = true;
+            # Keep the YAML front matter of agent skills (SKILL.md) intact
+            programs.mdformat.plugins = ps: [ ps.mdformat-frontmatter ];
 
             # ShellScript
             programs.shellcheck.enable = true;
