@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::process::{Command, ExitStatus};
 
 use crate::cli::{Action, CLIArgs};
 use thiserror::Error;
@@ -56,8 +56,15 @@ impl SpaceroboBuilder {
 
 #[derive(Debug, Error)]
 pub enum SpaceroboBuilderError {
-    #[error("From any error: {0:?}")]
-    Error(#[from] Box<dyn std::error::Error>),
+    #[error("Failed to run `{command}`: {source}")]
+    Io {
+        command: String,
+        #[source]
+        source: std::io::Error,
+    },
+
+    #[error("`{command}` failed with {status}")]
+    CommandFailed { command: String, status: ExitStatus },
 }
 
 impl Builder for SpaceroboBuilder {
@@ -95,293 +102,79 @@ impl Builder for SpaceroboBuilder {
 
     #[tracing::instrument]
     fn build(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-
-        if self.is_debug() {
-            self.build_debug()?;
-        }
-        if self.is_release() {
-            self.build_release()?;
-        }
-
-        tracing::info!("Finished.");
-        Ok(())
+        self.run_for_targets("build")
     }
 
     #[tracing::instrument]
     fn check(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-
-        if self.is_debug() {
-            self.check_debug()?;
-        }
-        if self.is_release() {
-            self.check_release()?;
-        }
-
-        tracing::info!("Finished.");
-        Ok(())
+        self.run_for_targets("check")
     }
 
     #[tracing::instrument]
     fn clippy(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-
-        if self.is_debug() {
-            self.clippy_debug()?;
-        }
-        if self.is_release() {
-            self.clippy_release()?;
-        }
-
-        tracing::info!("Finished.");
-        Ok(())
+        self.run_for_targets("clippy")
     }
 
     #[tracing::instrument]
     fn test(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-
-        if self.is_debug() {
-            self.test_debug()?;
-        }
-        if self.is_release() {
-            self.test_release()?;
-        }
-
-        tracing::info!("Finished.");
-        Ok(())
+        self.run_for_targets("test")
     }
 
     #[tracing::instrument]
     fn doc(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-
-        if self.is_debug() {
-            self.doc_debug()?;
-        }
-        if self.is_release() {
-            self.doc_release()?;
-        }
-
-        tracing::info!("Finished.");
-        Ok(())
+        self.run_for_targets("doc")
     }
 }
 
 impl SpaceroboBuilder {
-    /// `cargo build --release --workspace`
-    #[tracing::instrument]
-    fn build_release(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
+    /// Runs the cargo subcommand for every selected build target (debug and/or release).
+    fn run_for_targets(&self, subcommand: &str) -> Result<(), SpaceroboBuilderError> {
+        tracing::info!("Running...");
 
-        let mut build_release_command = Command::new(self.cargo.as_str());
-        build_release_command.arg("build");
-        build_release_command.arg("--release");
-        build_release_command.arg("--workspace");
-        build_release_command.arg("--exclude");
-        build_release_command.arg("spacerobo_xtask");
-
-        let exit_status = build_release_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo build --release --workspace is failed");
+        if self.is_debug() {
+            self.run_cargo(subcommand, false)?;
         }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo build --workspace`
-    #[tracing::instrument]
-    fn build_debug(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut build_command = Command::new(self.cargo.as_str());
-        build_command.arg("build");
-        build_command.arg("--workspace");
-        build_command.arg("--exclude");
-        build_command.arg("spacerobo_xtask");
-
-        let exit_status = build_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo build --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo check --release --workspace`
-    #[tracing::instrument]
-    fn check_release(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut check_release_command = Command::new(self.cargo.as_str());
-        check_release_command.arg("check");
-        check_release_command.arg("--release");
-        check_release_command.arg("--workspace");
-        check_release_command.arg("--exclude");
-        check_release_command.arg("spacerobo_xtask");
-
-        let exit_status = check_release_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo check --release --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo check --workspace`
-    #[tracing::instrument]
-    fn check_debug(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut check_command = Command::new(self.cargo.as_str());
-        check_command.arg("check");
-        check_command.arg("--workspace");
-        check_command.arg("--exclude");
-        check_command.arg("spacerobo_xtask");
-
-        let exit_status = check_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo check --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo clippy --release --workspace`
-    #[tracing::instrument]
-    fn clippy_release(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut clippy_release_command = Command::new(self.cargo.as_str());
-        clippy_release_command.arg("clippy");
-        clippy_release_command.arg("--release");
-        clippy_release_command.arg("--workspace");
-        clippy_release_command.arg("--exclude");
-        clippy_release_command.arg("spacerobo_xtask");
-
-        let exit_status = clippy_release_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo clippy --release --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo clippy --workspace`
-    #[tracing::instrument]
-    fn clippy_debug(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut clippy_command = Command::new(self.cargo.as_str());
-        clippy_command.arg("clippy");
-        clippy_command.arg("--workspace");
-        clippy_command.arg("--exclude");
-        clippy_command.arg("spacerobo_xtask");
-
-        let exit_status = clippy_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo clippy --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo test --release --workspace`
-    #[tracing::instrument]
-    fn test_release(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut test_release_command = Command::new(self.cargo.as_str());
-        test_release_command.arg("test");
-        test_release_command.arg("--release");
-        test_release_command.arg("--workspace");
-        test_release_command.arg("--exclude");
-        test_release_command.arg("spacerobo_xtask");
-
-        let exit_status = test_release_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo test --release --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo test --workspace`
-    #[tracing::instrument]
-    fn test_debug(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut test_command = Command::new(self.cargo.as_str());
-        test_command.arg("test");
-        test_command.arg("--workspace");
-        test_command.arg("--exclude");
-        test_command.arg("spacerobo_xtask");
-
-        let exit_status = test_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo test --workspace is failed");
-        }
-
-        tracing::debug!("Finished.");
-        Ok(())
-    }
-
-    /// `cargo doc --workspace`
-    #[tracing::instrument]
-    fn doc_debug(&self) -> Result<(), Box<dyn std::error::Error>> {
-        tracing::debug!("Running...");
-
-        let mut doc_command = Command::new(self.cargo.as_str());
-        doc_command.arg("doc");
-        doc_command.arg("--workspace");
-        doc_command.arg("--exclude");
-        doc_command.arg("spacerobo_xtask");
-
-        let exit_status = doc_command.spawn()?.wait()?;
-
-        if !exit_status.success() {
-            panic!("cargo doc --workspace is failed");
+        if self.is_release() {
+            self.run_cargo(subcommand, true)?;
         }
 
         tracing::info!("Finished.");
         Ok(())
     }
 
-    /// `cargo doc --release --workspace`
+    /// `cargo <subcommand> [--release] --workspace --exclude spacerobo_xtask`
     #[tracing::instrument]
-    fn doc_release(&self) -> Result<(), Box<dyn std::error::Error>> {
+    fn run_cargo(&self, subcommand: &str, release: bool) -> Result<(), SpaceroboBuilderError> {
         tracing::debug!("Running...");
 
-        let mut doc_release_command = Command::new(self.cargo.as_str());
-        doc_release_command.arg("doc");
-        doc_release_command.arg("--release");
-        doc_release_command.arg("--workspace");
-        doc_release_command.arg("--exclude");
-        doc_release_command.arg("spacerobo_xtask");
+        let mut command = Command::new(self.cargo.as_str());
+        command.arg(subcommand);
+        if release {
+            command.arg("--release");
+        }
+        command.args(["--workspace", "--exclude", "spacerobo_xtask"]);
 
-        let exit_status = doc_release_command.spawn()?.wait()?;
+        let description = if release {
+            format!("cargo {subcommand} --release --workspace")
+        } else {
+            format!("cargo {subcommand} --workspace")
+        };
 
-        if !exit_status.success() {
-            panic!("cargo doc --release --workspace is failed");
+        let status = command
+            .status()
+            .map_err(|source| SpaceroboBuilderError::Io {
+                command: description.clone(),
+                source,
+            })?;
+
+        if !status.success() {
+            return Err(SpaceroboBuilderError::CommandFailed {
+                command: description,
+                status,
+            });
         }
 
-        tracing::info!("Finished.");
+        tracing::debug!("Finished.");
         Ok(())
     }
 }
@@ -397,4 +190,36 @@ pub trait Builder {
     fn clippy(&self) -> Result<(), Self::Error>;
     fn test(&self) -> Result<(), Self::Error>;
     fn doc(&self) -> Result<(), Self::Error>;
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+
+    fn builder(cargo: &str) -> SpaceroboBuilder {
+        SpaceroboBuilder {
+            targets: vec![BuildTarget::Debug, BuildTarget::Release],
+            action: Action::Build,
+            cargo: cargo.to_string(),
+        }
+    }
+
+    #[test]
+    fn succeeds_when_the_command_succeeds() {
+        assert!(builder("true").build().is_ok());
+    }
+
+    #[test]
+    fn returns_an_error_when_the_command_fails() {
+        let error = builder("false").build().unwrap_err();
+
+        assert!(matches!(error, SpaceroboBuilderError::CommandFailed { .. }));
+    }
+
+    #[test]
+    fn returns_an_error_when_the_command_is_missing() {
+        let error = builder("spacerobo-no-such-command").build().unwrap_err();
+
+        assert!(matches!(error, SpaceroboBuilderError::Io { .. }));
+    }
 }
