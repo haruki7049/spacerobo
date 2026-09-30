@@ -6,6 +6,9 @@ on:
     branches:
       - "main"
 
+permissions:
+  contents: read
+
 jobs:
   ci-on-Unix:
     strategy:
@@ -14,9 +17,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Install Nix
-        uses: cachix/install-nix-action@v31.10.6
+        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
@@ -34,7 +37,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       # Without arguments, rustup installs the toolchain described by rust-toolchain.toml.
       - name: Setup rustup
         run: rustup toolchain install
