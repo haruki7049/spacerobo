@@ -14,7 +14,7 @@ Confirm a change with the narrowest check that covers it, and report exactly wha
 | Rust code in one crate | `cargo test -p <crate>`, then `cargo xtask` before committing |
 | Rust code across crates, `Cargo.toml`, `Cargo.lock` | `cargo xtask` and `cargo clippy --workspace --all-targets -- --deny warnings` |
 | `crates/xtask` | `cargo test -p spacerobo_xtask` and `cargo xtask` (xtask excludes itself from its own runs) |
-| `flake.nix`, `default.nix`, `shell.nix` | `nix flake check` and `nix build .#default` |
+| `flake.nix`, `flake.lock` | `nix flake check` and `nix build .#default` |
 | Assets or packaging | `nix build .#default` |
 | Markdown, TOML, Nix, shell or workflow formatting | `nix build .#checks.x86_64-linux.treefmt` |
 | Workflows (`.github/workflows/`) | The treefmt check above (runs `actionlint`) |
