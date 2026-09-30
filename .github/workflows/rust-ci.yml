@@ -17,6 +17,13 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
+      - name: Cache Cargo dependencies and build artifacts
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          # Branches and PRs restore the cache saved on main but do not save their own,
+          # so they cannot evict it from the repository's cache quota.
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
       - name: Run cargo-xtask
         run: nix develop --print-build-logs --command sh -c 'cargo xtask --debug --release'
 
@@ -30,6 +37,13 @@ jobs:
         with:
           toolchain: 1.94.1
           components: clippy, rust-analyzer, rust-src
+
+      - name: Cache Cargo dependencies and build artifacts
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          # Branches and PRs restore the cache saved on main but do not save their own,
+          # so they cannot evict it from the repository's cache quota.
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run cargo-xtask
         run: cargo xtask --debug --release
