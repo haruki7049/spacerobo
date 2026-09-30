@@ -14,7 +14,7 @@ matching avian3d"), and use the `chore:` type (`build:` fails the PR title check
 | :--- | :--- |
 | Crate versions and features | `[workspace.dependencies]` in the root `Cargo.toml`; resolved versions in `Cargo.lock` |
 | Rust toolchain | `rust-toolchain.toml` (`channel`) **and** the Windows job in `.github/workflows/rust-ci.yml` (`toolchain:` of `dtolnay/rust-toolchain`) |
-| Nix inputs | `flake.lock`, updated automatically by `cron-flake-update.yml`; do not touch it unless asked |
+| Nix inputs | `flake.lock`, updated by weekly Dependabot pull requests; do not touch it unless asked |
 | GitHub Actions | `uses:` lines in `.github/workflows/*.yml` |
 
 The Nix build reads the toolchain from `rust-toolchain.toml`, but the Windows CI job does not. When bumping Rust,

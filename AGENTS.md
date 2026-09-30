@@ -57,7 +57,7 @@ ______________________________________________________________________
 - **Conventional Commits restricted to CI types**: The PR title check (`pr-conventional-commits-validation.yml`) accepts
   only `feat`, `fix`, `docs`, `test`, `ci`, `refactor`, `perf`, `chore` and `revert`, with an optional scope. Use only
   these types for PR titles and commits. `build:` and `style:` fail the check; use `chore:` for dependency and Nix
-  changes. The one exception is the `build: nix flake update` commit the cron workflow pushes by itself.
+  changes.
 - **No issue numbers in commit messages**: Neither in the summary nor the body. Squash merges copy every commit message
   into `main`, so a `Closes #N` in a commit body can close the wrong issue. Link issues only from the PR description.
 - **No session links**: Do not put AI session URLs or identifiers (e.g. a `Claude-Session:` trailer) in commits, PRs,
@@ -69,8 +69,8 @@ ______________________________________________________________________
 - **Targeted edits**: Make the minimal change the request needs. Do not reformat or refactor unrelated code.
 - **No milestones, releases or tags**: Never set milestones, create tags or publish GitHub Releases unless the user
   explicitly asks. Tags such as `0.2.1` (no `v` prefix) trigger the Cachix push workflow.
-- **Do not bump `flake.lock` in PRs**: `cron-flake-update.yml` runs `nix flake update` every 12 hours and pushes to
-  `main`. Touch `flake.lock` only when the user asks.
+- **Do not bump `flake.lock` in PRs**: Dependabot opens weekly pull requests for the flake inputs
+  (`.github/dependabot.yml`). Touch `flake.lock` only when the user asks.
 
 ______________________________________________________________________
 
@@ -101,7 +101,7 @@ ______________________________________________________________________
 When asked to check status:
 
 1. **Local Git state**: `git status -s -b`, `git log -n 5 --oneline`, and how far the branch is behind `origin/main`
-   (`git fetch` first; the cron workflow adds commits to `main` often).
+   (`git fetch` first).
 1. **GitHub PRs (always)**: `gh pr list` and `gh pr status`.
 1. **GitHub issues (always)**: `gh issue list`.
 1. **Environment health**: `cargo xtask` and `nix build .#checks.x86_64-linux.treefmt`.
