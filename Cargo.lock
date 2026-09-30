@@ -5222,7 +5222,6 @@ dependencies = [
 name = "spacerobo_xtask"
 version = "0.2.1"
 dependencies = [
- "anyhow",
  "clap",
  "thiserror 2.0.18",
  "tracing",
