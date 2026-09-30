@@ -6,18 +6,24 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "chore"
+    labels:
+      - "chore"
   - package-ecosystem: "nix"
     directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
       prefix: "chore"
+    labels:
+      - "chore"
   - package-ecosystem: "cargo"
     directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
       prefix: "chore"
+    labels:
+      - "chore"
     ignore:
       # Bevy and avian3d break their APIs on minor releases and are upgraded
       # together by hand (see .agents/skills/update-dependencies).
