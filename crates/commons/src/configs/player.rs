@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// Configuration struct
 #[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[serde(default)]
 pub struct Config {
     pub keyboard: KeyboardConfig,
     pub mouse: MouseConfig,
@@ -13,18 +14,21 @@ pub struct Config {
 
 // Configurations about robo
 #[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[serde(default)]
 pub struct RoboConfig {
     pub thruster: ThrusterConfig,
 }
 
 // Configurations about thrusters
 #[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[serde(default)]
 pub struct ThrusterConfig {
     pub force: ForceConfig,
 }
 
 // Configuration about force by thrusters
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(default)]
 pub struct ForceConfig {
     // Keyboard
     pub accelerate: f32,
@@ -50,6 +54,7 @@ impl std::default::Default for ForceConfig {
 
 /// Keyboard Configurations. This structure usually contains keymappings.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(default)]
 pub struct KeyboardConfig {
     // Movements
     pub forward: KeyCode,
@@ -95,7 +100,64 @@ impl std::default::Default for KeyboardConfig {
 
 /// Mouse Configurations
 #[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[serde(default)]
 pub struct MouseConfig {
     pub x_reverse: bool,
     pub y_reverse: bool,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn missing_fields_take_default_values() {
+        // A file written before `dash`, `quit`, `respawn` and `robo` existed.
+        let config: Config = toml::from_str(
+            r#"
+            [keyboard]
+            forward = "ArrowUp"
+            back = "KeyS"
+            left = "KeyA"
+            right = "KeyD"
+            hover = "ControlLeft"
+            toggle_firemode = "KeyT"
+
+            [mouse]
+            x_reverse = true
+            y_reverse = false
+            "#,
+        )
+        .unwrap();
+
+        assert_eq!(config.keyboard.forward, KeyCode::ArrowUp);
+        assert_eq!(config.keyboard.respawn, KeyboardConfig::default().respawn);
+        assert_eq!(config.keyboard.quit, KeyboardConfig::default().quit);
+        assert!(config.mouse.x_reverse);
+        assert_eq!(config.robo, RoboConfig::default());
+    }
+
+    #[test]
+    fn empty_file_is_the_default_configuration() {
+        let config: Config = toml::from_str("").unwrap();
+
+        assert_eq!(config, Config::default());
+    }
+
+    #[test]
+    fn partial_table_keeps_the_other_fields() {
+        let config: Config = toml::from_str(
+            r#"
+            [robo.thruster.force]
+            dash = 5.0
+            "#,
+        )
+        .unwrap();
+
+        assert_eq!(config.robo.thruster.force.dash, 5.0);
+        assert_eq!(
+            config.robo.thruster.force.accelerate,
+            ForceConfig::default().accelerate
+        );
+    }
 }
