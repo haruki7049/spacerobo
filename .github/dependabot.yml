@@ -6,3 +6,22 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "chore"
+  - package-ecosystem: "nix"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+    ignore:
+      # Bevy and avian3d break their APIs on minor releases and are upgraded
+      # together by hand (see .agents/skills/update-dependencies).
+      - dependency-name: "bevy*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "avian3d"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]

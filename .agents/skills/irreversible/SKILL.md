@@ -13,7 +13,7 @@ Prevent data loss, unwanted history changes and broad side effects.
 - Changing pushed history: amend, rebase or reset of pushed commits and the force-push that follows; any push to
   `main`.
 - Regenerating or broadly updating lockfiles: a bare `cargo update`, `nix flake update` (`flake.lock` is maintained by
-  the cron workflow).
+  Dependabot).
 - Running `nix fmt` when it would rewrite files outside the task (check first with
   `nix build .#checks.x86_64-linux.treefmt`).
 - `cargo clean` or deleting `target/`: not destructive to sources, but forces a full Bevy rebuild that takes a long
