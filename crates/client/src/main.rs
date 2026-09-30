@@ -12,8 +12,12 @@ use spacerobo_title_plugin::TitlePlugin;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: CLIArgs = CLIArgs::parse();
 
-    let configs: GameConfigs = confy::load_path(args.config_file()).unwrap_or_else(|_| {
-        info!("Running Spacerobo with default GameConfigs...");
+    let configs: GameConfigs = confy::load_path(args.config_file()).unwrap_or_else(|e| {
+        // The logger is not installed before `App::new()`, so `warn!` would be lost here.
+        eprintln!(
+            "warning: failed to load {}: {e}. Running Spacerobo with default GameConfigs...",
+            args.config_file().display()
+        );
         GameConfigs::default()
     });
 

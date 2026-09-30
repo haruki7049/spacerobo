@@ -5,6 +5,7 @@ pub mod player;
 
 /// Includes player configuration
 #[derive(Resource, Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[serde(default)]
 pub struct GameConfigs {
     pub player: player::Config,
 }

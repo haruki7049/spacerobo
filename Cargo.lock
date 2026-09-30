@@ -5168,6 +5168,7 @@ dependencies = [
  "avian3d",
  "bevy",
  "serde",
+ "toml",
 ]
 
 [[package]]
