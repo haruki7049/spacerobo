@@ -1,57 +1,16 @@
 use std::process::{Command, ExitStatus};
 
 use crate::cli::{Action, CLIArgs};
+use crate::task::{CargoInvocation, Profile, Step};
 use thiserror::Error;
 
+/// Runs the selected steps with the selected profiles, one cargo invocation at a time.
 #[derive(Debug)]
 pub struct SpaceroboBuilder {
-    targets: Vec<BuildTarget>,
     action: Action,
+    steps: Vec<Step>,
+    profiles: Vec<Profile>,
     cargo: String,
-}
-
-#[derive(Debug, PartialEq)]
-enum BuildTarget {
-    Debug,
-    Release,
-}
-
-impl SpaceroboBuilder {
-    pub fn new(args: CLIArgs, cargo: String) -> Self {
-        let mut targets: Vec<BuildTarget> = Vec::new();
-        if !args.debug && !args.release {
-            targets.push(BuildTarget::Debug);
-        }
-
-        if args.debug {
-            targets.push(BuildTarget::Debug);
-        }
-        if args.release {
-            targets.push(BuildTarget::Release);
-        }
-
-        Self {
-            targets,
-            cargo,
-            action: args.action,
-        }
-    }
-}
-
-impl SpaceroboBuilder {
-    fn is_debug(&self) -> bool {
-        let search_result: Option<&BuildTarget> =
-            self.targets.iter().find(|&v| v == &BuildTarget::Debug);
-
-        search_result.is_some()
-    }
-
-    fn is_release(&self) -> bool {
-        let search_result: Option<&BuildTarget> =
-            self.targets.iter().find(|&v| v == &BuildTarget::Release);
-
-        search_result.is_some()
-    }
 }
 
 #[derive(Debug, Error)]
@@ -67,100 +26,55 @@ pub enum SpaceroboBuilderError {
     CommandFailed { command: String, status: ExitStatus },
 }
 
-impl Builder for SpaceroboBuilder {
-    type Error = SpaceroboBuilderError;
-
-    #[tracing::instrument]
-    fn action(&self) -> Action {
-        self.action.clone()
-    }
-
-    #[tracing::instrument]
-    fn run(&self) -> Result<(), Self::Error> {
-        match self.action() {
-            Action::All => self.all(),
-            Action::Build => self.build(),
-            Action::Check => self.check(),
-            Action::Clippy => self.clippy(),
-            Action::Test => self.test(),
-            Action::Doc => self.doc(),
-        }
-    }
-
-    #[tracing::instrument]
-    fn all(&self) -> Result<(), Self::Error> {
-        tracing::info!("Running...");
-        self.build()?;
-        self.check()?;
-        self.clippy()?;
-        self.test()?;
-        self.doc()?;
-        tracing::info!("Finished.");
-
-        Ok(())
-    }
-
-    #[tracing::instrument]
-    fn build(&self) -> Result<(), Self::Error> {
-        self.run_for_targets("build")
-    }
-
-    #[tracing::instrument]
-    fn check(&self) -> Result<(), Self::Error> {
-        self.run_for_targets("check")
-    }
-
-    #[tracing::instrument]
-    fn clippy(&self) -> Result<(), Self::Error> {
-        self.run_for_targets("clippy")
-    }
-
-    #[tracing::instrument]
-    fn test(&self) -> Result<(), Self::Error> {
-        self.run_for_targets("test")
-    }
-
-    #[tracing::instrument]
-    fn doc(&self) -> Result<(), Self::Error> {
-        self.run_for_targets("doc")
-    }
-}
-
 impl SpaceroboBuilder {
-    /// Runs the cargo subcommand for every selected build target (debug and/or release).
-    fn run_for_targets(&self, subcommand: &str) -> Result<(), SpaceroboBuilderError> {
+    pub fn new(args: CLIArgs, cargo: String) -> Self {
+        Self {
+            steps: Step::for_action(&args.action),
+            profiles: Profile::selected(args.debug, args.release),
+            action: args.action,
+            cargo,
+        }
+    }
+
+    /// Runs every step in order, stopping at the first failure.
+    pub fn run(&self) -> Result<(), SpaceroboBuilderError> {
+        let _span = tracing::info_span!("run", action = %self.action).entered();
         tracing::info!("Running...");
 
-        if self.is_debug() {
-            self.run_cargo(subcommand, false)?;
-        }
-        if self.is_release() {
-            self.run_cargo(subcommand, true)?;
+        for &step in &self.steps {
+            self.run_step(step)?;
         }
 
         tracing::info!("Finished.");
         Ok(())
     }
 
-    /// `cargo <subcommand> [--release] --workspace --exclude spacerobo_xtask`
-    #[tracing::instrument]
-    fn run_cargo(&self, subcommand: &str, release: bool) -> Result<(), SpaceroboBuilderError> {
+    /// The cargo invocations of `step`, one per selected profile.
+    fn invocations(&self, step: Step) -> impl Iterator<Item = CargoInvocation> + '_ {
+        self.profiles
+            .iter()
+            .map(move |&profile| CargoInvocation { step, profile })
+    }
+
+    fn run_step(&self, step: Step) -> Result<(), SpaceroboBuilderError> {
+        let _span = tracing::info_span!("step", %step).entered();
+        tracing::info!("Running...");
+
+        for invocation in self.invocations(step) {
+            self.run_cargo(&invocation)?;
+        }
+
+        tracing::info!("Finished.");
+        Ok(())
+    }
+
+    fn run_cargo(&self, invocation: &CargoInvocation) -> Result<(), SpaceroboBuilderError> {
+        let description = invocation.description();
+        let _span = tracing::debug_span!("cargo", command = %description).entered();
         tracing::debug!("Running...");
 
-        let mut command = Command::new(self.cargo.as_str());
-        command.arg(subcommand);
-        if release {
-            command.arg("--release");
-        }
-        command.args(["--workspace", "--exclude", "spacerobo_xtask"]);
-
-        let description = if release {
-            format!("cargo {subcommand} --release --workspace")
-        } else {
-            format!("cargo {subcommand} --workspace")
-        };
-
-        let status = command
+        let status = Command::new(self.cargo.as_str())
+            .args(invocation.args())
             .status()
             .map_err(|source| SpaceroboBuilderError::Io {
                 command: description.clone(),
@@ -179,46 +93,86 @@ impl SpaceroboBuilder {
     }
 }
 
-pub trait Builder {
-    type Error;
-
-    fn action(&self) -> Action;
-    fn run(&self) -> Result<(), Self::Error>;
-    fn all(&self) -> Result<(), Self::Error>;
-    fn build(&self) -> Result<(), Self::Error>;
-    fn check(&self) -> Result<(), Self::Error>;
-    fn clippy(&self) -> Result<(), Self::Error>;
-    fn test(&self) -> Result<(), Self::Error>;
-    fn doc(&self) -> Result<(), Self::Error>;
-}
-
-#[cfg(all(test, unix))]
+#[cfg(test)]
 mod tests {
     use super::*;
+    use clap::Parser;
 
-    fn builder(cargo: &str) -> SpaceroboBuilder {
-        SpaceroboBuilder {
-            targets: vec![BuildTarget::Debug, BuildTarget::Release],
-            action: Action::Build,
-            cargo: cargo.to_string(),
-        }
+    fn builder(cli: &[&str], cargo: &str) -> SpaceroboBuilder {
+        let args = CLIArgs::parse_from(std::iter::once("xtask").chain(cli.iter().copied()));
+        SpaceroboBuilder::new(args, cargo.to_string())
     }
 
+    /// Every invocation `run` makes, in order.
+    fn plan(builder: &SpaceroboBuilder) -> Vec<Vec<&'static str>> {
+        builder
+            .steps
+            .iter()
+            .flat_map(|&step| builder.invocations(step))
+            .map(|invocation| invocation.args())
+            .collect()
+    }
+
+    #[test]
+    fn runs_each_step_with_every_profile_before_the_next_step() {
+        let plan = plan(&builder(&["all", "--release", "--debug"], "cargo"));
+
+        let subcommands: Vec<(&str, bool)> = plan
+            .iter()
+            .map(|args| (args[0], args.contains(&"--release")))
+            .collect();
+        assert_eq!(
+            subcommands,
+            [
+                ("build", false),
+                ("build", true),
+                ("check", false),
+                ("check", true),
+                ("clippy", false),
+                ("clippy", true),
+                ("test", false),
+                ("test", true),
+                ("doc", false),
+                ("doc", true),
+            ]
+        );
+    }
+
+    #[test]
+    fn runs_every_step_in_the_debug_profile_by_default() {
+        let plan = plan(&builder(&[], "cargo"));
+
+        assert_eq!(
+            plan,
+            ["build", "check", "clippy", "test", "doc"].map(|subcommand| vec![
+                subcommand,
+                "--workspace",
+                "--exclude",
+                "spacerobo_xtask"
+            ])
+        );
+    }
+
+    #[cfg(unix)]
     #[test]
     fn succeeds_when_the_command_succeeds() {
-        assert!(builder("true").build().is_ok());
+        assert!(builder(&["build", "-d", "-r"], "true").run().is_ok());
     }
 
+    #[cfg(unix)]
     #[test]
     fn returns_an_error_when_the_command_fails() {
-        let error = builder("false").build().unwrap_err();
+        let error = builder(&["build", "-d", "-r"], "false").run().unwrap_err();
 
         assert!(matches!(error, SpaceroboBuilderError::CommandFailed { .. }));
     }
 
+    #[cfg(unix)]
     #[test]
     fn returns_an_error_when_the_command_is_missing() {
-        let error = builder("spacerobo-no-such-command").build().unwrap_err();
+        let error = builder(&["build", "-d", "-r"], "spacerobo-no-such-command")
+            .run()
+            .unwrap_err();
 
         assert!(matches!(error, SpaceroboBuilderError::Io { .. }));
     }
