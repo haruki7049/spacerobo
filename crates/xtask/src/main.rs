@@ -1,5 +1,5 @@
 use clap::Parser;
-use spacerobo_xtask::builder::{Builder, SpaceroboBuilder};
+use spacerobo_xtask::builder::SpaceroboBuilder;
 use spacerobo_xtask::cli::CLIArgs;
 use std::sync::LazyLock;
 
