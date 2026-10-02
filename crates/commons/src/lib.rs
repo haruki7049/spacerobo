@@ -43,7 +43,7 @@ impl KillCounter {
     }
 
     pub fn increment(&mut self) {
-        self.inner += 1;
+        self.inner = self.inner.saturating_add(1);
     }
 
     pub fn decrement(&mut self) {
@@ -191,6 +191,14 @@ mod tests {
             let mut counter: KillCounter = KillCounter::default();
             counter.increment();
             assert_eq!(*counter, 1);
+        }
+
+        /// increment saturates instead of overflowing
+        #[test]
+        fn increment_saturates_at_max() {
+            let mut counter: KillCounter = KillCounter { inner: usize::MAX };
+            counter.increment();
+            assert_eq!(*counter, usize::MAX);
         }
 
         /// decrement method's unit test

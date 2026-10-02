@@ -16,6 +16,8 @@ codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
 # Slows compile times, marginal improvements.
 lto = "thin"
+# Panic on integer overflow instead of wrapping silently, as in the dev profile.
+overflow-checks = true
 
 [workspace]
 resolver = "3"
@@ -73,3 +75,10 @@ directories = "6.0.0"
 thiserror = "2.0.18"
 tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
+
+# Each member opts in with `[lints] workspace = true`.
+[workspace.lints.clippy]
+# Integer overflow wraps silently in release builds without `overflow-checks`.
+# Use `checked_*`, `saturating_*` or `wrapping_*` instead of raw operators.
+# Vector types are allowed in `clippy.toml`.
+arithmetic_side_effects = "deny"
