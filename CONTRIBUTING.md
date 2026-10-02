@@ -13,6 +13,7 @@ against.
 ## Build, check and test
 
 `cargo xtask` runs `build`, `check`, `clippy`, `test` and `doc` for the whole workspace. `cargo x` is an alias.
+`doc` documents only the workspace crates (`--no-deps`) and runs only in the debug profile.
 
 ```bash
 cargo xtask                 # every action, debug profile

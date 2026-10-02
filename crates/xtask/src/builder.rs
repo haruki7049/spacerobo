@@ -49,10 +49,11 @@ impl SpaceroboBuilder {
         Ok(())
     }
 
-    /// The cargo invocations of `step`, one per selected profile.
+    /// The cargo invocations of `step`, one per selected profile that the step runs in.
     fn invocations(&self, step: Step) -> impl Iterator<Item = CargoInvocation> + '_ {
         self.profiles
             .iter()
+            .filter(move |&&profile| runs_in(step, profile))
             .map(move |&profile| CargoInvocation { step, profile })
     }
 
@@ -91,6 +92,12 @@ impl SpaceroboBuilder {
         tracing::debug!("Finished.");
         Ok(())
     }
+}
+
+/// Whether `step` runs in `profile`.
+/// The documentation is the same in every profile, so `doc` runs only in the debug profile.
+fn runs_in(step: Step, profile: Profile) -> bool {
+    !(step == Step::Doc && profile == Profile::Release)
 }
 
 #[cfg(test)]
@@ -133,7 +140,6 @@ mod tests {
                 ("test", false),
                 ("test", true),
                 ("doc", false),
-                ("doc", true),
             ]
         );
     }
@@ -142,15 +148,25 @@ mod tests {
     fn runs_every_step_in_the_debug_profile_by_default() {
         let plan = plan(&builder(&[], "cargo"));
 
+        let mut expected = ["build", "check", "clippy", "test", "doc"]
+            .map(|subcommand| vec![subcommand, "--workspace", "--exclude", "spacerobo_xtask"]);
+        expected[4].push("--no-deps");
+        assert_eq!(plan, expected);
+    }
+
+    #[test]
+    fn skips_doc_in_the_release_profile() {
         assert_eq!(
-            plan,
-            ["build", "check", "clippy", "test", "doc"].map(|subcommand| vec![
-                subcommand,
+            plan(&builder(&["doc", "--debug", "--release"], "cargo")),
+            [[
+                "doc",
                 "--workspace",
                 "--exclude",
-                "spacerobo_xtask"
-            ])
+                "spacerobo_xtask",
+                "--no-deps"
+            ]]
         );
+        assert!(plan(&builder(&["doc", "--release"], "cargo")).is_empty());
     }
 
     #[cfg(unix)]

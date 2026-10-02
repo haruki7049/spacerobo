@@ -93,20 +93,33 @@ pub struct CargoInvocation {
 }
 
 impl CargoInvocation {
-    /// The arguments passed to cargo: `<subcommand> [--release] --workspace --exclude spacerobo_xtask`.
+    /// The arguments passed to cargo:
+    /// `<subcommand> [--release] --workspace --exclude spacerobo_xtask [<step options>]`.
     pub fn args(&self) -> Vec<&'static str> {
         let mut args = vec![self.step.subcommand()];
         args.extend_from_slice(self.profile.cargo_args());
         args.extend_from_slice(&WORKSPACE_ARGS);
+        args.extend_from_slice(self.step_args());
         args
     }
 
-    /// The short form of the command used in error messages: `cargo <subcommand> [--release] --workspace`.
+    /// The short form of the command used in error messages:
+    /// `cargo <subcommand> [--release] --workspace [<step options>]`.
     pub fn description(&self) -> String {
         let mut words = vec!["cargo", self.step.subcommand()];
         words.extend_from_slice(self.profile.cargo_args());
         words.push("--workspace");
+        words.extend_from_slice(self.step_args());
         words.join(" ")
+    }
+
+    /// Options that only one step takes.
+    fn step_args(&self) -> &'static [&'static str] {
+        match self.step {
+            // Document only the workspace crates: documenting every dependency took most of the CI time.
+            Step::Doc => &["--no-deps"],
+            Step::Build | Step::Check | Step::Clippy | Step::Test => &[],
+        }
     }
 }
 
@@ -151,7 +164,7 @@ mod tests {
     #[test]
     fn args_cover_the_workspace_except_xtask() {
         let debug = CargoInvocation {
-            step: Step::Doc,
+            step: Step::Build,
             profile: Profile::Debug,
         };
         let release = CargoInvocation {
@@ -161,7 +174,7 @@ mod tests {
 
         assert_eq!(
             debug.args(),
-            ["doc", "--workspace", "--exclude", "spacerobo_xtask"]
+            ["build", "--workspace", "--exclude", "spacerobo_xtask"]
         );
         assert_eq!(
             release.args(),
@@ -188,5 +201,36 @@ mod tests {
 
         assert_eq!(debug.description(), "cargo build --workspace");
         assert_eq!(release.description(), "cargo test --release --workspace");
+    }
+
+    #[test]
+    fn doc_documents_only_the_workspace_crates() {
+        let doc = CargoInvocation {
+            step: Step::Doc,
+            profile: Profile::Debug,
+        };
+
+        assert_eq!(
+            doc.args(),
+            [
+                "doc",
+                "--workspace",
+                "--exclude",
+                "spacerobo_xtask",
+                "--no-deps"
+            ]
+        );
+        assert_eq!(doc.description(), "cargo doc --workspace --no-deps");
+    }
+
+    #[test]
+    fn only_doc_takes_no_deps() {
+        for step in [Step::Build, Step::Check, Step::Clippy, Step::Test] {
+            for profile in [Profile::Debug, Profile::Release] {
+                let invocation = CargoInvocation { step, profile };
+
+                assert!(!invocation.args().contains(&"--no-deps"), "{step}");
+            }
+        }
     }
 }
