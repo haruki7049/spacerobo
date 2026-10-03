@@ -81,7 +81,7 @@ Run the checks that match the change before reporting it as done (details and th
 
 | Purpose | Command | Notes |
 | :--- | :--- | :--- |
-| Build, check, clippy, test and doc for the workspace | `cargo xtask` | Debug profile. CI runs `cargo xtask --debug --release` on Linux, macOS and Windows |
+| Build, check, clippy, test and doc for the workspace | `cargo xtask` | Debug profile. CI runs `cargo xtask --debug` on Linux (`fast-ci.yml`) and `cargo xtask --debug --release` on Linux, macOS and Windows (`heavy-ci.yml`) |
 | Single action | `cargo xtask <build\|check\|clippy\|test\|doc>` | `cargo x` is an alias |
 | Tests of one crate | `cargo test -p <crate>` | e.g. `cargo test -p spacerobo_commons` |
 | Lints that fail on warnings | `cargo clippy --workspace --all-targets -- --deny warnings` | `cargo xtask clippy` only reports warnings, but the clippy check in `nix flake check` denies them |

@@ -13,12 +13,12 @@ matching avian3d"), and use the `chore:` type (`build:` fails the PR title check
 | What | Where |
 | :--- | :--- |
 | Crate versions and features | `[workspace.dependencies]` in the root `Cargo.toml`; resolved versions in `Cargo.lock` |
-| Rust toolchain | `rust-toolchain.toml` (`channel`) **and** the Windows job in `.github/workflows/rust-ci.yml` (`toolchain:` of `dtolnay/rust-toolchain`) |
+| Rust toolchain | `rust-toolchain.toml` (`channel`) |
 | Nix inputs | `flake.lock`, updated by weekly Dependabot pull requests; do not touch it unless asked |
 | GitHub Actions | `uses:` lines in `.github/workflows/*.yml` |
 
-The Nix build reads the toolchain from `rust-toolchain.toml`, but the Windows CI job does not. When bumping Rust,
-change both and state it in the PR.
+The Nix build and every CI job read the toolchain from `rust-toolchain.toml`: the Windows job in
+`.github/workflows/heavy-ci.yml` installs it with `rustup toolchain install`. State a Rust bump in the PR.
 
 ## 2. Bevy and avian3d
 
