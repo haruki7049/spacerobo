@@ -12,6 +12,21 @@ on:
 permissions:
   contents: read
 
+env:
+  # sccache caches rustc outputs in Cloudflare R2, as in fast-ci.yml.
+  # Runs without these secrets, such as Dependabot and fork pull requests, get empty values,
+  # and sccache falls back to a local disk cache.
+  SCCACHE_BUCKET: ${{ secrets.SCCACHE_R2_BUCKET }}
+  SCCACHE_ENDPOINT: ${{ secrets.SCCACHE_R2_ENDPOINT }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_R2_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_R2_SECRET_ACCESS_KEY }}
+  SCCACHE_REGION: auto
+  SCCACHE_S3_USE_SSL: true
+  # Keep the server and its statistics for the whole job.
+  SCCACHE_IDLE_TIMEOUT: 0
+  # sccache cannot cache incremental compilation.
+  CARGO_INCREMENTAL: 0
+
 # The job IDs are part of the rust-cache keys; renaming them discards the caches saved on main.
 jobs:
   ci-on-Unix:
@@ -19,9 +34,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    env:
-      # sccache is tried in fast-ci.yml first; keep the Nix devShell from enabling it here.
-      RUSTC_WRAPPER: ""
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -38,8 +50,24 @@ jobs:
           # change glibc, so start a new cache instead of restoring build scripts linked against the old one.
           key: ${{ hashFiles('flake.lock') }}
 
+      # The Nix devShell sets RUSTC_WRAPPER=sccache. sccache fails every compilation when its server
+      # cannot start, e.g. when R2 is unreachable. In that case build without it instead of failing the job.
+      - name: Start sccache
+        id: sccache
+        run: |
+          if nix develop --command sccache --start-server; then
+            echo "started=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::sccache could not start; building without it."
+            echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"
+          fi
+
       - name: Run cargo-xtask
         run: nix develop --print-build-logs --command sh -c 'cargo xtask --debug --release'
+
+      - name: Show sccache statistics
+        if: ${{ always() && steps.sccache.outputs.started == 'true' }}
+        run: nix develop --command sccache --show-stats
 
   ci-on-Windows:
     runs-on: windows-latest
@@ -57,5 +85,32 @@ jobs:
           # so they cannot evict it from the repository's cache quota.
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
+      # Windows does not use the Nix devShell, so install sccache from its GitHub release
+      # (the action verifies the SHA-256 checksum). Same version as nixpkgs in flake.lock.
+      - name: Install sccache
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba # v0.0.11
+        with:
+          version: v0.18.0
+          # The action's post step runs `sccache --show-stats` and fails the job when the server
+          # cannot start. The statistics are shown by the step below instead.
+          disable_annotations: true
+
+      # Use sccache only when its server starts; see the comment in ci-on-Unix.
+      - name: Start sccache
+        id: sccache
+        shell: bash
+        run: |
+          if sccache --start-server; then
+            echo "started=true" >> "$GITHUB_OUTPUT"
+            echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+          else
+            echo "::warning::sccache could not start; building without it."
+          fi
+
       - name: Run cargo-xtask
         run: cargo xtask --debug --release
+
+      - name: Show sccache statistics
+        if: ${{ always() && steps.sccache.outputs.started == 'true' }}
+        shell: bash
+        run: sccache --show-stats
