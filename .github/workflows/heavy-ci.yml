@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  # sccache caches rustc outputs in Cloudflare R2, as in fast-ci.yml.
+  # sccache caches rustc outputs in Cloudflare R2, as in fast-ci.yml (except on macOS; see ci-on-Unix).
   # Runs without these secrets, such as Dependabot and fork pull requests, get empty values,
   # and sccache falls back to a local disk cache.
   SCCACHE_BUCKET: ${{ secrets.SCCACHE_R2_BUCKET }}
@@ -50,8 +50,9 @@ jobs:
           # change glibc, so start a new cache instead of restoring build scripts linked against the old one.
           key: ${{ hashFiles('flake.lock') }}
 
-      # Experiment: the release test build on macOS took about 110 minutes with sccache (15m 54s before).
-      # Build without sccache on macOS to see whether sccache causes it. CARGO_INCREMENTAL stays 0.
+      # Do not use sccache on macOS. With sccache, the release test build there took about 110 minutes
+      # even with a 100% cache hit rate, mostly in the final links of the test binaries, which sccache
+      # cannot cache. Without it, the same build took 13 minutes, as before sccache was introduced.
       - name: Disable sccache on macOS
         if: ${{ runner.os == 'macOS' }}
         run: echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"
