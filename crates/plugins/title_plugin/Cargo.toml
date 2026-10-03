@@ -12,3 +12,6 @@ publish.workspace = true
 [dependencies]
 bevy = { workspace = true }
 spacerobo_commons = { workspace = true }
+
+[lints]
+workspace = true

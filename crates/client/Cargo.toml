@@ -23,3 +23,6 @@ bevy.workspace = true
 clap.workspace = true
 confy.workspace = true
 directories.workspace = true
+
+[lints]
+workspace = true

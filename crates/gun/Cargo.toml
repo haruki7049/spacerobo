@@ -14,3 +14,6 @@ bevy.workspace = true
 avian3d.workspace = true
 spacerobo_commons.workspace = true
 spacerobo_target.workspace = true
+
+[lints]
+workspace = true

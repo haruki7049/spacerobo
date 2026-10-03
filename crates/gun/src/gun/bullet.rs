@@ -101,7 +101,7 @@ pub fn bullet_collision_system(
                 });
 
                 // Increment bounce count
-                bullet.bounce_count += 1;
+                bullet.bounce_count = bullet.bounce_count.saturating_add(1);
             }
         };
 
