@@ -182,12 +182,16 @@
 
           devShells.default = pkgs.mkShell {
             inherit buildInputs nativeBuildInputs;
+            packages = [ pkgs.sccache ];
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
 
             shellHook = ''
               export PS1="\n[nix-shell:\w]$ "
+              # Cache rustc outputs with sccache. Only cargo runs in this shell use it; Nix builds do not.
+              # An existing RUSTC_WRAPPER wins, so an empty value turns sccache off.
+              export RUSTC_WRAPPER="''${RUSTC_WRAPPER-sccache}"
             '';
           };
         };

@@ -10,6 +10,10 @@ The development environment is a [Nix](https://nixos.org) flake. With [direnv](h
 the shell with `nix develop`. The shell provides the pinned Rust toolchain and the native libraries that Bevy links
 against.
 
+The shell also sets `RUSTC_WRAPPER=sccache`, so cargo stores compiler outputs in [sccache](https://github.com/mozilla/sccache)'s
+local disk cache (`~/.cache/sccache` on Linux by default). To build without it, enter the shell with `RUSTC_WRAPPER` set
+to an empty value: `RUSTC_WRAPPER= nix develop`.
+
 ## Build, check and test
 
 `cargo xtask` runs `build`, `check`, `clippy`, `test` and `doc` for the whole workspace. `cargo x` is an alias.
