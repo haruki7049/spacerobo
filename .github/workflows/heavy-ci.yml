@@ -50,10 +50,17 @@ jobs:
           # change glibc, so start a new cache instead of restoring build scripts linked against the old one.
           key: ${{ hashFiles('flake.lock') }}
 
+      # Experiment: the release test build on macOS took about 110 minutes with sccache (15m 54s before).
+      # Build without sccache on macOS to see whether sccache causes it. CARGO_INCREMENTAL stays 0.
+      - name: Disable sccache on macOS
+        if: ${{ runner.os == 'macOS' }}
+        run: echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"
+
       # The Nix devShell sets RUSTC_WRAPPER=sccache. sccache fails every compilation when its server
       # cannot start, e.g. when R2 is unreachable. In that case build without it instead of failing the job.
       - name: Start sccache
         id: sccache
+        if: ${{ runner.os != 'macOS' }}
         run: |
           if nix develop --command sccache --start-server; then
             echo "started=true" >> "$GITHUB_OUTPUT"
