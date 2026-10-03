@@ -19,6 +19,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      # sccache is tried in fast-ci.yml first; keep the Nix devShell from enabling it here.
+      RUSTC_WRAPPER: ""
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
