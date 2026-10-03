@@ -31,6 +31,9 @@ jobs:
           # Branches and PRs restore the cache saved on main but do not save their own,
           # so they cannot evict it from the repository's cache quota.
           save-if: ${{ github.ref == 'refs/heads/main' }}
+          # Build scripts built in the Nix shell are linked against its glibc. A flake.lock update can
+          # change glibc, so start a new cache instead of restoring build scripts linked against the old one.
+          key: ${{ hashFiles('flake.lock') }}
 
       - name: Run cargo-xtask
         run: nix develop --print-build-logs --command sh -c 'cargo xtask --debug --release'
