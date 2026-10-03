@@ -16,6 +16,7 @@ matching avian3d"), and use the `chore:` type (`build:` fails the PR title check
 | Rust toolchain | `rust-toolchain.toml` (`channel`) |
 | Nix inputs | `flake.lock`, updated by weekly Dependabot pull requests; do not touch it unless asked |
 | GitHub Actions | `uses:` lines in `.github/workflows/*.yml` |
+| sccache | nixpkgs in `flake.lock` for the devShell and the Nix-based CI jobs; `version:` of `mozilla-actions/sccache-action` in the Windows job of `.github/workflows/heavy-ci.yml`. Keep them on the same version |
 
 The Nix build and every CI job read the toolchain from `rust-toolchain.toml`: the Windows job in
 `.github/workflows/heavy-ci.yml` installs it with `rustup toolchain install`. State a Rust bump in the PR.
