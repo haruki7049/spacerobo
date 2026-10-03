@@ -28,7 +28,7 @@ formatting changes that belong to your task.
 - **Gameplay**: The game needs a window, a GPU and audio output. Rendering, controls, physics feel, sound and UI
   layout cannot be confirmed from a headless session. Report them as unverified and ask the user to play-test with
   `cargo run`.
-- **Other platforms**: CI also builds on macOS and Windows (`rust-ci.yml`, `nix-checker.yml`). Local success on
+- **Other platforms**: CI also builds on macOS and Windows (`heavy-ci.yml`, `nix-checker.yml`). Local success on
   Linux does not prove those. Point to the CI run on the PR instead.
 - **A clean Nix store**: Derivations already in the local store are not rebuilt. Rely on CI for a clean-store build.
 

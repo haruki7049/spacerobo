@@ -21,7 +21,8 @@ cargo xtask test            # a single action
 cargo xtask --debug --release
 ```
 
-CI runs `cargo xtask --debug --release` on Linux, macOS and Windows.
+CI runs `cargo xtask --debug` on Linux (`fast-ci.yml`, quick feedback) and `cargo xtask --debug --release` on Linux,
+macOS and Windows (`heavy-ci.yml`, full check).
 
 Run the game with `cargo run`. Tests and CI are headless, so rendering, input and audio need a manual play-test.
 

@@ -1,14 +1,18 @@
-name: Rust
+# Full check on every platform, in the debug and the release profile.
+# It takes long, so it is not meant to be required for merging; fast-ci.yml is.
+name: heavy-ci
 
 on:
   pull_request:
   push:
     branches:
       - "main"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# The job IDs are part of the rust-cache keys; renaming them discards the caches saved on main.
 jobs:
   ci-on-Unix:
     strategy:
