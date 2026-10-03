@@ -58,7 +58,7 @@ Dash key. Hold it together with one of the movement keys (`forward`, `back`, `le
 
 #### player.keyboard.hover
 
-Hover key. You might want to use hover, if your viewpoints are so intensely mixed up that you are not sure which direction you are looking in. While the key is held, your movement and rotation slow down. Default: `"ControlLeft"`.
+Hover key. You might want to use hover if your viewpoints are so intensely mixed up that you are not sure which direction you are looking in. While the key is held, your movement and rotation slow down. Default: `"ControlLeft"`.
 
 #### player.keyboard.toggle_firemode
 
