@@ -6,7 +6,7 @@ pub mod select_fire;
 use self::select_fire::SelectFire;
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Damage;
+use spacerobo_commons::{Damage, configs::GameConfigs};
 use spacerobo_target::Common as CommonTarget;
 
 /// Gun component
@@ -27,6 +27,7 @@ impl Gun {
         meshes: &mut Assets<Mesh>,
         materials: &mut Assets<StandardMaterial>,
         origin: Vec3,
+        game_configs: &GameConfigs,
     ) {
         const DEFAULT_FIREMODE: SelectFire = SelectFire::Full;
 
@@ -39,9 +40,9 @@ impl Gun {
                     owner: parent.target_entity(),
                     select_fire: DEFAULT_FIREMODE,
                     interval: Interval {
-                        limit: 0.1,
+                        limit: game_configs.player.robo.gun.interval_limit,
                         rest: 0.0,
-                        amount: 0.01,
+                        amount: game_configs.player.robo.gun.interval_amount,
                     },
                 }),
                 ColliderConstructor::ConvexHullFromMesh,
@@ -133,6 +134,48 @@ pub fn gun_melee_damage_system(
 
 #[cfg(test)]
 mod tests {
+    /// `Gun::spawn_as_child`'s unit tests
+    mod spawn_as_child {
+        use super::super::Gun;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::configs::GameConfigs;
+
+        /// The spawned gun's fire-rate interval comes from `GameConfigs`, not a hardcoded value.
+        #[test]
+        fn interval_comes_from_game_configs() {
+            let mut world = World::new();
+            world.insert_resource(Assets::<Mesh>::default());
+            world.insert_resource(Assets::<StandardMaterial>::default());
+
+            let mut game_configs = GameConfigs::default();
+            game_configs.player.robo.gun.interval_limit = 0.25;
+            game_configs.player.robo.gun.interval_amount = 0.05;
+
+            world
+                .run_system_once(
+                    move |mut commands: Commands,
+                          mut meshes: ResMut<Assets<Mesh>>,
+                          mut materials: ResMut<Assets<StandardMaterial>>| {
+                        commands.spawn_empty().with_children(|parent| {
+                            Gun::spawn_as_child(
+                                parent,
+                                &mut meshes,
+                                &mut materials,
+                                Vec3::ZERO,
+                                &game_configs,
+                            );
+                        });
+                    },
+                )
+                .unwrap();
+
+            let gun = world.query::<&Gun>().single(&world).unwrap();
+            assert_eq!(gun.interval.limit, 0.25);
+            assert_eq!(gun.interval.amount, 0.05);
+            assert_eq!(gun.interval.rest, 0.0);
+        }
+    }
+
     /// `gun_melee_damage_system`'s unit tests
     mod gun_melee_damage_system {
         use super::super::{Gun, HUGE_DAMAGE, Interval, gun_melee_damage_system};

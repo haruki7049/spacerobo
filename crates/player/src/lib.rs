@@ -20,6 +20,7 @@ impl Player for Common {
         materials: &mut ResMut<Assets<StandardMaterial>>,
         kill_counter: &mut ResMut<KillCounter>,
         asset_server: Res<AssetServer>,
+        game_configs: &GameConfigs,
     ) {
         // Reset KillCounter
         kill_counter.reset();
@@ -45,7 +46,7 @@ impl Player for Common {
             // Gun
             .with_children(|parent| {
                 let origin = Vec3::new(1.0, -1.0, -3.0);
-                Gun::spawn_as_child(parent, meshes, materials, origin);
+                Gun::spawn_as_child(parent, meshes, materials, origin, game_configs);
 
                 debug!("Gun's parent.target_entity(): {:?}", parent.target_entity());
             });
@@ -74,6 +75,7 @@ pub fn setup_system(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut kill_counter: ResMut<KillCounter>,
     asset_server: Res<AssetServer>,
+    game_configs: Res<GameConfigs>,
 ) {
     Common::spawn(
         &mut commands,
@@ -81,6 +83,7 @@ pub fn setup_system(
         &mut materials,
         &mut kill_counter,
         asset_server,
+        &game_configs,
     );
 }
 
@@ -108,6 +111,7 @@ pub fn respawn_system(
             &mut materials,
             &mut kill_counter,
             asset_server,
+            &game_configs,
         );
     }
 }

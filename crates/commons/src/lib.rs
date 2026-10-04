@@ -1,6 +1,7 @@
 //! Spacerobo commons
 
 use bevy::prelude::*;
+use configs::GameConfigs;
 
 pub mod configs;
 mod controllable;
@@ -90,6 +91,7 @@ pub trait Player {
         materials: &mut ResMut<Assets<StandardMaterial>>,
         kill_counter: &mut ResMut<KillCounter>,
         asset_server: Res<AssetServer>,
+        game_configs: &GameConfigs,
     );
 }
 
