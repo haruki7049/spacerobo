@@ -92,21 +92,17 @@ pub fn semi_auto_system(
 }
 
 /// Full auto
+#[allow(clippy::too_many_arguments)]
 pub fn full_auto_system(
     mut commands: Commands,
-    mut querys: (
-        Query<(&mut Gun, &ChildOf)>,
-        Query<&GlobalTransform, With<Muzzle>>,
-        Query<&LinearVelocity>,
-    ),
+    mut gun_query: Query<(&mut Gun, &ChildOf)>,
+    muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
+    parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    // Unpacking querys
-    let (ref mut gun_query, muzzle_query, parent_linear_query) = querys;
-
     // Get muzzle's GlobalTransform
     for global_transform in muzzle_query.iter() {
         for (mut gun, child_of) in gun_query.iter_mut() {
