@@ -3,7 +3,7 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, Target};
+use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, KillCounter, Target};
 use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Common as CommonTarget;
 
@@ -101,13 +101,18 @@ fn when_going_outside_system(
 pub fn death_system(
     mut commands: Commands,
     mut event_reader: MessageReader<DeathMessage>,
-    hp_query: Query<&Hp>,
+    hp_query: Query<(&Hp, Option<&CommonTarget>)>,
+    mut kill_counter: ResMut<KillCounter>,
 ) {
     for death_event in event_reader.read() {
-        if let Ok(hp) = hp_query.get(death_event.entity) {
+        if let Ok((hp, target)) = hp_query.get(death_event.entity) {
             commands.entity(death_event.entity).despawn();
             if let Some(handle) = hp.death_sound.clone() {
                 commands.spawn(AudioPlayer::new(handle));
+            }
+
+            if target.is_some() {
+                kill_counter.increment();
             }
 
             debug!("{:?} which has Hp component is dead!!", death_event.entity);
@@ -288,6 +293,64 @@ mod tests {
             assert!(dead.contains(&x));
             assert!(dead.contains(&y));
             assert!(dead.contains(&z));
+        }
+    }
+
+    /// `death_system`'s unit tests
+    mod death_system {
+        use super::super::death_system;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::{DeathMessage, Hp, KillCounter};
+        use spacerobo_target::Common as CommonTarget;
+
+        /// A fresh world with `KillCounter`, an empty `DeathMessage` queue, and one dying
+        /// entity (`Hp` plus, optionally, the `Target` marker) already reported dead.
+        fn world_with_a_dying_entity(is_target: bool) -> (World, Entity) {
+            let mut world = World::new();
+            world.insert_resource(KillCounter::default());
+            world.init_resource::<Messages<DeathMessage>>();
+
+            let entity = if is_target {
+                world.spawn((Hp::default(), CommonTarget)).id()
+            } else {
+                world.spawn(Hp::default()).id()
+            };
+
+            world
+                .resource_mut::<Messages<DeathMessage>>()
+                .write(DeathMessage::new(entity));
+
+            (world, entity)
+        }
+
+        /// A target's death is counted.
+        #[test]
+        fn increments_the_kill_counter_when_a_target_dies() {
+            let (mut world, _target) = world_with_a_dying_entity(true);
+
+            world.run_system_once(death_system).unwrap();
+
+            assert_eq!(**world.resource::<KillCounter>(), 1);
+        }
+
+        /// A non-target's death (e.g. the player leaving the world boundary) is not counted.
+        #[test]
+        fn does_not_increment_the_kill_counter_for_a_non_target_death() {
+            let (mut world, _player) = world_with_a_dying_entity(false);
+
+            world.run_system_once(death_system).unwrap();
+
+            assert_eq!(**world.resource::<KillCounter>(), 0);
+        }
+
+        /// The dead entity is despawned regardless of whether it was a target.
+        #[test]
+        fn despawns_the_dead_entity() {
+            let (mut world, target) = world_with_a_dying_entity(true);
+
+            world.run_system_once(death_system).unwrap();
+
+            assert!(world.get_entity(target).is_err());
         }
     }
 }
