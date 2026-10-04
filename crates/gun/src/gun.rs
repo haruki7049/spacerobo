@@ -6,7 +6,7 @@ pub mod select_fire;
 use self::select_fire::SelectFire;
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{DeathMessage, Hp};
+use spacerobo_commons::Damage;
 use spacerobo_target::Common as CommonTarget;
 
 /// Gun component
@@ -99,11 +99,13 @@ pub fn gun_cooling_system(mut gun: Query<&mut Gun>) {
 }
 
 pub fn gun_melee_damage_system(
+    mut commands: Commands,
     mut collision_event_reader: MessageReader<CollisionStart>,
-    mut death_message_writer: MessageWriter<DeathMessage>,
     gun_query: Query<(), With<Gun>>,
-    mut target_query: Query<&mut Hp, With<CommonTarget>>,
+    target_query: Query<(), With<CommonTarget>>,
 ) {
+    const HUGE_DAMAGE: f32 = 20000.0;
+
     for event in collision_event_reader.read() {
         debug!("Collision!!");
 
@@ -119,15 +121,11 @@ pub fn gun_melee_damage_system(
             continue;
         };
 
-        const HUGE_DAMAGE: f32 = 20000.0;
-
-        if let Ok(mut hp) = target_query.get_mut(target_entity) {
-            // Decrease HP
-            hp.rest -= HUGE_DAMAGE;
-
-            if hp.rest <= 0. {
-                death_message_writer.write(DeathMessage::new(target_entity));
-            }
+        if target_query.contains(target_entity) {
+            commands.trigger(Damage {
+                target: target_entity,
+                amount: HUGE_DAMAGE,
+            });
         }
     }
 }
