@@ -5189,7 +5189,17 @@ dependencies = [
  "avian3d",
  "bevy",
  "serde",
+ "spacerobo_configs",
  "spacerobo_math",
+]
+
+[[package]]
+name = "spacerobo_configs"
+version = "0.2.1"
+dependencies = [
+ "bevy_ecs",
+ "bevy_input",
+ "serde",
  "toml 1.1.6+spec-1.1.0",
 ]
 

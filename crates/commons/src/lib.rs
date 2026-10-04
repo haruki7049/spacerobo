@@ -3,7 +3,8 @@
 use bevy::prelude::*;
 use configs::GameConfigs;
 
-pub mod configs;
+pub use spacerobo_configs as configs;
+
 mod controllable;
 
 pub use controllable::{Controllable, ControllablePlugin};
