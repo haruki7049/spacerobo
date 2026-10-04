@@ -53,7 +53,7 @@ fn fire(
 pub fn semi_auto_system(
     mut commands: Commands,
     mut querys: (
-        Query<(&Gun, &ChildOf), With<Gun>>,
+        Query<(&Gun, &ChildOf)>,
         Query<&GlobalTransform, With<Muzzle>>,
         Query<&LinearVelocity>,
     ),
@@ -99,7 +99,7 @@ pub fn semi_auto_system(
 pub fn full_auto_system(
     mut commands: Commands,
     mut querys: (
-        Query<(&mut Gun, &ChildOf), With<Gun>>,
+        Query<(&mut Gun, &ChildOf)>,
         Query<&GlobalTransform, With<Muzzle>>,
         Query<&LinearVelocity>,
     ),
