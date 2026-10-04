@@ -7,6 +7,11 @@ use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, Target};
 use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Common as CommonTarget;
 
+/// The world extends this far from the origin on every axis, in both directions. Entities that
+/// cross it are despawned (`when_going_outside_system`), and the visible grid (`spawn_boundary_grid`)
+/// is drawn at this same distance, so the two stay in sync.
+const WORLD_BOUNDARY_LIMIT: f32 = 2000.0;
+
 pub struct ShootingRangePlugin;
 
 impl Plugin for ShootingRangePlugin {
@@ -86,13 +91,7 @@ fn when_going_outside_system(
     mut event_writer: MessageWriter<DeathMessage>,
 ) {
     for (transform, entity) in query.iter_mut() {
-        if transform.translation.x > 2000.0
-            || transform.translation.y > 2000.0
-            || transform.translation.z > 2000.0
-            || transform.translation.x < -2000.0
-            || transform.translation.y < -2000.0
-            || transform.translation.z < -2000.0
-        {
+        if transform.translation.abs().max_element() > WORLD_BOUNDARY_LIMIT {
             debug!("Creating DeathMessage by area outside...");
             event_writer.write(DeathMessage::new(entity));
         }
@@ -121,7 +120,7 @@ pub fn spawn_boundary_grid(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    let limit = 2000.0;
+    let limit = WORLD_BOUNDARY_LIMIT;
     let spacing = 200.0;
     let thickness = 2.0;
 
