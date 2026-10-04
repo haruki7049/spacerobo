@@ -1,6 +1,6 @@
 //! Player's Configuration
 
-use bevy::prelude::*;
+use bevy_input::keyboard::KeyCode;
 use serde::{Deserialize, Serialize};
 
 /// Configuration struct

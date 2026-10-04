@@ -27,10 +27,13 @@ that points upward or sideways.
 
 | Layer | Crate (path) | Contents | Workspace deps |
 | :--- | :--- | :--- | :--- |
-| 0 | `spacerobo_commons` (`crates/commons`) | `GameMode` state, `Hp`, `KillCounter`, `DeathMessage`, `Damage`, the `Player`/`Target`/`Bullet` traits, `GameConfigs`, `ControllablePlugin` (keyboard/mouse control) | none |
+| — | `spacerobo_math` (`crates/math`) | Shared pure vector math (thrust, camera rotation, bullet velocity), independent of `bevy`'s ECS and `avian3d` | none |
+| — | `spacerobo_configs` (`crates/configs`) | `GameConfigs`/`player::Config` and their TOML (de)serialization; depends on `bevy_ecs`+`bevy_input` only, not the full `bevy` crate | none |
+| 0 | `spacerobo_commons` (`crates/commons`) | `GameMode` state, `Hp`, `KillCounter`, `DeathMessage`, `Damage`, the `Player`/`Target`/`Bullet` traits, `ControllablePlugin` (keyboard/mouse control); re-exports `spacerobo_configs` as `commons::configs` | math, configs |
 | 1 | `spacerobo_target` (`crates/target`) | Target entity | commons |
-| 2 | `spacerobo_gun` (`crates/gun`) | `Gun`, bullets, select fire, `GunPlugin` | commons, target |
-| 3 | `spacerobo_player` (`crates/player`) | Player entity, HUD, respawn, `PlayerCommonPlugin` | commons, gun |
+| 1 | `spacerobo_hud` (`crates/hud`) | The in-game HUD: heading, coordinates, HP and kill counter, `HudPlugin` | commons |
+| 2 | `spacerobo_gun` (`crates/gun`) | `Gun`, bullets, select fire, `GunPlugin` | commons, target, math |
+| 3 | `spacerobo_player` (`crates/player`) | Player entity, respawn, `PlayerCommonPlugin` | commons, gun, hud |
 | 4 | `spacerobo_title_plugin` (`crates/plugins/title_plugin`) | Title screen (`GameMode::Title`) | commons |
 | 4 | `spacerobo_shooting_range_plugin` (`crates/plugins/shooting_range_plugin`) | Shooting range scene (`GameMode::InGame`): targets, boundary, damage and death | commons, target, player |
 | 5 | `spacerobo_client` (`crates/client`) | `spr` binary: CLI, config loading, `App` assembly | commons, both plugins |
