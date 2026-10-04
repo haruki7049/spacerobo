@@ -39,6 +39,9 @@ members = [
   # Shared math
   "crates/math",
 
+  # HUD
+  "crates/hud",
+
   # Configuration
   "crates/configs",
 
@@ -65,6 +68,7 @@ spacerobo_gun.path = "crates/gun"
 spacerobo_player.path = "crates/player"
 spacerobo_target.path = "crates/target"
 spacerobo_math.path = "crates/math"
+spacerobo_hud.path = "crates/hud"
 spacerobo_configs.path = "crates/configs"
 spacerobo_title_plugin.path = "crates/plugins/title_plugin"
 spacerobo_shooting_range_plugin.path = "crates/plugins/shooting_range_plugin"

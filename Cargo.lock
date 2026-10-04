@@ -5215,6 +5215,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_hud"
+version = "0.2.1"
+dependencies = [
+ "bevy",
+ "spacerobo_commons",
+]
+
+[[package]]
 name = "spacerobo_math"
 version = "0.2.1"
 dependencies = [
@@ -5229,6 +5237,7 @@ dependencies = [
  "bevy",
  "spacerobo_commons",
  "spacerobo_gun",
+ "spacerobo_hud",
 ]
 
 [[package]]
