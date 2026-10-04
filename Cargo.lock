@@ -5189,6 +5189,7 @@ dependencies = [
  "avian3d",
  "bevy",
  "serde",
+ "spacerobo_math",
  "toml 1.1.6+spec-1.1.0",
 ]
 
@@ -5199,7 +5200,15 @@ dependencies = [
  "avian3d",
  "bevy",
  "spacerobo_commons",
+ "spacerobo_math",
  "spacerobo_target",
+]
+
+[[package]]
+name = "spacerobo_math"
+version = "0.2.1"
+dependencies = [
+ "bevy_math",
 ]
 
 [[package]]

@@ -36,6 +36,9 @@ members = [
   "crates/gun",
   "crates/target",
 
+  # Shared math
+  "crates/math",
+
   # cargo-xtask
   "crates/xtask",
 ]
@@ -58,8 +61,10 @@ spacerobo_commons.path = "crates/commons"
 spacerobo_gun.path = "crates/gun"
 spacerobo_player.path = "crates/player"
 spacerobo_target.path = "crates/target"
+spacerobo_math.path = "crates/math"
 spacerobo_title_plugin.path = "crates/plugins/title_plugin"
 spacerobo_shooting_range_plugin.path = "crates/plugins/shooting_range_plugin"
+bevy_math = "0.18.1"
 bevy = { version = "0.18.1", features = [
   "debug",
   "serialize",
