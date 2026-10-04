@@ -53,7 +53,7 @@ fn fire(
 #[allow(clippy::too_many_arguments)]
 pub fn semi_auto_system(
     mut commands: Commands,
-    gun_query: Query<(&Gun, &ChildOf), With<Gun>>,
+    gun_query: Query<(&Gun, &ChildOf)>,
     muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
     parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -95,7 +95,7 @@ pub fn semi_auto_system(
 pub fn full_auto_system(
     mut commands: Commands,
     mut querys: (
-        Query<(&mut Gun, &ChildOf), With<Gun>>,
+        Query<(&mut Gun, &ChildOf)>,
         Query<&GlobalTransform, With<Muzzle>>,
         Query<&LinearVelocity>,
     ),
