@@ -87,10 +87,10 @@ fn setup_system(
 }
 
 fn when_going_outside_system(
-    mut query: Query<(&Transform, Entity), With<Hp>>,
+    query: Query<(&Transform, Entity), With<Hp>>,
     mut event_writer: MessageWriter<DeathMessage>,
 ) {
-    for (transform, entity) in query.iter_mut() {
+    for (transform, entity) in query.iter() {
         if transform.translation.abs().max_element() > WORLD_BOUNDARY_LIMIT {
             debug!("Creating DeathMessage by area outside...");
             event_writer.write(DeathMessage::new(entity));
