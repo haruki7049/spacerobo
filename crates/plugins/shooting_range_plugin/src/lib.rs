@@ -48,6 +48,18 @@ fn setup_system(
         Transform::from_xyz(2.0, 8.0, 2.0),
     ));
 
+    // One entry per octant: the sign applied to each axis, and that octant's target color.
+    let octants: [(Vec3, Color); 8] = [
+        (Vec3::new(1., 1., 1.), RED.into()),
+        (Vec3::new(1., 1., -1.), WHITE.into()),
+        (Vec3::new(1., -1., 1.), WHITE.into()),
+        (Vec3::new(1., -1., -1.), GREEN.into()),
+        (Vec3::new(-1., 1., 1.), WHITE.into()),
+        (Vec3::new(-1., 1., -1.), YELLOW.into()),
+        (Vec3::new(-1., -1., 1.), BLUE.into()),
+        (Vec3::new(-1., -1., -1.), WHITE.into()),
+    ];
+
     // Targets
     for i in 1..5 {
         for j in 1..5 {
@@ -56,77 +68,16 @@ fn setup_system(
                 let j_float = j as f32;
                 let k_float = k as f32;
 
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    RED.into(),
-                    Vec3::new(i_float * 10.0, j_float * 10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
-                    Vec3::new(i_float * 10.0, j_float * 10.0, k_float * -10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
-                    Vec3::new(i_float * 10.0, j_float * -10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    GREEN.into(),
-                    Vec3::new(i_float * 10.0, j_float * -10.0, k_float * -10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
-                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    YELLOW.into(),
-                    Vec3::new(i_float * -10.0, j_float * 10.0, k_float * -10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    BLUE.into(),
-                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * 10.0),
-                );
-
-                CommonTarget::spawn(
-                    &mut commands,
-                    &mut meshes,
-                    &asset_server,
-                    &mut materials,
-                    WHITE.into(),
-                    Vec3::new(i_float * -10.0, j_float * -10.0, k_float * -10.0),
-                );
+                for (sign, color) in octants {
+                    CommonTarget::spawn(
+                        &mut commands,
+                        &mut meshes,
+                        &asset_server,
+                        &mut materials,
+                        color,
+                        Vec3::new(i_float, j_float, k_float) * sign * 10.0,
+                    );
+                }
             }
         }
     }
