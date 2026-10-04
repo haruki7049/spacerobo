@@ -202,3 +202,93 @@ fn apply_damage_system(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    /// `when_going_outside_system`'s unit tests
+    mod when_going_outside_system {
+        use super::super::when_going_outside_system;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::{DeathMessage, Hp};
+
+        fn world_with_death_messages() -> World {
+            let mut world = World::new();
+            world.init_resource::<Messages<DeathMessage>>();
+            world
+        }
+
+        fn spawn_at(world: &mut World, position: Vec3) -> Entity {
+            world
+                .spawn((Transform::from_translation(position), Hp::default()))
+                .id()
+        }
+
+        /// Entities marked dead by the system, in the order their `DeathMessage` was written.
+        fn died(world: &mut World) -> Vec<Entity> {
+            world
+                .run_system_once(|mut reader: MessageReader<DeathMessage>| {
+                    reader
+                        .read()
+                        .map(|message| message.entity)
+                        .collect::<Vec<_>>()
+                })
+                .unwrap()
+        }
+
+        /// An entity well within the boundary is left alone.
+        #[test]
+        fn leaves_entities_within_bounds_alone() {
+            let mut world = world_with_death_messages();
+            spawn_at(&mut world, Vec3::ZERO);
+
+            world.run_system_once(when_going_outside_system).unwrap();
+
+            assert!(died(&mut world).is_empty());
+        }
+
+        /// An entity exactly at the boundary is left alone (the check is a strict `>`).
+        #[test]
+        fn leaves_entities_exactly_at_the_boundary_alone() {
+            let mut world = world_with_death_messages();
+            spawn_at(&mut world, Vec3::new(2000.0, 2000.0, 2000.0));
+
+            world.run_system_once(when_going_outside_system).unwrap();
+
+            assert!(died(&mut world).is_empty());
+        }
+
+        /// An entity just beyond the positive bound on any single axis is marked dead.
+        #[test]
+        fn marks_entities_beyond_each_positive_bound_as_dead() {
+            let mut world = world_with_death_messages();
+            let x = spawn_at(&mut world, Vec3::new(2000.1, 0., 0.));
+            let y = spawn_at(&mut world, Vec3::new(0., 2000.1, 0.));
+            let z = spawn_at(&mut world, Vec3::new(0., 0., 2000.1));
+
+            world.run_system_once(when_going_outside_system).unwrap();
+
+            let dead = died(&mut world);
+            assert_eq!(dead.len(), 3);
+            assert!(dead.contains(&x));
+            assert!(dead.contains(&y));
+            assert!(dead.contains(&z));
+        }
+
+        /// An entity just beyond the negative bound on any single axis is marked dead.
+        #[test]
+        fn marks_entities_beyond_each_negative_bound_as_dead() {
+            let mut world = world_with_death_messages();
+            let x = spawn_at(&mut world, Vec3::new(-2000.1, 0., 0.));
+            let y = spawn_at(&mut world, Vec3::new(0., -2000.1, 0.));
+            let z = spawn_at(&mut world, Vec3::new(0., 0., -2000.1));
+
+            world.run_system_once(when_going_outside_system).unwrap();
+
+            let dead = died(&mut world);
+            assert_eq!(dead.len(), 3);
+            assert!(dead.contains(&x));
+            assert!(dead.contains(&y));
+            assert!(dead.contains(&z));
+        }
+    }
+}
