@@ -5203,6 +5203,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "spacerobo_obc"
+version = "0.2.1"
+
+[[package]]
 name = "spacerobo_player"
 version = "0.2.1"
 dependencies = [

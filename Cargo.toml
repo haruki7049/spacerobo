@@ -36,6 +36,9 @@ members = [
   "crates/gun",
   "crates/target",
 
+  # On-board computer
+  "crates/obc",
+
   # cargo-xtask
   "crates/xtask",
 ]

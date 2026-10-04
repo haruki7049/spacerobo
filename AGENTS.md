@@ -34,6 +34,7 @@ that points upward or sideways.
 | 4 | `spacerobo_title_plugin` (`crates/plugins/title_plugin`) | Title screen (`GameMode::Title`) | commons |
 | 4 | `spacerobo_shooting_range_plugin` (`crates/plugins/shooting_range_plugin`) | Shooting range scene (`GameMode::InGame`): targets, boundary, damage and death | commons, target, player |
 | 5 | `spacerobo_client` (`crates/client`) | `spr` binary: CLI, config loading, `App` assembly | commons, both plugins |
+| — | `spacerobo_obc` (`crates/obc`) | On-board computer: a Bevy-independent RV32I virtual machine (bus/MMIO, CPU core); not yet wired into any other crate | none |
 | — | `spacerobo_xtask` (`crates/xtask`) | `cargo xtask` build runner; excluded from its own runs | none |
 
 Other paths:
