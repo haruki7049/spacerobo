@@ -3,7 +3,7 @@ use bevy::{
     color::palettes::basic::{BLUE, GREEN, RED, WHITE, YELLOW},
     prelude::*,
 };
-use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, KillCounter, Target};
+use spacerobo_commons::{Damage, DeathMessage, GameMode, Hp, Target};
 use spacerobo_player::PlayerCommonPlugin;
 use spacerobo_target::Common as CommonTarget;
 
@@ -12,9 +12,7 @@ pub struct ShootingRangePlugin;
 impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlayerCommonPlugin);
-        app.add_message::<DeathMessage>();
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
-        app.insert_resource(KillCounter::default());
         app.add_systems(
             OnEnter(GameMode::InGame),
             (setup_system, spawn_boundary_grid).run_if(in_state(GameMode::InGame)),
