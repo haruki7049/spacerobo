@@ -13,6 +13,7 @@ publish.workspace = true
 avian3d.workspace = true
 bevy.workspace = true
 serde.workspace = true
+spacerobo_math.workspace = true
 
 [dev-dependencies]
 toml.workspace = true

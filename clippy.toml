@@ -1,8 +1,14 @@
 # Bevy's float vector types: glam's `Vec3` and `Quat`, and bevy_math's `Dir3`.
 # They have no checked or saturating methods.
-# Clippy matches these `bevy::prelude` paths here; the defining paths such as `glam::Vec3` do not match.
+# Clippy matches the exact import path here, so both the `bevy::prelude` re-export (used by most
+# crates) and the direct `bevy_math` path (used by `spacerobo_math`, which depends on `bevy_math`
+# directly rather than the full `bevy` crate) are listed; the defining path `glam::Vec3` does not
+# match either.
 arithmetic-side-effects-allowed = [
   "bevy::prelude::Dir3",
   "bevy::prelude::Quat",
   "bevy::prelude::Vec3",
+  "bevy_math::Dir3",
+  "bevy_math::Quat",
+  "bevy_math::Vec3",
 ]
