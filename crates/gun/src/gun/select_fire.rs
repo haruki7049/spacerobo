@@ -212,6 +212,12 @@ mod tests {
             world
         }
 
+        fn world_without_input() -> World {
+            let mut world = World::new();
+            world.insert_resource(ButtonInput::<KeyCode>::default());
+            world
+        }
+
         fn spawn_gun(world: &mut World, select_fire: SelectFire) {
             world.spawn(Gun {
                 owner: Entity::PLACEHOLDER,
@@ -248,6 +254,18 @@ mod tests {
             spawn_gun(&mut world, SelectFire::Full);
 
             world.run_system_once(toggle_select_fire_system).unwrap();
+        }
+
+        /// Without the toggle key pressed, the gun's select-fire setting is left unchanged.
+        #[test]
+        fn leaves_select_fire_unchanged_without_input() {
+            let mut world = world_without_input();
+            spawn_gun(&mut world, SelectFire::Semi);
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
+
+            let select_fire = world.query::<&Gun>().single(&world).unwrap().select_fire;
+            assert!(matches!(select_fire, SelectFire::Semi));
         }
     }
 }
