@@ -1,13 +1,12 @@
 //! # Player systems, Compoments & etc...
 
-pub mod ui;
-
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{
     Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
 };
 use spacerobo_gun::{Gun, GunPlugin};
+use spacerobo_hud::HudPlugin;
 
 /// Player Common Component
 #[derive(Component)]
@@ -58,13 +57,11 @@ pub struct PlayerCommonPlugin;
 impl Plugin for PlayerCommonPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(GunPlugin);
+        app.add_plugins(HudPlugin);
         app.add_message::<DeathMessage>();
         app.insert_resource(KillCounter::default());
-        app.add_systems(OnEnter(GameMode::InGame), (setup_system, ui::setup_system));
-        app.add_systems(
-            Update,
-            (respawn_system, ui::update_system).run_if(in_state(GameMode::InGame)),
-        );
+        app.add_systems(OnEnter(GameMode::InGame), setup_system);
+        app.add_systems(Update, respawn_system.run_if(in_state(GameMode::InGame)));
     }
 }
 

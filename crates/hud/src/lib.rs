@@ -1,10 +1,9 @@
-//! # UI systems, components & etc...
+//! # The in-game HUD: heading, coordinates, HP and kill counter.
 
 #![allow(clippy::type_complexity)]
 
-use super::Common as PlayerCommon;
 use bevy::prelude::*;
-use spacerobo_commons::{GameMode, Hp, KillCounter};
+use spacerobo_commons::{Controllable, GameMode, Hp, KillCounter};
 
 #[derive(Component)]
 pub struct HeadingIndicator;
@@ -17,6 +16,15 @@ pub struct KillCounterUI;
 
 #[derive(Component)]
 pub struct HpUI;
+
+pub struct HudPlugin;
+
+impl Plugin for HudPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(OnEnter(GameMode::InGame), setup_system);
+        app.add_systems(Update, update_system.run_if(in_state(GameMode::InGame)));
+    }
+}
 
 pub fn setup_system(mut commands: Commands) {
     // Heading Indicator
@@ -70,8 +78,11 @@ pub fn update_system(
         Query<&mut TextSpan, With<HpUI>>,
         Query<&mut TextSpan, With<KillCounterUI>>,
     )>,
-    transform_query: Query<&Transform, (With<PlayerCommon>, Changed<Transform>)>,
-    hp_query: Query<&Hp, (With<PlayerCommon>, Changed<Hp>)>,
+    // `Controllable` is reused here as the player identifier: in this game exactly one entity
+    // (the player camera) ever has it, since it otherwise exists to drive `ControllablePlugin`'s
+    // keyboard/mouse systems, a different (if coincident) concern from "this is the player".
+    transform_query: Query<&Transform, (With<Controllable>, Changed<Transform>)>,
+    hp_query: Query<&Hp, (With<Controllable>, Changed<Hp>)>,
     kill_counter: Res<KillCounter>,
 ) {
     if let Ok(transform) = transform_query.single() {
@@ -102,16 +113,16 @@ pub fn update_system(
 mod tests {
     /// `update_system`'s unit tests
     mod update_system {
-        use super::super::{HpUI, KillCounterUI, PlayerCommon, update_system};
+        use super::super::{HpUI, KillCounterUI, update_system};
         use bevy::prelude::*;
-        use spacerobo_commons::{Hp, KillCounter};
+        use spacerobo_commons::{Controllable, Hp, KillCounter};
 
         fn app_with_player() -> App {
             let mut app = App::new();
             app.add_systems(Update, update_system);
             app.insert_resource(KillCounter::default());
             app.world_mut()
-                .spawn((Transform::default(), Hp::new(50., None), PlayerCommon));
+                .spawn((Transform::default(), Hp::new(50., None), Controllable));
             app.world_mut().spawn((TextSpan::default(), HpUI));
             app.world_mut().spawn((TextSpan::default(), KillCounterUI));
             app
