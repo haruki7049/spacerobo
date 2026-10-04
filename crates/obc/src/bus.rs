@@ -50,7 +50,9 @@ impl Bus for Ram {
     fn write(&mut self, addr: u32, size: u8, value: u32) {
         for offset in 0..u32::from(size) {
             let byte = value.wrapping_shr(offset.wrapping_mul(8)).to_le_bytes()[0];
-            if let Some(index) = addr.checked_add(offset).and_then(|a| usize::try_from(a).ok())
+            if let Some(index) = addr
+                .checked_add(offset)
+                .and_then(|a| usize::try_from(a).ok())
                 && let Some(slot) = self.data.get_mut(index)
             {
                 *slot = byte;
@@ -98,7 +100,9 @@ impl Bus for Mmio {
         self.regions
             .iter()
             .find(|region| region.contains(addr))
-            .map_or(0, |region| region.bus.read(addr.wrapping_sub(region.base), size))
+            .map_or(0, |region| {
+                region.bus.read(addr.wrapping_sub(region.base), size)
+            })
     }
 
     fn write(&mut self, addr: u32, size: u8, value: u32) {
