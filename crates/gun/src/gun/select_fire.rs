@@ -154,7 +154,9 @@ pub fn full_auto_system(
 /// Full auto <---> Semi auto
 pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
     if keyboard.just_pressed(KeyCode::KeyT) {
-        let mut gun = gun.single_mut().unwrap();
+        let Ok(mut gun) = gun.single_mut() else {
+            return;
+        };
 
         match gun.select_fire {
             SelectFire::Semi => gun.fullauto(),
@@ -192,6 +194,60 @@ mod tests {
             let owner_velocity: Vec3 = Vec3::Z * BULLET_FORCE;
             let result: Vec3 = bullet_velocity(Dir3::NEG_Z, owner_velocity);
             assert_eq!(result, Vec3::ZERO);
+        }
+    }
+
+    /// `toggle_select_fire_system`'s unit tests
+    mod toggle_select_fire_system {
+        use super::super::{Gun, SelectFire, toggle_select_fire_system};
+        use crate::gun::Interval;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+
+        fn world_with_key_t_pressed() -> World {
+            let mut keyboard = ButtonInput::<KeyCode>::default();
+            keyboard.press(KeyCode::KeyT);
+
+            let mut world = World::new();
+            world.insert_resource(keyboard);
+            world
+        }
+
+        fn spawn_gun(world: &mut World, select_fire: SelectFire) {
+            world.spawn(Gun {
+                owner: Entity::PLACEHOLDER,
+                select_fire,
+                interval: Interval::default(),
+            });
+        }
+
+        /// With exactly one gun, pressing T toggles its select-fire setting.
+        #[test]
+        fn toggles_the_single_guns_select_fire() {
+            let mut world = world_with_key_t_pressed();
+            spawn_gun(&mut world, SelectFire::Semi);
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
+
+            let select_fire = world.query::<&Gun>().single(&world).unwrap().select_fire;
+            assert!(matches!(select_fire, SelectFire::Full));
+        }
+
+        /// With no guns, the system returns early instead of panicking on `single_mut`.
+        #[test]
+        fn does_not_panic_with_no_guns() {
+            let mut world = world_with_key_t_pressed();
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
+        }
+
+        /// With more than one gun, the system returns early instead of panicking on `single_mut`.
+        #[test]
+        fn does_not_panic_with_multiple_guns() {
+            let mut world = world_with_key_t_pressed();
+            spawn_gun(&mut world, SelectFire::Semi);
+            spawn_gun(&mut world, SelectFire::Full);
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
         }
     }
 }
