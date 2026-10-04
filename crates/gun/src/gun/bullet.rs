@@ -37,7 +37,7 @@ impl Bullet for Common {
                 ..Default::default()
             })),
             RigidBody::Dynamic,
-            Collider::sphere(0.015625),
+            Collider::sphere(BULLET_SIZE),
             SweptCcd::default(),
             LinearVelocity(force),
             Mass(3.0),
@@ -131,6 +131,43 @@ pub fn bullet_collision_system(
 
 #[cfg(test)]
 mod tests {
+    /// `Common::shoot`'s unit tests
+    mod shoot {
+        use super::super::{BULLET_SIZE, Common};
+        use avian3d::prelude::*;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::Bullet;
+
+        /// The spawned bullet's collider is sized to match its visual mesh.
+        #[test]
+        fn collider_matches_the_visual_size() {
+            let mut world = World::new();
+            world.insert_resource(Assets::<Mesh>::default());
+            world.insert_resource(Assets::<StandardMaterial>::default());
+
+            world
+                .run_system_once(
+                    |mut commands: Commands,
+                     mut meshes: ResMut<Assets<Mesh>>,
+                     mut materials: ResMut<Assets<StandardMaterial>>| {
+                        Common::shoot(
+                            &mut commands,
+                            &mut meshes,
+                            &mut materials,
+                            Vec3::ZERO,
+                            Vec3::NEG_Z,
+                            Entity::PLACEHOLDER,
+                        );
+                    },
+                )
+                .unwrap();
+
+            let collider = world.query::<&Collider>().single(&world).unwrap();
+            let radius = collider.shape().as_ball().unwrap().radius;
+            assert_eq!(radius, BULLET_SIZE);
+        }
+    }
+
     /// `bullet_collision_system`'s unit tests
     mod bullet_collision_system {
         use super::super::{Common, bullet_collision_system};
