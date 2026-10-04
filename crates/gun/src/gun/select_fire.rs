@@ -16,6 +16,14 @@ pub enum SelectFire {
     Full,
 }
 
+/// Bullet travel speed, in world units per second, before the owner's own velocity is added.
+const BULLET_FORCE: f32 = 500.0;
+
+/// Bullet velocity: `direction` scaled by `BULLET_FORCE`, plus the owner's own velocity.
+fn bullet_velocity(direction: Dir3, owner_velocity: Vec3) -> Vec3 {
+    direction * BULLET_FORCE + owner_velocity
+}
+
 /// Spawn a bullet from one muzzle, combining its travel speed with the owner's velocity.
 fn fire(
     commands: &mut Commands,
@@ -26,11 +34,9 @@ fn fire(
     owner_velocity: Vec3,
     owner: Entity,
 ) {
-    const BULLET_FORCE: f32 = 500.0;
-
     let bullet_origin: Vec3 = muzzle_transform.translation();
     let direction: Dir3 = muzzle_transform.forward();
-    let bullet_vector: Vec3 = direction * BULLET_FORCE + owner_velocity;
+    let bullet_vector: Vec3 = bullet_velocity(direction, owner_velocity);
 
     Common::shoot(
         commands,
@@ -153,6 +159,39 @@ pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonI
         match gun.select_fire {
             SelectFire::Semi => gun.fullauto(),
             SelectFire::Full => gun.semiauto(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    /// `bullet_velocity`'s unit tests
+    mod bullet_velocity {
+        use super::super::{BULLET_FORCE, bullet_velocity};
+        use bevy::prelude::*;
+
+        /// With no owner velocity, the bullet travels along its direction scaled by the force.
+        #[test]
+        fn zero_owner_velocity_scales_direction_by_force() {
+            let result: Vec3 = bullet_velocity(Dir3::NEG_Z, Vec3::ZERO);
+            assert_eq!(result, Vec3::NEG_Z * BULLET_FORCE);
+        }
+
+        /// The owner's velocity is added on top of the bullet's own travel vector.
+        #[test]
+        fn owner_velocity_is_added_to_travel_vector() {
+            let owner_velocity: Vec3 = Vec3::new(1., 2., 3.);
+            let result: Vec3 = bullet_velocity(Dir3::NEG_Z, owner_velocity);
+            let expected: Vec3 = Vec3::NEG_Z * BULLET_FORCE + owner_velocity;
+            assert_eq!(result, expected);
+        }
+
+        /// An owner velocity directly opposing the bullet's travel direction reduces its resultant speed.
+        #[test]
+        fn opposing_owner_velocity_reduces_resultant_speed() {
+            let owner_velocity: Vec3 = Vec3::Z * BULLET_FORCE;
+            let result: Vec3 = bullet_velocity(Dir3::NEG_Z, owner_velocity);
+            assert_eq!(result, Vec3::ZERO);
         }
     }
 }
