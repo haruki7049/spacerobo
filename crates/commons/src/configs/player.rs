@@ -13,10 +13,22 @@ pub struct Config {
 }
 
 // Configurations about robo
-#[derive(Serialize, Deserialize, Debug, Default, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(default)]
 pub struct RoboConfig {
     pub thruster: ThrusterConfig,
+
+    /// Linear and angular velocity multiplier applied each frame while the hover key is held.
+    pub hover_damping: f32,
+}
+
+impl std::default::Default for RoboConfig {
+    fn default() -> Self {
+        Self {
+            thruster: ThrusterConfig::default(),
+            hover_damping: 0.7,
+        }
+    }
 }
 
 // Configurations about thrusters
@@ -159,5 +171,19 @@ mod tests {
             config.robo.thruster.force.accelerate,
             ForceConfig::default().accelerate
         );
+    }
+
+    #[test]
+    fn hover_damping_can_be_tuned_independently_of_thruster_force() {
+        let config: Config = toml::from_str(
+            r#"
+            [robo]
+            hover_damping = 0.5
+            "#,
+        )
+        .unwrap();
+
+        assert_eq!(config.robo.hover_damping, 0.5);
+        assert_eq!(config.robo.thruster, ThrusterConfig::default());
     }
 }

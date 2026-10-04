@@ -21,6 +21,9 @@ respawn = "Space"
 x_reverse = false
 y_reverse = false
 
+[player.robo]
+hover_damping = 0.7
+
 [player.robo.thruster.force]
 accelerate = 0.7
 dash = 3.0
@@ -85,6 +88,14 @@ Reverses the horizontal mouse axis. Default: `false`.
 #### player.mouse.y_reverse
 
 Reverses the vertical mouse axis. Default: `false`.
+
+### player.robo
+
+Configuration for the robo itself, outside of the thrusters.
+
+#### player.robo.hover_damping
+
+Linear and angular velocity multiplier applied each frame while the `hover` key is held. A smaller value brakes harder. Default: `0.7`.
 
 ### player.robo.thruster.force
 
