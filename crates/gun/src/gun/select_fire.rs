@@ -50,21 +50,17 @@ fn fire(
 }
 
 /// Semi auto
+#[allow(clippy::too_many_arguments)]
 pub fn semi_auto_system(
     mut commands: Commands,
-    mut querys: (
-        Query<(&Gun, &ChildOf)>,
-        Query<&GlobalTransform, With<Muzzle>>,
-        Query<&LinearVelocity>,
-    ),
+    gun_query: Query<(&Gun, &ChildOf)>,
+    muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
+    parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    // Unpacking querys
-    let (ref mut gun_query, muzzle_query, parent_linear_query) = querys;
-
     for (gun, child_of) in gun_query.iter() {
         if !(mouse.just_pressed(MouseButton::Left) && gun.select_fire == SelectFire::Semi) {
             continue;
