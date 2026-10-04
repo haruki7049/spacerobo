@@ -45,6 +45,9 @@ members = [
   # Configuration
   "crates/configs",
 
+  # On-board computer
+  "crates/obc",
+
   # cargo-xtask
   "crates/xtask",
 ]

@@ -1,0 +1,13 @@
+[package]
+name = "spacerobo_obc"
+description = "On-board computer: a Bevy-independent RV32I virtual machine"
+authors.workspace = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
