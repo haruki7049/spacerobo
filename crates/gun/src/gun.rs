@@ -98,14 +98,15 @@ pub fn gun_cooling_system(mut gun: Query<&mut Gun>) {
     }
 }
 
+/// Melee damage dealt to a target a gun collides with.
+const HUGE_DAMAGE: f32 = 20000.0;
+
 pub fn gun_melee_damage_system(
     mut commands: Commands,
     mut collision_event_reader: MessageReader<CollisionStart>,
     gun_query: Query<(), With<Gun>>,
     target_query: Query<(), With<CommonTarget>>,
 ) {
-    const HUGE_DAMAGE: f32 = 20000.0;
-
     for event in collision_event_reader.read() {
         debug!("Collision!!");
 
@@ -126,6 +127,91 @@ pub fn gun_melee_damage_system(
                 target: target_entity,
                 amount: HUGE_DAMAGE,
             });
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    /// `gun_melee_damage_system`'s unit tests
+    mod gun_melee_damage_system {
+        use super::super::{Gun, HUGE_DAMAGE, Interval, gun_melee_damage_system};
+        use avian3d::prelude::*;
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::Damage;
+        use spacerobo_target::Common as CommonTarget;
+
+        #[derive(Resource, Default)]
+        struct DamageLog(Vec<(Entity, f32)>);
+
+        fn record_damage(damage: On<Damage>, mut log: ResMut<DamageLog>) {
+            log.0.push((damage.target, damage.amount));
+        }
+
+        fn world_with_damage_log() -> World {
+            let mut world = World::new();
+            world.insert_resource(DamageLog::default());
+            world.add_observer(record_damage);
+            world.init_resource::<Messages<CollisionStart>>();
+            world
+        }
+
+        fn write_collision(world: &mut World, collider1: Entity, collider2: Entity) {
+            world.write_message(CollisionStart {
+                collider1,
+                collider2,
+                body1: None,
+                body2: None,
+            });
+        }
+
+        fn spawn_gun(world: &mut World) -> Entity {
+            world
+                .spawn(Gun {
+                    owner: Entity::PLACEHOLDER,
+                    select_fire: Default::default(),
+                    interval: Interval::default(),
+                })
+                .id()
+        }
+
+        /// Colliding with a `CommonTarget` triggers melee `Damage` against it.
+        #[test]
+        fn triggers_damage_against_a_target_on_collision() {
+            let mut world = world_with_damage_log();
+            let gun = spawn_gun(&mut world);
+            let target = world.spawn(CommonTarget).id();
+            write_collision(&mut world, gun, target);
+
+            world.run_system_once(gun_melee_damage_system).unwrap();
+
+            assert_eq!(world.resource::<DamageLog>().0, vec![(target, HUGE_DAMAGE)]);
+        }
+
+        /// Colliding with a non-target entity deals no damage.
+        #[test]
+        fn does_not_trigger_damage_against_a_non_target() {
+            let mut world = world_with_damage_log();
+            let gun = spawn_gun(&mut world);
+            let other = world.spawn_empty().id();
+            write_collision(&mut world, gun, other);
+
+            world.run_system_once(gun_melee_damage_system).unwrap();
+
+            assert!(world.resource::<DamageLog>().0.is_empty());
+        }
+
+        /// A collision between two non-gun entities is ignored.
+        #[test]
+        fn ignores_collisions_without_a_gun() {
+            let mut world = world_with_damage_log();
+            let a = world.spawn(CommonTarget).id();
+            let b = world.spawn(CommonTarget).id();
+            write_collision(&mut world, a, b);
+
+            world.run_system_once(gun_melee_damage_system).unwrap();
+
+            assert!(world.resource::<DamageLog>().0.is_empty());
         }
     }
 }
