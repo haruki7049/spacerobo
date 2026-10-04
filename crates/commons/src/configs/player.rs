@@ -17,6 +17,27 @@ pub struct Config {
 #[serde(default)]
 pub struct RoboConfig {
     pub thruster: ThrusterConfig,
+    pub gun: GunConfig,
+}
+
+/// Configuration about the gun's fire-rate cooldown.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(default)]
+pub struct GunConfig {
+    /// Minimum time, in seconds, between full-auto shots.
+    pub interval_limit: f32,
+
+    /// How much the interval timer decreases per `FixedUpdate` tick.
+    pub interval_amount: f32,
+}
+
+impl std::default::Default for GunConfig {
+    fn default() -> Self {
+        Self {
+            interval_limit: 0.1,
+            interval_amount: 0.01,
+        }
+    }
 }
 
 // Configurations about thrusters
@@ -159,5 +180,23 @@ mod tests {
             config.robo.thruster.force.accelerate,
             ForceConfig::default().accelerate
         );
+    }
+
+    #[test]
+    fn gun_interval_can_be_tuned_independently_of_other_robo_fields() {
+        let config: Config = toml::from_str(
+            r#"
+            [robo.gun]
+            interval_limit = 0.2
+            "#,
+        )
+        .unwrap();
+
+        assert_eq!(config.robo.gun.interval_limit, 0.2);
+        assert_eq!(
+            config.robo.gun.interval_amount,
+            GunConfig::default().interval_amount
+        );
+        assert_eq!(config.robo.thruster, ThrusterConfig::default());
     }
 }

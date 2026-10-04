@@ -27,6 +27,10 @@ dash = 3.0
 pitch = 1.0
 yaw = 1.0
 roll = 1.0
+
+[player.robo.gun]
+interval_limit = 0.1
+interval_amount = 0.01
 ```
 
 Key names are Bevy's `KeyCode` variant names, for example `"KeyW"`, `"ControlLeft"` or `"Escape"`.
@@ -109,3 +113,15 @@ Force of the mouse rotation about the yaw axis. Default: `1.0`.
 #### player.robo.thruster.force.roll
 
 Force of the mouse rotation about the roll axis. Default: `1.0`.
+
+### player.robo.gun
+
+The gun's full-auto fire-rate cooldown.
+
+#### player.robo.gun.interval_limit
+
+Minimum time, in seconds, between full-auto shots. Default: `0.1`.
+
+#### player.robo.gun.interval_amount
+
+How much the interval timer decreases per physics tick while the gun is cooling down. Default: `0.01`.
