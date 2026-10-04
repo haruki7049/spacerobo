@@ -3,7 +3,7 @@
 use crate::gun::{Gun, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::Bullet;
+use spacerobo_commons::{Bullet, configs::GameConfigs};
 
 /// Select fire setting for Gun component
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
@@ -152,8 +152,12 @@ pub fn full_auto_system(
 
 /// Toggle gun's select fire.
 /// Full auto <---> Semi auto
-pub fn toggle_select_fire_system(mut gun: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::KeyT) {
+pub fn toggle_select_fire_system(
+    mut gun: Query<&mut Gun>,
+    keyboard: Res<ButtonInput<KeyCode>>,
+    game_configs: Res<GameConfigs>,
+) {
+    if keyboard.just_pressed(game_configs.player.keyboard.toggle_firemode) {
         let Ok(mut gun) = gun.single_mut() else {
             return;
         };
@@ -202,19 +206,27 @@ mod tests {
         use super::super::{Gun, SelectFire, toggle_select_fire_system};
         use crate::gun::Interval;
         use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::configs::GameConfigs;
 
+        /// A world with the default-configured toggle key (`T`) pressed.
         fn world_with_key_t_pressed() -> World {
-            let mut keyboard = ButtonInput::<KeyCode>::default();
-            keyboard.press(KeyCode::KeyT);
-
-            let mut world = World::new();
-            world.insert_resource(keyboard);
-            world
+            world_with_key_pressed(KeyCode::KeyT, GameConfigs::default())
         }
 
         fn world_without_input() -> World {
             let mut world = World::new();
             world.insert_resource(ButtonInput::<KeyCode>::default());
+            world.insert_resource(GameConfigs::default());
+            world
+        }
+
+        fn world_with_key_pressed(key: KeyCode, game_configs: GameConfigs) -> World {
+            let mut keyboard = ButtonInput::<KeyCode>::default();
+            keyboard.press(key);
+
+            let mut world = World::new();
+            world.insert_resource(keyboard);
+            world.insert_resource(game_configs);
             world
         }
 
@@ -260,6 +272,35 @@ mod tests {
         #[test]
         fn leaves_select_fire_unchanged_without_input() {
             let mut world = world_without_input();
+            spawn_gun(&mut world, SelectFire::Semi);
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
+
+            let select_fire = world.query::<&Gun>().single(&world).unwrap().select_fire;
+            assert!(matches!(select_fire, SelectFire::Semi));
+        }
+
+        /// Pressing the configured `toggle_firemode` key toggles select-fire, even when it has
+        /// been rebound away from the default `T`.
+        #[test]
+        fn toggles_using_the_configured_key_even_when_rebound() {
+            let mut game_configs = GameConfigs::default();
+            game_configs.player.keyboard.toggle_firemode = KeyCode::KeyG;
+            let mut world = world_with_key_pressed(KeyCode::KeyG, game_configs);
+            spawn_gun(&mut world, SelectFire::Semi);
+
+            world.run_system_once(toggle_select_fire_system).unwrap();
+
+            let select_fire = world.query::<&Gun>().single(&world).unwrap().select_fire;
+            assert!(matches!(select_fire, SelectFire::Full));
+        }
+
+        /// Once `toggle_firemode` is rebound, the old default key (`T`) no longer toggles it.
+        #[test]
+        fn does_not_toggle_using_the_old_default_key_once_rebound() {
+            let mut game_configs = GameConfigs::default();
+            game_configs.player.keyboard.toggle_firemode = KeyCode::KeyG;
+            let mut world = world_with_key_pressed(KeyCode::KeyT, game_configs);
             spawn_gun(&mut world, SelectFire::Semi);
 
             world.run_system_once(toggle_select_fire_system).unwrap();
