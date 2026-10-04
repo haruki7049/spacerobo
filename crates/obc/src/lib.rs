@@ -5,5 +5,7 @@
 //! not on `bevy`/`avian3d`, so it can be developed and tested without the game engine.
 
 pub mod bus;
+pub mod cpu;
 
 pub use bus::{Bus, Mmio, Ram};
+pub use cpu::Cpu;
