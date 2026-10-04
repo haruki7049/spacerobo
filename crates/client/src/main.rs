@@ -3,6 +3,7 @@ use bevy::{
     prelude::*,
     window::{CursorGrabMode, CursorOptions},
 };
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 use clap::Parser;
 use spacerobo_client::cli::CLIArgs;
 use spacerobo_commons::{ControllablePlugin, GameMode, configs::GameConfigs};
@@ -25,6 +26,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     App::new()
         .add_plugins((
+            // `ReplaceDefault` serves the embedded assets through the default asset source, so
+            // `asset_server.load("SE/shoot.ogg")` works without an `assets/` directory.
+            // It must be registered before `DefaultPlugins`, which builds the `AssetPlugin`.
+            EmbeddedAssetPlugin {
+                mode: PluginMode::ReplaceDefault,
+            },
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
                     title: format!("spacerobo {}", env!("CARGO_PKG_VERSION")),

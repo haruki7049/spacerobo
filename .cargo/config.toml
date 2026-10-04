@@ -1,3 +1,7 @@
 [alias]
 xtask = "run --package spacerobo_xtask --" # cargo-xtask
 x = "run --package spacerobo_xtask --"     # cargo-xtask
+
+[env]
+# `bevy_embedded_assets` looks for `assets/` next to `target/` by default; the game assets live in the client crate.
+BEVY_ASSET_PATH = { value = "crates/client/assets", relative = true }

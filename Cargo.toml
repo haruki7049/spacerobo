@@ -78,6 +78,7 @@ spacerobo_shooting_range_plugin.path = "crates/plugins/shooting_range_plugin"
 bevy_math = "0.18.1"
 bevy_ecs = "0.18.1"
 bevy_input = "0.18.1"
+bevy_embedded_assets = "0.15.0"
 bevy = { version = "0.18.1", features = [
   "debug",
   "serialize",
