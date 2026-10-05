@@ -78,6 +78,11 @@
           };
           cargoArtifacts = craneLib.buildDepsOnly {
             inherit dummySrc buildInputs nativeBuildInputs;
+            # Read the name and the vendored dependencies from `src`: deriving them from `dummySrc` would
+            # need a build at evaluation time, which breaks `nix flake check --all-systems` for foreign
+            # systems.
+            inherit (craneLib.crateNameFromCargoToml { inherit src; }) pname version;
+            cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
