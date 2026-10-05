@@ -70,6 +70,42 @@ impl std::default::Default for Hp {
     }
 }
 
+/// Rounds remaining in a gun's magazine, and the magazine's capacity.
+///
+/// Lives on the gun's owner (the same entity `Hp` lives on), so both `spacerobo_gun` (which
+/// consumes and reloads it) and `spacerobo_hud` (which displays it) can depend on it without
+/// depending on each other.
+#[derive(Debug, Component)]
+pub struct Ammo {
+    pub rest: u32,
+    pub capacity: u32,
+}
+
+impl Ammo {
+    /// Creates a full magazine of `capacity` rounds.
+    pub fn new(capacity: u32) -> Self {
+        Self {
+            rest: capacity,
+            capacity,
+        }
+    }
+
+    /// Spends one round. Returns `false` without changing `rest` if the magazine is empty.
+    pub fn consume(&mut self) -> bool {
+        if self.rest == 0 {
+            return false;
+        }
+
+        self.rest = self.rest.saturating_sub(1);
+        true
+    }
+
+    /// Refills the magazine to its capacity.
+    pub fn reload(&mut self) {
+        self.rest = self.capacity;
+    }
+}
+
 pub trait Bullet {
     fn shoot(
         commands: &mut Commands,
@@ -240,6 +276,45 @@ mod tests {
             counter.decrement();
             // Should saturate at 0, not wrap around or panic.
             assert_eq!(*counter, 0);
+        }
+    }
+
+    /// Ammo's unit tests
+    mod ammo {
+        use crate::Ammo;
+
+        /// `new` starts with a full magazine.
+        #[test]
+        fn new_starts_full() {
+            let ammo = Ammo::new(8);
+            assert_eq!(ammo.rest, 8);
+            assert_eq!(ammo.capacity, 8);
+        }
+
+        /// `consume` spends one round and reports success.
+        #[test]
+        fn consume_spends_one_round() {
+            let mut ammo = Ammo::new(2);
+            assert!(ammo.consume());
+            assert_eq!(ammo.rest, 1);
+        }
+
+        /// `consume` on an empty magazine changes nothing and reports failure.
+        #[test]
+        fn consume_fails_when_empty() {
+            let mut ammo = Ammo::new(0);
+            assert!(!ammo.consume());
+            assert_eq!(ammo.rest, 0);
+        }
+
+        /// `reload` refills the magazine back to capacity.
+        #[test]
+        fn reload_refills_to_capacity() {
+            let mut ammo = Ammo::new(8);
+            ammo.consume();
+            ammo.consume();
+            ammo.reload();
+            assert_eq!(ammo.rest, 8);
         }
     }
 }

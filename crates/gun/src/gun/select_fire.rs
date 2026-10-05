@@ -1,9 +1,9 @@
 #![allow(clippy::type_complexity)]
 
-use crate::gun::{Gun, MAGAZINE_SIZE, Muzzle, bullet::Common};
+use crate::gun::{Gun, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
-use spacerobo_commons::{Bullet, configs::GameConfigs};
+use spacerobo_commons::{Ammo, Bullet, configs::GameConfigs};
 use spacerobo_math::bullet_velocity;
 
 /// Select fire setting for Gun component
@@ -49,7 +49,8 @@ fn fire(
 #[allow(clippy::too_many_arguments)]
 pub fn semi_auto_system(
     mut commands: Commands,
-    mut gun_query: Query<(&mut Gun, &ChildOf)>,
+    gun_query: Query<(&Gun, &ChildOf)>,
+    mut ammo_query: Query<&mut Ammo>,
     muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
     parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -57,7 +58,7 @@ pub fn semi_auto_system(
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    for (mut gun, child_of) in gun_query.iter_mut() {
+    for (gun, child_of) in gun_query.iter() {
         if !(mouse.just_pressed(MouseButton::Left) && gun.select_fire == SelectFire::Semi) {
             continue;
         }
@@ -69,7 +70,11 @@ pub fn semi_auto_system(
             continue;
         }
 
-        if gun.ammo == 0 {
+        let Ok(mut ammo) = ammo_query.get_mut(gun.owner) else {
+            continue;
+        };
+
+        if !ammo.consume() {
             debug!("Semi auto shoot aborted because the gun is out of ammo");
             continue;
         }
@@ -77,8 +82,6 @@ pub fn semi_auto_system(
         let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) else {
             continue;
         };
-
-        gun.ammo = gun.ammo.saturating_sub(1);
 
         for global_transform in muzzle_query.iter() {
             fire(
@@ -99,6 +102,7 @@ pub fn semi_auto_system(
 pub fn full_auto_system(
     mut commands: Commands,
     mut gun_query: Query<(&mut Gun, &ChildOf)>,
+    mut ammo_query: Query<&mut Ammo>,
     muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
     parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -129,14 +133,17 @@ pub fn full_auto_system(
                 continue;
             }
 
-            if gun.ammo == 0 {
+            let Ok(mut ammo) = ammo_query.get_mut(gun.owner) else {
+                continue;
+            };
+
+            if !ammo.consume() {
                 debug!("Full auto shoot aborted because the gun is out of ammo");
                 continue;
             }
 
             // Full auto interval
             gun.interval.rest = gun.interval.limit;
-            gun.ammo = gun.ammo.saturating_sub(1);
 
             fire(
                 &mut commands,
@@ -156,14 +163,14 @@ pub fn full_auto_system(
 /// Prototype value; not wired to `GameConfigs` yet.
 const RELOAD_KEY: KeyCode = KeyCode::KeyR;
 
-/// Instantly refills every gun's magazine to [`MAGAZINE_SIZE`] on `RELOAD_KEY`.
-pub fn reload_system(mut gun_query: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
+/// Instantly refills every magazine on `RELOAD_KEY`.
+pub fn reload_system(mut ammo_query: Query<&mut Ammo>, keyboard: Res<ButtonInput<KeyCode>>) {
     if !keyboard.just_pressed(RELOAD_KEY) {
         return;
     }
 
-    for mut gun in gun_query.iter_mut() {
-        gun.ammo = MAGAZINE_SIZE;
+    for mut ammo in ammo_query.iter_mut() {
+        ammo.reload();
     }
 }
 
@@ -191,7 +198,7 @@ mod tests {
     /// `toggle_select_fire_system`'s unit tests
     mod toggle_select_fire_system {
         use super::super::{Gun, SelectFire, toggle_select_fire_system};
-        use crate::gun::{Interval, MAGAZINE_SIZE};
+        use crate::gun::Interval;
         use bevy::{ecs::system::RunSystemOnce, prelude::*};
         use spacerobo_commons::configs::GameConfigs;
 
@@ -222,7 +229,6 @@ mod tests {
                 owner: Entity::PLACEHOLDER,
                 select_fire,
                 interval: Interval::default(),
-                ammo: MAGAZINE_SIZE,
             });
         }
 
@@ -295,6 +301,50 @@ mod tests {
 
             let select_fire = world.query::<&Gun>().single(&world).unwrap().select_fire;
             assert!(matches!(select_fire, SelectFire::Semi));
+        }
+    }
+
+    /// `reload_system`'s unit tests
+    mod reload_system {
+        use super::super::{RELOAD_KEY, reload_system};
+        use bevy::{ecs::system::RunSystemOnce, prelude::*};
+        use spacerobo_commons::Ammo;
+
+        fn world_with_key_pressed(key: KeyCode) -> World {
+            let mut keyboard = ButtonInput::<KeyCode>::default();
+            keyboard.press(key);
+
+            let mut world = World::new();
+            world.insert_resource(keyboard);
+            world
+        }
+
+        /// Pressing the reload key refills a depleted magazine.
+        #[test]
+        fn refills_a_depleted_magazine() {
+            let mut world = world_with_key_pressed(RELOAD_KEY);
+            let mut ammo = Ammo::new(8);
+            ammo.consume();
+            ammo.consume();
+            let gun = world.spawn(ammo).id();
+
+            world.run_system_once(reload_system).unwrap();
+
+            assert_eq!(world.get::<Ammo>(gun).unwrap().rest, 8);
+        }
+
+        /// Without the reload key pressed, ammo is left untouched.
+        #[test]
+        fn leaves_ammo_unchanged_without_input() {
+            let mut world = World::new();
+            world.insert_resource(ButtonInput::<KeyCode>::default());
+            let mut ammo = Ammo::new(8);
+            ammo.consume();
+            let gun = world.spawn(ammo).id();
+
+            world.run_system_once(reload_system).unwrap();
+
+            assert_eq!(world.get::<Ammo>(gun).unwrap().rest, 7);
         }
     }
 }

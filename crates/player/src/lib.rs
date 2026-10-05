@@ -3,9 +3,9 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{
-    Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
+    Ammo, Controllable, DeathMessage, GameMode, Hp, KillCounter, Player, configs::GameConfigs,
 };
-use spacerobo_gun::{Gun, GunPlugin};
+use spacerobo_gun::{Gun, GunPlugin, MAGAZINE_SIZE};
 use spacerobo_hud::HudPlugin;
 
 /// Player Common Component
@@ -39,6 +39,7 @@ impl Player for Common {
                 AngularVelocity(Vec3::ZERO),
                 SpatialListener::new(gap),
                 Hp::robo(Some(asset_server.load("SE/kill.ogg"))),
+                Ammo::new(MAGAZINE_SIZE),
                 Controllable,
                 Common,
             ))
