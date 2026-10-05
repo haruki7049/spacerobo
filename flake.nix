@@ -67,8 +67,22 @@
             pkgs.nushell # Script runner
             pkgs.cachix # cachix CLI
           ];
+          # `bevy_embedded_assets` embeds the assets in its build script, which also runs in the
+          # dependency-only build. The dummy source contains no assets, so copy them in.
+          dummySrc = craneLib.mkDummySrc {
+            inherit src;
+            extraDummyScript = ''
+              mkdir -p $out/crates/client
+              cp -r --no-preserve=mode ${./crates/client/assets} $out/crates/client/assets
+            '';
+          };
           cargoArtifacts = craneLib.buildDepsOnly {
-            inherit src buildInputs nativeBuildInputs;
+            inherit dummySrc buildInputs nativeBuildInputs;
+            # Read the name and the vendored dependencies from `src`: deriving them from `dummySrc` would
+            # need a build at evaluation time, which breaks `nix flake check --all-systems` for foreign
+            # systems.
+            inherit (craneLib.crateNameFromCargoToml { inherit src; }) pname version;
+            cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
 
             LIBCLANG_PATH = lib.makeLibraryPath buildInputs;
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;

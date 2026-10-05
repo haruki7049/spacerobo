@@ -20,6 +20,7 @@ spacerobo_commons.workspace = true
 spacerobo_shooting_range_plugin.workspace = true
 avian3d.workspace = true
 bevy.workspace = true
+bevy_embedded_assets.workspace = true
 clap.workspace = true
 confy.workspace = true
 directories.workspace = true
