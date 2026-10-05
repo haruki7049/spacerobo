@@ -9,6 +9,12 @@ use bevy::prelude::*;
 use spacerobo_commons::{Damage, configs::GameConfigs};
 use spacerobo_target::Common as CommonTarget;
 
+/// Rounds a freshly reloaded gun holds.
+///
+/// Prototype value for feeling out the ammo/reload loop (see issue discussion); not wired to
+/// `GameConfigs` yet.
+pub const MAGAZINE_SIZE: u32 = 8;
+
 /// Gun component
 #[derive(Component)]
 pub struct Gun {
@@ -19,6 +25,9 @@ pub struct Gun {
 
     /// A interval settings and values
     pub interval: Interval,
+
+    /// Rounds remaining before a reload is needed.
+    pub ammo: u32,
 }
 
 impl Gun {
@@ -44,6 +53,7 @@ impl Gun {
                         rest: 0.0,
                         amount: game_configs.player.robo.gun.interval_amount,
                     },
+                    ammo: MAGAZINE_SIZE,
                 }),
                 ColliderConstructor::ConvexHullFromMesh,
                 CollisionEventsEnabled,
@@ -178,7 +188,7 @@ mod tests {
 
     /// `gun_melee_damage_system`'s unit tests
     mod gun_melee_damage_system {
-        use super::super::{Gun, HUGE_DAMAGE, Interval, gun_melee_damage_system};
+        use super::super::{Gun, HUGE_DAMAGE, Interval, MAGAZINE_SIZE, gun_melee_damage_system};
         use avian3d::prelude::*;
         use bevy::{ecs::system::RunSystemOnce, prelude::*};
         use spacerobo_commons::Damage;
@@ -214,6 +224,7 @@ mod tests {
                     owner: Entity::PLACEHOLDER,
                     select_fire: Default::default(),
                     interval: Interval::default(),
+                    ammo: MAGAZINE_SIZE,
                 })
                 .id()
         }

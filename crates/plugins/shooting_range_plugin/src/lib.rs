@@ -18,9 +18,11 @@ impl Plugin for ShootingRangePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(PlayerCommonPlugin);
         app.insert_resource(Gravity(Vec3::NEG_Y * 0.));
+        app.init_resource::<RoundTimer>();
         app.add_systems(
             OnEnter(GameMode::InGame),
-            (setup_system, spawn_boundary_grid).run_if(in_state(GameMode::InGame)),
+            (setup_system, spawn_boundary_grid, reset_round_timer_system)
+                .run_if(in_state(GameMode::InGame)),
         );
         app.add_systems(
             Update,
@@ -28,10 +30,48 @@ impl Plugin for ShootingRangePlugin {
                 // Systems
                 when_going_outside_system,
                 death_system,
+                round_timer_system,
             )
                 .run_if(in_state(GameMode::InGame)),
         );
         app.add_observer(apply_damage_system);
+    }
+}
+
+/// How long a Target Challenge round lasts.
+///
+/// Prototype value for feeling out the ammo/timer/score loop; not wired to `GameConfigs` yet.
+const ROUND_DURATION_SECS: f32 = 30.0;
+
+/// Counts down a round; when it elapses, the current [`KillCounter`] is the round's score.
+///
+/// Repeats so the loop can be felt out repeatedly without restarting the game.
+#[derive(Resource)]
+struct RoundTimer(Timer);
+
+impl Default for RoundTimer {
+    fn default() -> Self {
+        Self(Timer::from_seconds(
+            ROUND_DURATION_SECS,
+            TimerMode::Repeating,
+        ))
+    }
+}
+
+fn reset_round_timer_system(mut round_timer: ResMut<RoundTimer>) {
+    *round_timer = RoundTimer::default();
+}
+
+fn round_timer_system(
+    time: Res<Time>,
+    mut round_timer: ResMut<RoundTimer>,
+    mut kill_counter: ResMut<KillCounter>,
+) {
+    round_timer.0.tick(time.delta());
+
+    if round_timer.0.just_finished() {
+        info!("Time's up! Final score: {} kills", **kill_counter);
+        kill_counter.reset();
     }
 }
 

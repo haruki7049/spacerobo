@@ -1,6 +1,6 @@
 #![allow(clippy::type_complexity)]
 
-use crate::gun::{Gun, Muzzle, bullet::Common};
+use crate::gun::{Gun, MAGAZINE_SIZE, Muzzle, bullet::Common};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use spacerobo_commons::{Bullet, configs::GameConfigs};
@@ -49,7 +49,7 @@ fn fire(
 #[allow(clippy::too_many_arguments)]
 pub fn semi_auto_system(
     mut commands: Commands,
-    gun_query: Query<(&Gun, &ChildOf)>,
+    mut gun_query: Query<(&mut Gun, &ChildOf)>,
     muzzle_query: Query<&GlobalTransform, With<Muzzle>>,
     parent_linear_query: Query<&LinearVelocity>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -57,7 +57,7 @@ pub fn semi_auto_system(
     mouse: Res<ButtonInput<MouseButton>>,
     asset_server: Res<AssetServer>,
 ) {
-    for (gun, child_of) in gun_query.iter() {
+    for (mut gun, child_of) in gun_query.iter_mut() {
         if !(mouse.just_pressed(MouseButton::Left) && gun.select_fire == SelectFire::Semi) {
             continue;
         }
@@ -69,9 +69,16 @@ pub fn semi_auto_system(
             continue;
         }
 
+        if gun.ammo == 0 {
+            debug!("Semi auto shoot aborted because the gun is out of ammo");
+            continue;
+        }
+
         let Ok(player_linear_velocity) = parent_linear_query.get(child_of.parent()) else {
             continue;
         };
+
+        gun.ammo = gun.ammo.saturating_sub(1);
 
         for global_transform in muzzle_query.iter() {
             fire(
@@ -122,8 +129,14 @@ pub fn full_auto_system(
                 continue;
             }
 
+            if gun.ammo == 0 {
+                debug!("Full auto shoot aborted because the gun is out of ammo");
+                continue;
+            }
+
             // Full auto interval
             gun.interval.rest = gun.interval.limit;
+            gun.ammo = gun.ammo.saturating_sub(1);
 
             fire(
                 &mut commands,
@@ -135,6 +148,22 @@ pub fn full_auto_system(
                 gun.owner,
             );
         }
+    }
+}
+
+/// Key that refills every gun's magazine.
+///
+/// Prototype value; not wired to `GameConfigs` yet.
+const RELOAD_KEY: KeyCode = KeyCode::KeyR;
+
+/// Instantly refills every gun's magazine to [`MAGAZINE_SIZE`] on `RELOAD_KEY`.
+pub fn reload_system(mut gun_query: Query<&mut Gun>, keyboard: Res<ButtonInput<KeyCode>>) {
+    if !keyboard.just_pressed(RELOAD_KEY) {
+        return;
+    }
+
+    for mut gun in gun_query.iter_mut() {
+        gun.ammo = MAGAZINE_SIZE;
     }
 }
 
@@ -162,7 +191,7 @@ mod tests {
     /// `toggle_select_fire_system`'s unit tests
     mod toggle_select_fire_system {
         use super::super::{Gun, SelectFire, toggle_select_fire_system};
-        use crate::gun::Interval;
+        use crate::gun::{Interval, MAGAZINE_SIZE};
         use bevy::{ecs::system::RunSystemOnce, prelude::*};
         use spacerobo_commons::configs::GameConfigs;
 
@@ -193,6 +222,7 @@ mod tests {
                 owner: Entity::PLACEHOLDER,
                 select_fire,
                 interval: Interval::default(),
+                ammo: MAGAZINE_SIZE,
             });
         }
 
