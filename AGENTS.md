@@ -46,7 +46,6 @@ Other paths:
   `crates/client/assets/THIRDPARTY_LICENSE.md`.
 - `docs/README.md`: the player manual, including the configuration file reference.
 - `.github/workflows/`: CI (see [Verification](#3-verification)).
-- `scripts/push-artifacts-to-cachix.nu`: pushes build outputs to Cachix; run by CI only.
 
 ______________________________________________________________________
 
