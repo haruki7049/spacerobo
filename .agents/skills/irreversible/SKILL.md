@@ -19,7 +19,7 @@ Prevent data loss, unwanted history changes and broad side effects.
 - `cargo clean` or deleting `target/`: not destructive to sources, but forces a full Bevy rebuild that takes a long
   time.
 - Anything outside the repository: the user's game config (`~/.config/spacerobo/` on Linux), global Git or Nix
-  settings, the Cachix cache (`scripts/push-artifacts-to-cachix.nu` is for CI only; never run it locally).
+  settings.
 - GitHub state other than your own topic branch and PR: repository settings, labels, other people's PRs, tags and
   releases.
 - Adding, replacing or deleting binary assets in `crates/client/assets/`.

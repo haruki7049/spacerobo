@@ -64,8 +64,6 @@
             pkgs.nil # Nix LSP
             rust # Rust toolchain
             pkgs.cargo-llvm-cov
-            pkgs.nushell # Script runner
-            pkgs.cachix # cachix CLI
           ];
           # `bevy_embedded_assets` embeds the assets in its build script, which also runs in the
           # dependency-only build. The dummy source contains no assets, so copy them in.
